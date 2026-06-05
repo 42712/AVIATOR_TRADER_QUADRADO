@@ -1,0 +1,3190 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Painel VR5 Dono Configurado</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#06090f;--bg2:#0a0f1a;--bg3:#0e1522;--bg4:#121d2e;
+  --brd:#18273d;--brd2:#203555;
+  --txt:#b8d0ec;--txt2:#4a6e94;--txt3:#1e3a58;
+  --up:#a855f7;--dn:#06b6d4;--pk:#f43f5e;--gn:#22c55e;--am:#f59e0b;
+  --font:'JetBrains Mono',monospace;
+}
+html,body{height:100%;width:100%;overflow:hidden;background:var(--bg);font-family:var(--font);font-size:11px;color:var(--txt)}
+.root{display:flex;flex-direction:column;height:100vh}
+.main{display:flex;flex:1;overflow:hidden;min-height:0}
+
+/* TOPBAR */
+.topbar{height:38px;background:var(--bg2);border-bottom:1px solid var(--brd);display:flex;align-items:center;flex-shrink:0;user-select:none}
+.tb-logo{padding:0 14px;font-size:13px;font-weight:700;color:#fff;letter-spacing:.5px;border-right:1px solid var(--brd);height:100%;display:flex;align-items:center;gap:8px;white-space:nowrap}
+.tb-dot{width:8px;height:8px;border-radius:50%;background:var(--up);animation:glow 2s infinite}
+@keyframes glow{0%,100%{box-shadow:0 0 4px var(--up)}50%{box-shadow:0 0 14px var(--up)}}
+.tb-mid{flex:1;display:flex;align-items:center;gap:3px;padding:0 10px;overflow-x:auto}
+.tb-right{display:flex;align-items:center;gap:4px;padding:0 10px;border-left:1px solid var(--brd)}
+.btn{padding:2px 9px;border-radius:4px;border:1px solid var(--brd2);background:var(--bg3);color:var(--txt2);font-size:9px;font-family:var(--font);cursor:pointer;height:22px;display:flex;align-items:center;gap:3px;transition:all .15s;white-space:nowrap;flex-shrink:0}
+.btn:hover{border-color:var(--txt2);color:var(--txt)}
+.btn.on{border-color:var(--up);background:rgba(168,85,247,.15);color:var(--up)}
+.btn.g{border-color:#166534;background:rgba(34,197,94,.1);color:var(--gn)}
+.btn.b{border-color:#1e3a5f;background:rgba(96,165,250,.08);color:#60a5fa}
+.btn.r{border-color:#9f1239;background:rgba(244,63,94,.08);color:var(--pk)}
+.ws-pill{display:flex;align-items:center;gap:4px;font-size:9px;padding:0 8px;border-left:1px solid var(--brd)}
+.ws-pill.ok{color:var(--gn)}.ws-pill.err{color:var(--pk)}.ws-pill.am{color:var(--am)}
+.wsd{width:5px;height:5px;border-radius:50%;background:currentColor;animation:blink 1.4s infinite}
+.rod-input{width:100%;padding:6px 9px;background:var(--bg3);border:1px solid var(--brd2);border-radius:4px;color:var(--txt);font-family:var(--font);font-size:10px;outline:none}
+.rod-input:focus{border-color:var(--gn)}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
+@keyframes pulseBtn{0%,100%{box-shadow:0 2px 12px rgba(168,85,247,.3)}50%{box-shadow:0 2px 20px rgba(168,85,247,.7)}}
+
+/* TOOLBOX */
+.toolbox{width:38px;background:var(--bg2);border-right:1px solid var(--brd);display:flex;flex-direction:column;align-items:center;padding:5px 0;gap:2px;flex-shrink:0;user-select:none}
+.tb{width:28px;height:28px;border-radius:4px;border:1px solid var(--brd);background:var(--bg3);color:var(--txt2);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;position:relative;flex-shrink:0}
+.tb:hover{border-color:var(--txt2);color:var(--txt);background:var(--bg4)}
+.tb.active{border-color:var(--up);background:rgba(168,85,247,.2);color:var(--up)}
+.tb svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.tb-sep{width:20px;height:1px;background:var(--brd);margin:1px 0;flex-shrink:0}
+.tblabel{position:absolute;left:34px;top:50%;transform:translateY(-50%);background:var(--bg4);border:1px solid var(--brd2);border-radius:4px;padding:2px 7px;font-size:8px;color:var(--txt);white-space:nowrap;pointer-events:none;opacity:0;transition:opacity .12s;z-index:300}
+.tb:hover .tblabel{opacity:1}
+
+/* CHART */
+.chart-col{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0;min-height:0}
+.canvas-wrap{flex:1;position:relative;overflow:hidden;background:var(--bg);min-height:0;cursor:default}
+#cv{display:block;position:absolute;top:0;left:0}
+#pov{position:absolute;inset:0;z-index:19;display:none;cursor:grabbing}
+.chart-switch{height:34px;background:var(--bg2);border-bottom:1px solid var(--brd);display:flex;align-items:center;justify-content:center;gap:8px;flex-shrink:0}
+.graf-btn{padding:6px 18px;border-radius:18px;border:1px solid var(--brd2);background:var(--bg3);color:var(--txt2);font-size:10px;font-weight:700;font-family:var(--font);cursor:pointer}
+.graf-btn.on{border-color:#0ea5e9;background:rgba(14,165,233,.18);color:#38bdf8}
+.raw-wrap{flex:1;position:relative;overflow:hidden;background:linear-gradient(180deg,var(--bg2),var(--bg));min-height:0}
+.raw-title{position:absolute;top:6px;left:12px;z-index:3;font-size:9px;font-weight:700;color:var(--am);letter-spacing:.5px;background:rgba(6,9,15,.75);border:1px solid var(--brd);border-radius:12px;padding:3px 9px}
+.g2-topstats{position:absolute;top:30px;left:12px;right:72px;z-index:36;display:flex;align-items:stretch;gap:8px;pointer-events:none;flex-wrap:nowrap;height:72px}
+.g2-card{width:132px;min-width:132px;background:rgba(10,15,26,.92);border:1px solid var(--brd2);border-radius:8px;padding:7px 9px;box-shadow:0 8px 20px rgba(0,0,0,.24);backdrop-filter:blur(4px)}
+.g2-card .g2-lbl{font-size:7px;color:var(--txt2);letter-spacing:.7px;text-transform:uppercase;white-space:nowrap}
+.g2-card .g2-val{font-size:16px;font-weight:800;color:#fff;margin-top:4px;line-height:1.05}
+.g2-card .g2-sub{font-size:8px;color:var(--txt3);margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.g2-card.g10{border-color:rgba(34,197,94,.55)}
+.g2-card.g30{border-color:rgba(14,165,233,.60)}
+.g2-card.g50{border-color:rgba(250,204,21,.70)}
+.g2-card.g100{border-color:rgba(244,114,182,.65)}
+.g2-card.g10 .g2-val{color:#22c55e}.g2-card.g30 .g2-val{color:#38bdf8}.g2-card.g50 .g2-val{color:#facc15}.g2-card.g100 .g2-val{color:#f472b6}
+.g2-last5{flex:1;min-width:420px;background:rgba(10,15,26,.92);border:1px solid var(--brd2);border-radius:8px;padding:6px 9px;box-shadow:0 8px 20px rgba(0,0,0,.24);backdrop-filter:blur(4px);overflow:hidden}
+.g2-last5-title{font-size:7px;color:var(--txt2);letter-spacing:.7px;text-transform:uppercase;margin-bottom:5px}
+.g2-last5-list{display:grid;grid-template-columns:repeat(5,minmax(64px,1fr));gap:6px;align-items:stretch}
+.g2-mini-card{height:64px;border-radius:6px;overflow:hidden;background:#0b6b98;box-shadow:0 1px 0 rgba(255,255,255,.05) inset;border:1px solid rgba(255,255,255,.06)}
+.g2-mini-card .mult{height:34px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px;font-weight:800}
+.g2-mini-card .rod{height:13px;background:rgba(0,0,0,.20);display:flex;align-items:center;justify-content:center;color:#dbeafe;font-size:8px}
+.g2-mini-card .hora{height:17px;display:flex;align-items:center;justify-content:center;background:#6b7280;color:#f8fafc;font-size:10px;font-weight:800}
+.g2-mini-card.c1{background:#dc2626}.g2-mini-card.c2{background:#6d00d9}.g2-mini-card.c10{background:#16a34a}.g2-mini-card.c50{background:#ca8a04}
+
+.tip-grid{position:absolute;inset:38px 12px 10px 12px;overflow-y:auto;display:grid;grid-template-columns:repeat(auto-fill,minmax(72px,1fr));gap:10px;align-content:start;padding-bottom:10px}
+.tip-card{height:76px;border-radius:7px;overflow:hidden;background:#0b6b98;box-shadow:0 1px 0 rgba(255,255,255,.05) inset}
+.tip-card .mult{height:48px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:15px;font-weight:700}
+.tip-card .rod{height:15px;background:rgba(0,0,0,.18);display:flex;align-items:center;justify-content:center;color:#dbeafe;font-size:9px}
+.tip-card .hora{height:20px;display:flex;align-items:center;justify-content:center;background:#6b7280;color:#f8fafc;font-size:14px;font-weight:700;border-radius:3px;margin-top:1px}
+.tip-card.c1{background:#dc2626}.tip-card.c2{background:#6d00d9}.tip-card.c10{background:#16a34a}.tip-card.c50{background:#ca8a04}
+#cvRaw{display:block;position:absolute;top:0;left:0}
+
+/* XBAR */
+.xbar{height:26px;background:var(--bg2);border-top:1px solid var(--brd);display:flex;align-items:center;padding:0 8px;gap:8px;font-size:8px;color:var(--txt3);flex-shrink:0;user-select:none}
+.xslider{flex:1;height:4px;-webkit-appearance:none;appearance:none;background:var(--brd2);border-radius:2px;outline:none;cursor:pointer}
+.xslider::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;border-radius:50%;background:var(--up);cursor:pointer}
+.xslider::-moz-range-thumb{width:14px;height:14px;border-radius:50%;background:var(--up);border:none;cursor:pointer}
+
+/* SIDEBAR */
+.data-sb{width:170px;background:var(--bg2);border-left:1px solid var(--brd);display:flex;flex-direction:column;overflow:hidden;flex-shrink:0}
+.sbh{padding:4px 10px;font-size:7px;color:var(--txt3);letter-spacing:.8px;border-bottom:1px solid var(--brd);flex-shrink:0;text-transform:uppercase}
+.kv-block{padding:4px 10px 6px;flex-shrink:0;border-bottom:1px solid var(--brd)}
+.kv{display:flex;justify-content:space-between;padding:2px 0}
+.kk{font-size:8px;color:var(--txt2)}.kvv{font-size:9px;font-weight:500;color:var(--txt)}
+.log-area{flex:1;overflow-y:auto}
+.log-row{display:flex;align-items:center;gap:3px;padding:2px 8px;border-bottom:1px solid #070d15;cursor:default;font-size:9px}
+.log-row:hover{background:var(--bg3)}
+.ldot{width:4px;height:4px;border-radius:50%;flex-shrink:0}
+.lt{color:var(--txt3);min-width:28px;font-size:8px}.lv{font-weight:500}
+.ltag{font-size:7px;padding:1px 3px;border-radius:2px;margin-left:auto;font-weight:500}
+.t-up{background:rgba(168,85,247,.12);color:var(--up)}
+.t-dn{background:rgba(6,182,212,.12);color:var(--dn)}
+.t-pk{background:rgba(244,114,182,.15);color:#f472b6}
+.t-ext{background:rgba(245,158,11,.15);color:var(--am)}
+
+/* TOOLTIP */
+.tooltip{position:absolute;background:#080f1c;border:1px solid var(--brd2);border-radius:5px;padding:6px 10px;pointer-events:none;display:none;z-index:60;min-width:100px}
+.tt-v{font-size:14px;font-weight:700}.tt-s{font-size:8px;color:var(--txt2);margin-top:1px}
+
+/* ALERT */
+.alert{position:absolute;top:10px;left:50%;transform:translateX(-50%);padding:6px 22px;border-radius:20px;font-size:12px;font-weight:700;pointer-events:none;z-index:50;white-space:nowrap;opacity:0;transition:opacity .3s}
+.alert.show{opacity:1}
+.flash{position:absolute;inset:0;border:2px solid var(--gn);opacity:0;pointer-events:none;transition:opacity .12s;z-index:45}
+.flash.on{opacity:1}
+
+/* BOTÃO VOLTAR */
+#btnBack{position:absolute;bottom:36px;left:50%;transform:translateX(-50%);background:rgba(168,85,247,.35);border:1.5px solid var(--up);border-radius:20px;padding:7px 22px;font-size:11px;font-weight:700;color:var(--up);cursor:pointer;display:none;z-index:60;font-family:var(--font);box-shadow:0 2px 12px rgba(168,85,247,.3);animation:pulseBtn 1.5s infinite}
+#btnBack.show{display:block}
+
+/* MODAIS */
+.modal-bg{position:fixed;inset:0;background:rgba(5,8,13,.93);display:none;align-items:center;justify-content:center;z-index:999}
+.modal-bg.open{display:flex}
+.modal{background:var(--bg4);border:1px solid var(--brd2);border-radius:10px;padding:22px 24px;width:400px;display:flex;flex-direction:column;gap:10px;max-height:90vh;overflow-y:auto}
+.m-title{font-size:13px;font-weight:700;color:#fff;display:flex;justify-content:space-between}
+.m-x{cursor:pointer;color:var(--txt2)}
+.m-group{display:flex;flex-direction:column;gap:3px}
+.m-group label{font-size:9px;color:var(--txt2)}
+.m-group input,.m-group select{width:100%;padding:5px 8px;background:var(--bg3);border:1px solid var(--brd2);border-radius:4px;color:var(--txt);font-family:var(--font);font-size:10px;outline:none}
+.m-group input:focus{border-color:var(--up)}
+.m-row{display:flex;gap:8px}.m-row .m-group{flex:1}
+.m-status{background:var(--bg3);border:1px solid var(--brd);border-radius:4px;padding:7px 9px;font-size:9px;color:var(--txt2);line-height:1.6;min-height:30px}
+.mbtn{padding:8px;border-radius:5px;font-size:10px;font-weight:700;cursor:pointer;font-family:var(--font);transition:all .15s;border:1px solid;flex:1}
+.mb-g{background:rgba(34,197,94,.12);border-color:#166534;color:var(--gn)}.mb-g:hover{background:rgba(34,197,94,.22)}
+.mb-b{background:rgba(96,165,250,.08);border-color:#1e3a5f;color:#60a5fa}.mb-b:hover{background:rgba(96,165,250,.18)}
+.mb-r{background:rgba(244,63,94,.08);border-color:#9f1239;color:var(--pk)}.mb-r:hover{background:rgba(244,63,94,.18)}
+.mb-c{background:var(--bg3);border-color:var(--brd);color:var(--txt3)}.mb-c:hover{color:var(--txt2)}
+.m-btns{display:flex;gap:6px}
+
+/* TEXT INPUT DESENHO */
+/* MODAL MM */
+.mm-row{display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid var(--brd);flex-wrap:nowrap}
+.mm-row:last-child{border-bottom:none}
+.mm-label{font-size:9px;color:var(--txt2);width:60px;flex-shrink:0}
+.mm-toggle{width:32px;height:16px;border-radius:8px;background:var(--brd2);cursor:pointer;position:relative;transition:background .2s;flex-shrink:0}
+.mm-toggle.on{background:var(--gn)}
+.mm-toggle::after{content:'';position:absolute;width:12px;height:12px;border-radius:50%;background:#fff;top:2px;left:2px;transition:left .2s}
+.mm-toggle.on::after{left:18px}
+.mm-num{width:48px;padding:3px 6px;background:var(--bg3);border:1px solid var(--brd2);border-radius:3px;color:var(--txt);font-family:var(--font);font-size:9px;outline:none}
+.mm-num:focus{border-color:var(--up)}
+.mm-color{width:28px;height:22px;border:none;border-radius:3px;cursor:pointer;padding:0}
+.mm-op{width:48px;padding:3px 6px;background:var(--bg3);border:1px solid var(--brd2);border-radius:3px;color:var(--txt);font-family:var(--font);font-size:9px;outline:none}
+.mm-sel{padding:3px 5px;background:var(--bg3);border:1px solid var(--brd2);border-radius:3px;color:var(--txt);font-family:var(--font);font-size:9px;outline:none}
+.mm-sel:focus{border-color:var(--up)}
+#rodPopup{position:fixed;z-index:802;display:none;flex-direction:column;gap:8px;
+  background:#0a1320;border:1.5px solid var(--gn);border-radius:8px;padding:12px 16px;
+  min-width:200px;box-shadow:0 6px 24px rgba(0,0,0,.8)}
+#rodPopup.show{display:flex}
+#rodPopup b{color:var(--gn);font-size:10px;font-weight:700}
+#rodPopup small{font-size:9px;color:var(--txt2)}
+#rodPopup input{padding:7px 9px;background:var(--bg3);border:1px solid var(--gn);
+  border-radius:4px;color:#fff;font-family:var(--font);font-size:13px;font-weight:700;outline:none;width:100%}
+#rodPopup em{font-size:8px;color:var(--txt3);font-style:normal}
+#textWrap{position:fixed;display:none;z-index:900}
+#textWrap input{background:#0a1320;border:1px solid var(--up);color:var(--txt);padding:4px 8px;font-family:var(--font);font-size:10px;border-radius:4px;outline:none;width:160px}
+
+/* ═══ MOTOR BURST ═══ */
+#burstPanel{position:fixed;bottom:48px;right:12px;width:220px;z-index:8000;font-family:var(--font);display:flex;flex-direction:column;gap:6px;pointer-events:none}
+.burst-card{border-radius:10px;padding:10px 12px;background:rgba(6,9,15,.92);border:1px solid var(--brd2);backdrop-filter:blur(6px);pointer-events:auto}
+.burst-card.active{border-color:#f472b6;box-shadow:0 0 18px rgba(244,114,182,.35),0 0 40px rgba(244,114,182,.15)}
+.burst-card.entrada{border-color:#22c55e;box-shadow:0 0 18px rgba(34,197,94,.35)}
+.burst-lbl{font-size:7px;letter-spacing:.9px;text-transform:uppercase;color:var(--txt3);margin-bottom:4px}
+.burst-val{font-size:22px;font-weight:800;line-height:1;color:#fff}
+.burst-sub{font-size:9px;color:var(--txt2);margin-top:3px;line-height:1.4}
+.burst-bar-wrap{height:5px;background:var(--brd);border-radius:3px;margin-top:7px;overflow:hidden}
+.burst-bar{height:5px;border-radius:3px;transition:width .4s ease;background:linear-gradient(90deg,#06b6d4,#a855f7,#f472b6)}
+.burst-status{display:flex;align-items:center;gap:5px;margin-top:5px;font-size:8px;font-weight:700}
+.burst-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.burst-dot.idle{background:var(--txt3)}
+.burst-dot.watch{background:var(--am);animation:blink 1s infinite}
+.burst-dot.alert{background:#f472b6;animation:blink .5s infinite}
+.burst-dot.fire{background:#22c55e;animation:blink .3s infinite}
+#burstNotif{position:fixed;top:50px;left:50%;transform:translateX(-50%);z-index:9999;pointer-events:none;opacity:0;transition:opacity .3s;min-width:320px;max-width:480px}
+#burstNotif.show{opacity:1}
+.bnotif-inner{background:linear-gradient(135deg,rgba(10,15,26,.97),rgba(20,8,30,.97));border:1.5px solid #f472b6;border-radius:14px;padding:14px 18px;box-shadow:0 8px 40px rgba(244,114,182,.4),0 0 80px rgba(168,85,247,.2);text-align:center;font-family:var(--font)}
+.bnotif-tag{font-size:8px;letter-spacing:1.2px;color:#f472b6;font-weight:800;text-transform:uppercase;margin-bottom:4px}
+.bnotif-title{font-size:17px;font-weight:800;color:#fff;letter-spacing:.5px;margin-bottom:2px}
+.bnotif-sub{font-size:10px;color:#b8d0ec;line-height:1.5}
+.bnotif-countdown{font-size:28px;font-weight:900;color:#f472b6;margin:6px 0 2px;text-shadow:0 0 20px rgba(244,114,182,.6)}
+.bnotif-bar-wrap{height:4px;background:rgba(255,255,255,.1);border-radius:2px;margin-top:8px;overflow:hidden}
+.bnotif-bar{height:4px;border-radius:2px;background:linear-gradient(90deg,#f472b6,#a855f7);transition:width .1s linear}
+
+
+/* ── BARRAS DE ROLAGEM GRÁFICO 2 ── */
+.scroll-h-wrap{height:14px;background:var(--bg2);border-top:1px solid var(--brd);position:relative;flex-shrink:0}
+.scroll-h-track{position:absolute;left:12px;right:72px;top:4px;height:6px;background:var(--brd2);border-radius:3px;cursor:pointer}
+.scroll-h-thumb{position:absolute;top:0;height:6px;background:var(--up);border-radius:3px;cursor:grab;transition:background .15s;min-width:24px}
+.scroll-h-thumb:hover{background:#c084fc}
+.scroll-h-thumb:active{cursor:grabbing;background:#e879f9}
+.scroll-v-wrap{position:absolute;top:0;right:0;width:14px;bottom:14px;background:var(--bg2);border-left:1px solid var(--brd)}
+.scroll-v-track{position:absolute;left:4px;top:8px;bottom:8px;width:6px;background:var(--brd2);border-radius:3px;cursor:pointer}
+.scroll-v-thumb{position:absolute;left:0;width:6px;background:var(--dn);border-radius:3px;cursor:grab;min-height:24px;transition:background .15s}
+.scroll-v-thumb:hover{background:#67e8f9}
+.scroll-v-thumb:active{cursor:grabbing}
+/* ── SIDEBAR QUADRADINHOS ── */
+.last-box{display:grid;grid-template-columns:1fr 1fr;gap:5px;padding:6px 8px;border-bottom:1px solid var(--brd)}
+.last-cell{border-radius:5px;padding:4px 6px;display:flex;flex-direction:column;gap:1px;cursor:default}
+.last-cell .lc-lbl{font-size:6px;letter-spacing:.6px;text-transform:uppercase;opacity:.7}
+.last-cell .lc-val{font-size:13px;font-weight:800;line-height:1}
+.last-cell .lc-time{font-size:7px;opacity:.6}
+.lc-rosa{background:rgba(244,114,182,.15);border:1px solid rgba(244,114,182,.4);color:#f472b6}
+.lc-ouro{background:rgba(250,204,21,.12);border:1px solid rgba(250,204,21,.35);color:#facc15}
+.lc-roxo{background:rgba(168,85,247,.15);border:1px solid rgba(168,85,247,.4);color:#a855f7}
+.lc-ciano{background:rgba(6,182,212,.12);border:1px solid rgba(6,182,212,.35);color:#06b6d4}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+</head>
+<body>
+
+
+
+<input type="file" id="tipminerImportInput" accept=".csv,.xlsx,.xls" style="display:none" onchange="importarHistoricoTipMiner(this.files[0])">
+
+<!-- ═══ MOTOR BURST — PAINEL LATERAL ═══ -->
+<div id="burstPanel">
+  <!-- Card Compressão -->
+  <div class="burst-card" id="burstCardComp">
+    <div class="burst-lbl" id="burstCardCompLbl">📊 Score do Padrão</div>
+    <div style="display:flex;align-items:baseline;gap:6px">
+      <div class="burst-val" id="burstCompPct">0%</div>
+      <div style="font-size:9px;color:var(--txt2)" id="burstCompLabel">BAIXA</div>
+    </div>
+    <div class="burst-bar-wrap"><div class="burst-bar" id="burstCompBar" style="width:0%"></div></div>
+    <div class="burst-status">
+      <div class="burst-dot idle" id="burstDot"></div>
+      <span id="burstStatusTxt" style="color:var(--txt3)">Monitorando...</span>
+    </div>
+  </div>
+
+  <!-- Card Padrão Rosa -->
+  <div class="burst-card" id="burstCardRosa" style="display:none">
+    <div class="burst-lbl">🌸 Padrão Rosa Detectado</div>
+    <div class="burst-val" id="burstRosaVelas" style="color:#f472b6">—</div>
+    <div class="burst-sub" id="burstRosaSub">Vela de reversão após queda<br>Volume em expansão</div>
+    <div class="burst-bar-wrap"><div class="burst-bar" id="burstRosaBar" style="width:0%;background:linear-gradient(90deg,#a855f7,#f472b6)"></div></div>
+  </div>
+
+  <!-- Card Sinal de Entrada -->
+  <div class="burst-card" id="burstCardFire" style="display:none">
+    <div class="burst-lbl" style="color:#22c55e">🚀 ENTRADA CONFIRMADA</div>
+    <div class="burst-val" id="burstFireMult" style="color:#22c55e">—</div>
+    <div class="burst-sub" id="burstFireSub">Apostando na próxima vela</div>
+    <div class="burst-bar-wrap"><div class="burst-bar" id="burstFireBar" style="width:100%;background:#22c55e"></div></div>
+  </div>
+</div>
+
+<!-- ═══ NOTIFICAÇÃO FLUTUANTE BURST ═══ -->
+<div id="burstNotif">
+  <div class="bnotif-inner">
+    <div class="bnotif-tag" id="bnotifTag">⚠ SINAL DETECTADO</div>
+    <div class="bnotif-title" id="bnotifTitle">COMPRESSÃO VIOLENTA</div>
+    <div class="bnotif-sub" id="bnotifSub">Vela de reversão + volume em alta</div>
+    <div class="bnotif-countdown" id="bnotifCountdown">—</div>
+    <div class="bnotif-bar-wrap"><div class="bnotif-bar" id="bnotifBar" style="width:100%"></div></div>
+  </div>
+</div>
+
+<div class="root">
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="tb-logo"><div class="tb-dot"></div>PAINEL VR5</div>
+  <div class="tb-mid">
+    <!-- ferramentas de desenho -->
+    <button class="btn on" id="tool-cursor" onclick="setTool('cursor')">&#9654;</button>
+    <button class="btn" id="tool-hline"  onclick="setTool('hline')"  title="Linha Horizontal">&#8212;</button>
+    <button class="btn" id="tool-vline"  onclick="setTool('vline')"  title="Linha Vertical">|</button>
+    <button class="btn" id="tool-tline"  onclick="setTool('tline')"  title="Tendência">&#8598;</button>
+    <button class="btn" id="tool-channel" onclick="setTool('channel')" title="Canal">&#8661;</button>
+    <button class="btn" id="tool-rect"   onclick="setTool('rect')"   title="Retângulo">&#9645;</button>
+    <button class="btn" id="tool-fib"    onclick="setTool('fib')"    title="Fibonacci">F</button>
+    <button class="btn" id="tool-arrow"  onclick="setTool('arrow')"  title="Seta">&#10132;</button>
+    <button class="btn" id="tool-text"   onclick="setTool('text')"   title="Texto">T</button>
+    <button class="btn" id="tool-mark"   onclick="setTool('mark')"   title="Marcar ponto">&#9679;</button>
+    <button class="btn" id="tool-cross"  onclick="setTool('cross')"  title="Cruzar linhas no ponto">&#8853;</button>
+    <button class="btn r" onclick="clearDrawings()" title="Apagar">&#10005;</button>
+    <div style="width:1px;height:14px;background:var(--brd);flex-shrink:0"></div>
+    <button class="btn" onclick="zoomIn()">+</button>
+    <button class="btn" onclick="zoomOut()">&#8722;</button>
+    <button class="btn" onclick="resetView()">&#8635;</button>
+    <button class="btn" id="maBtn" onclick="toggleMA()">MM</button>
+    <button class="btn b" onclick="openCfgMM()" title="Configurar Médias Móveis">&#9881; MM</button>
+    <button class="btn" onclick="openIndicadores()" title="Indicadores e Configurações" style="font-size:13px">&#9965;</button>
+  </div>
+  <div class="tb-right">
+    <button class="btn" id="btnSemRosa" title="Velas desde a última rosa">🌸 SEM ROSA: —</button>
+    <button class="btn" id="btnRoxas10" title="Roxas (2x–9x) nos últimos 10 min">🟣 ROXAS/10min: —</button>
+    <button class="btn g" id="btnRodada" onclick="toggleModoRodada()">&#9313; RODADA</button>
+    <button class="btn b" id="btnImportTip" onclick="abrirImportTipMiner()">IMPORTAR HISTÓRICO</button>
+    <button class="btn on" id="btnVR5" onclick="carregarDoVR5Connector()" title="Carregar dados do VR5 Connector (extensão Chrome)" style="animation:pulseBtn 2s infinite">🔌 VR5 CONNECTOR</button>
+    <button class="btn b" onclick="openServer()">&#9775; SERVIDOR</button>
+    <div class="ws-pill err" id="wsStatus"><span class="wsd"></span><span id="wsLabel">SIMULADO</span></div>
+  </div>
+</div>
+
+<div class="main">
+<!-- TOOLBOX LATERAL -->
+<div class="toolbox">
+  <div class="tb active" id="tb-cursor" onclick="setTool('cursor')">
+    <svg viewBox="0 0 24 24"><path d="M5 3l14 9-7 1-4 7z" fill="currentColor" stroke="none"/></svg>
+    <span class="tblabel">Cursor</span>
+  </div>
+  <div class="tb-sep"></div>
+  <div class="tb" id="tb-hline" onclick="setTool('hline')">
+    <svg viewBox="0 0 24 24"><line x1="2" y1="12" x2="22" y2="12"/></svg>
+    <span class="tblabel">Linha Horizontal</span>
+  </div>
+  <div class="tb" id="tb-vline" onclick="setTool('vline')">
+    <svg viewBox="0 0 24 24"><line x1="12" y1="2" x2="12" y2="22"/></svg>
+    <span class="tblabel">Linha Vertical</span>
+  </div>
+  <div class="tb" id="tb-tline" onclick="setTool('tline')">
+    <svg viewBox="0 0 24 24"><line x1="4" y1="20" x2="20" y2="4"/><polyline points="14,4 20,4 20,10"/></svg>
+    <span class="tblabel">Tendência</span>
+  </div>
+  <div class="tb" id="tb-channel" onclick="setTool('channel')">
+    <svg viewBox="0 0 24 24"><line x1="3" y1="7" x2="21" y2="4"/><line x1="3" y1="14" x2="21" y2="11"/></svg>
+    <span class="tblabel">Canal</span>
+  </div>
+  <div class="tb-sep"></div>
+  <div class="tb" id="tb-rect" onclick="setTool('rect')">
+    <svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="1"/></svg>
+    <span class="tblabel">Retângulo</span>
+  </div>
+  <div class="tb" id="tb-fib" onclick="setTool('fib')">
+    <svg viewBox="0 0 24 24"><line x1="3" y1="5" x2="21" y2="5"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="3" y1="15" x2="21" y2="15"/><line x1="3" y1="20" x2="21" y2="20"/><line x1="3" y1="3" x2="3" y2="21"/></svg>
+    <span class="tblabel">Fibonacci</span>
+  </div>
+  <div class="tb-sep"></div>
+  <div class="tb" id="tb-arrow" onclick="setTool('arrow')">
+    <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="13,6 19,12 13,18"/></svg>
+    <span class="tblabel">Seta</span>
+  </div>
+  <div class="tb" id="tb-text" onclick="setTool('text')">
+    <svg viewBox="0 0 24 24"><text x="5" y="17" font-size="14" fill="currentColor" stroke="none">T</text></svg>
+    <span class="tblabel">Texto</span>
+  </div>
+  <div class="tb" id="tb-cross" onclick="setTool('cross')">
+    <svg viewBox="0 0 24 24"><line x1="12" y1="3" x2="12" y2="21"/><line x1="3" y1="12" x2="21" y2="12"/><circle cx="12" cy="12" r="3"/></svg>
+    <span class="tblabel">Cruzar linhas</span>
+  </div>
+  <div class="tb" id="tb-mark" onclick="setTool('mark')">
+    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4" fill="currentColor" stroke="none"/><line x1="12" y1="2" x2="12" y2="8"/><line x1="12" y1="16" x2="12" y2="22"/><line x1="2" y1="12" x2="8" y2="12"/><line x1="16" y1="12" x2="22" y2="12"/></svg>
+    <span class="tblabel">Marcar ponto</span>
+  </div>
+  <div class="tb-sep"></div>
+  <div class="tb" style="color:var(--pk)" onclick="clearDrawings()">
+    <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    <span class="tblabel">Apagar tudo</span>
+  </div>
+</div>
+
+<!-- GRÁFICO -->
+<div class="chart-col">
+  <div class="chart-switch">
+    <button class="graf-btn on" id="btnGraf1" onclick="setGrafico(1)">GRÁFICO 1</button>
+    <button class="graf-btn" id="btnGraf2" onclick="setGrafico(2)">GRÁFICO 2</button>
+  </div>
+
+  <div class="raw-wrap" id="rawWrap">
+    <div class="raw-title">GRÁFICO 1 — TIPMINER NORMAL / HISTÓRICO IMPORTADO</div>
+    <div class="tip-grid" id="tipGrid"></div>
+    <canvas id="cvRaw" style="display:none"></canvas>
+  </div>
+
+  <div class="canvas-wrap" id="cwrap" style="display:none">
+    <div class="raw-title" style="color:var(--up)">GRÁFICO 2 — PONTOS VR5 / TEMPO SEM PAGAR</div>
+    <!-- Scroll Vertical -->
+    <div class="scroll-v-wrap" id="scrollVWrap">
+      <div class="scroll-v-track" id="scrollVTrack">
+        <div class="scroll-v-thumb" id="scrollVThumb"></div>
+      </div>
+    </div>
+    <div class="g2-topstats" id="g2TopStats">
+      <div class="g2-card g10"><div class="g2-lbl">Sem pagar 10x+</div><div class="g2-val" id="g2Min10">—</div><div class="g2-sub" id="g2Val10">aguardando</div></div>
+      <div class="g2-card g30"><div class="g2-lbl">Sem pagar 30x+</div><div class="g2-val" id="g2Min30">—</div><div class="g2-sub" id="g2Val30">aguardando</div></div>
+      <div class="g2-card g50"><div class="g2-lbl">Sem pagar 50x+</div><div class="g2-val" id="g2Min50">—</div><div class="g2-sub" id="g2Val50">aguardando</div></div>
+      <div class="g2-card g100"><div class="g2-lbl">Sem pagar 100x+</div><div class="g2-val" id="g2Min100">—</div><div class="g2-sub" id="g2Val100">aguardando</div></div>
+    </div>
+    <canvas id="cv"></canvas>
+    <div id="pov"></div>
+    <div class="flash" id="flash"></div>
+    <div class="alert" id="alertBox"></div>
+    <div class="tooltip" id="ttBox"><div class="tt-v" id="ttV"></div><div class="tt-s" id="ttS"></div></div>
+    <button id="btnBack" onclick="voltarPresente()">&#9654;&#9654; VOLTAR AO PRESENTE</button>
+  </div>
+  <!-- Barra de rolagem horizontal Gráfico 2 -->
+  <div class="scroll-h-wrap" id="scrollHWrap" style="display:none">
+    <div class="scroll-h-track" id="scrollHTrack">
+      <div class="scroll-h-thumb" id="scrollHThumb"></div>
+    </div>
+  </div>
+  <div class="xbar" id="xbarPontos" style="display:none">
+    <span id="xL">—</span><span id="xM">—</span><span id="xR">—</span>
+    <input type="range" class="xslider" id="xslider" min="10" max="1000" value="60"
+      title="Arrastar: ajusta quantidade de velas visíveis"
+      oninput="CFG.showN=parseInt(this.value);draw()">
+    <span id="xNow" style="color:var(--up);font-size:13px;font-weight:700;letter-spacing:1px">—</span>
+    <span id="xZoom" style="color:var(--txt3)">100v</span>
+  </div>
+</div>
+
+<!-- SIDEBAR -->
+<div class="data-sb">
+  <div class="sbh">ÚLTIMA VELA POR COR</div>
+  <!-- Quadradinhos: última vela de cada cor -->
+  <div class="last-box">
+    <div class="last-cell lc-rosa" id="lcRosa">
+      <span class="lc-lbl">🌸 Rosa 10x+</span>
+      <span class="lc-val" id="lcRosaVal">—</span>
+      <span class="lc-time" id="lcRosaTime">aguardando</span>
+    </div>
+    <div class="last-cell lc-ouro" id="lcOuro">
+      <span class="lc-lbl">🟡 Ouro 50x+</span>
+      <span class="lc-val" id="lcOuroVal">—</span>
+      <span class="lc-time" id="lcOuroTime">aguardando</span>
+    </div>
+    <div class="last-cell lc-roxo" id="lcRoxo">
+      <span class="lc-lbl">🟣 Roxo 2x+</span>
+      <span class="lc-val" id="lcRoxoVal">—</span>
+      <span class="lc-time" id="lcRoxoTime">aguardando</span>
+    </div>
+    <div class="last-cell lc-ciano" id="lcCiano">
+      <span class="lc-lbl">🔵 Ciano &lt;2x</span>
+      <span class="lc-val" id="lcCianoVal">—</span>
+      <span class="lc-time" id="lcCianoTime">aguardando</span>
+    </div>
+  </div>
+  <div class="kv-block" style="padding:3px 10px 5px">
+    <div class="kv"><span class="kk">Atual</span><span class="kvv" id="sCot" style="color:var(--up)">—</span></div>
+    <div class="kv"><span class="kk">Fonte</span><span class="kvv" id="oSrc" style="color:var(--txt2)">Simulado</span></div>
+    <div class="kv"><span class="kk">Total</span><span class="kvv" id="sTot" style="color:var(--txt2)">0</span></div>
+    <div class="kv"><span class="kk">Compressão</span><span class="kvv" id="sCompVal" style="color:var(--dn)">0%</span></div>
+    <div class="kv"><span class="kk">Previsão Rosa</span><span class="kvv" id="sRosaProb" style="color:#f472b6">—</span></div>
+  </div>
+  <div class="sbh">LOG</div>
+  <div class="log-area" id="logArea"></div>
+</div>
+</div>
+</div>
+
+<!-- MODAL RODADAS -->
+<div class="modal-bg" id="rodModal" onclick="if(event.target===this)closeRodadas()">
+  <div class="modal" style="width:340px">
+    <div class="m-title">&#9313; Numeração de Rodadas <span class="m-x" onclick="closeRodadas()">&#10005;</span></div>
+    <p style="font-size:9px;color:var(--txt2);line-height:1.6">Informe qual vela corresponde a qual número de rodada. O sistema calcula automaticamente todas as demais.</p>
+    <div class="m-group">
+      <label>Número da vela (posição no histórico)</label>
+      <input type="number" class="rod-input" id="rodVela" placeholder="Ex: 10" min="1">
+    </div>
+    <div class="m-group">
+      <label>Número da rodada correspondente</label>
+      <input type="number" class="rod-input" id="rodNro" placeholder="Ex: 1500" min="1">
+    </div>
+    <div id="rodStatus" style="font-size:9px;color:var(--txt2);min-height:16px;padding:2px 0"></div>
+    <div class="m-btns">
+      <button class="mbtn mb-g" onclick="aplicarRodadas()">&#10003; Aplicar</button>
+      <button class="mbtn mb-r" onclick="limparRodadas()">&#10005; Limpar</button>
+      <button class="mbtn mb-c" onclick="closeRodadas()">Fechar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL INDICADORES -->
+<div class="modal-bg" id="indModal" onclick="if(event.target===this)closeIndicadores()">
+  <div class="modal" style="width:380px">
+    <div class="m-title">&#9965; Indicadores <span class="m-x" onclick="closeIndicadores()">&#10005;</span></div>
+
+    <div style="font-size:8px;color:var(--am);letter-spacing:.8px;margin:6px 0 4px">MÉDIAS MÓVEIS</div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px">
+      <div id="ind-mm1" style="flex:1;min-width:100px;background:var(--bg3);border:1px solid var(--brd2);border-radius:6px;padding:8px 10px;cursor:pointer" onclick="closeThenOpenMM()">
+        <div style="font-size:9px;color:var(--am);font-weight:700">MM1 (EMA <span id="ind-mm1per">9</span>)</div>
+        <div style="font-size:8px;color:var(--txt2);margin-top:3px">Smooth · Tracejada</div>
+        <div style="font-size:8px;color:var(--gn);margin-top:2px" id="ind-mm1st">✓ Ativa</div>
+      </div>
+      <div id="ind-mm2" style="flex:1;min-width:100px;background:var(--bg3);border:1px solid var(--brd2);border-radius:6px;padding:8px 10px;cursor:pointer" onclick="closeThenOpenMM()">
+        <div style="font-size:9px;color:var(--dn);font-weight:700">MM2 (EMA <span id="ind-mm2per">21</span>)</div>
+        <div style="font-size:8px;color:var(--txt2);margin-top:3px">Linear · Tracejada</div>
+        <div style="font-size:8px;color:var(--gn);margin-top:2px" id="ind-mm2st">✓ Ativa</div>
+      </div>
+      <div id="ind-mm3" style="flex:1;min-width:100px;background:var(--bg3);border:1px solid var(--brd2);border-radius:6px;padding:8px 10px;cursor:pointer" onclick="closeThenOpenMM()">
+        <div style="font-size:9px;color:var(--gn);font-weight:700">MM3 (EMA <span id="ind-mm3per">50</span>)</div>
+        <div style="font-size:8px;color:var(--txt2);margin-top:3px">Bezier · Pontilhada</div>
+        <div style="font-size:8px;color:var(--pk);margin-top:2px" id="ind-mm3st">✗ Inativa</div>
+      </div>
+    </div>
+
+    <div style="font-size:8px;color:var(--up);letter-spacing:.8px;margin:6px 0 4px">ZONAS DE PREÇO</div>
+    <div style="display:flex;flex-direction:column;gap:4px;margin-bottom:8px">
+      <label style="display:flex;align-items:center;gap:8px;font-size:9px;color:var(--txt2)">
+        <input type="checkbox" id="zona1x" checked onchange="draw()"> Zona 1.00x (BASE)
+      </label>
+      <label style="display:flex;align-items:center;gap:8px;font-size:9px;color:var(--txt2)">
+        <input type="checkbox" id="zona2x" checked onchange="draw()"> Zona 2.00x (ROXO)
+      </label>
+      <label style="display:flex;align-items:center;gap:8px;font-size:9px;color:var(--txt2)">
+        <input type="checkbox" id="zona10x" checked onchange="draw()"> Zona 10.00x (ROSA)
+      </label>
+    </div>
+
+    <div style="font-size:8px;color:var(--pk);letter-spacing:.8px;margin:6px 0 4px">SINAL DE ENTRADA — PADRÃO MM</div>
+    <div style="font-size:9px;color:var(--txt2);line-height:1.7;background:var(--bg3);border-radius:5px;padding:8px 10px;border:1px solid var(--brd)">
+      Detecta quando MM rápida <b style="color:var(--gn)">cruza para cima</b> a MM lenta<br>
+      após uma sequência de queda (fundo).<br>
+      <label style="display:flex;align-items:center;gap:6px;margin-top:6px">
+        <input type="checkbox" id="sinalMMOn" checked onchange="CFG.sinalMMOn=this.checked;salvarConfig()">
+        <span>Ativar alerta de entrada</span>
+      </label>
+    </div>
+
+    <div style="font-size:8px;color:#f472b6;letter-spacing:.8px;margin:6px 0 4px">MM2 ADAPTATIVA — CALIBRAÇÃO POR COMPRESSÃO</div>
+    <div style="font-size:9px;color:var(--txt2);line-height:1.7;background:var(--bg3);border-radius:5px;padding:8px 10px;border:1px solid var(--brd)">
+      A MM2 <b style="color:#f472b6">auto-calibra</b> com a compressão do mercado:<br>
+      &bull; Curva fica <b>mais grossa</b> e <b>brilhante</b><br>
+      &bull; Cor transita de ciano para <b style="color:#f472b6">rosa</b><br>
+      &bull; Prevê vela rosa com <b>2+ rodadas</b> de antecedência<br>
+      <label style="display:flex;align-items:center;gap:6px;margin-top:6px">
+        <input type="checkbox" id="sinalMM2Adaptive" checked onchange="CFG.mm2Adaptive=this.checked;salvarConfig();draw()">
+        <span>Ativar MM2 adaptativa</span>
+      </label>
+    </div>
+
+    <div class="m-btns" style="margin-top:10px">
+      <button class="mbtn mb-g" onclick="closeThenOpenMM()">&#9881; Config MM</button>
+      <button class="mbtn mb-c" onclick="closeIndicadores()">Fechar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL MM CONFIG -->
+<div class="modal-bg" id="mmModal" onclick="if(event.target===this)closeCfgMM()">
+  <div class="modal" style="width:380px">
+    <div class="m-title">&#9881; Configurar Médias Móveis <span class="m-x" onclick="closeCfgMM()">&#10005;</span></div>
+
+    <!-- MM1 -->
+    <div style="font-size:8px;color:var(--am);letter-spacing:.8px;margin-top:6px;padding-bottom:4px;border-bottom:1px solid var(--brd)">MÉDIA MÓVEL 1</div>
+    <div class="mm-row"><span class="mm-label">Ativar</span><div class="mm-toggle on" id="mm1tog" onclick="mmToggle(1)"></div></div>
+    <div class="mm-row"><span class="mm-label">Período</span><input type="number" class="mm-num" id="mm1per" value="9" min="2" max="500"><span style="font-size:8px;color:var(--txt3);margin-left:4px">períodos</span></div>
+    <div class="mm-row"><span class="mm-label">Cor</span><input type="color" class="mm-color" id="mm1cor" value="#f59e0b"><span class="mm-label" style="margin-left:10px">Opacidade</span><input type="number" class="mm-op" id="mm1op" value="0.80" min="0.1" max="1" step="0.05"></div>
+    <div class="mm-row">
+      <span class="mm-label">Espessura</span><input type="number" class="mm-num" id="mm1lw" value="1.5" min="0.5" max="5" step="0.5"><span style="font-size:8px;color:var(--txt3);margin-left:4px">px</span>
+      <span class="mm-label" style="margin-left:10px">Traçado</span>
+      <select id="mm1dash" class="mm-sel"><option value="solid">Sólida</option><option value="dash" selected>Tracejada</option><option value="dot">Pontilhada</option></select>
+    </div>
+    <div class="mm-row"><span class="mm-label">Tipo curva</span><select id="mm1curva" class="mm-sel" style="flex:1"><option value="linear">Linear (reta)</option><option value="smooth" selected>Smooth (suave)</option><option value="bezier">Bezier</option><option value="step">Step (degrau)</option></select></div>
+
+    <!-- MM2 -->
+    <div style="font-size:8px;color:var(--dn);letter-spacing:.8px;margin-top:8px;padding-bottom:4px;border-bottom:1px solid var(--brd)">MÉDIA MÓVEL 2</div>
+    <div class="mm-row"><span class="mm-label">Ativar</span><div class="mm-toggle on" id="mm2tog" onclick="mmToggle(2)"></div></div>
+    <div class="mm-row"><span class="mm-label">Período</span><input type="number" class="mm-num" id="mm2per" value="21" min="2" max="500"><span style="font-size:8px;color:var(--txt3);margin-left:4px">períodos</span></div>
+    <div class="mm-row"><span class="mm-label">Cor</span><input type="color" class="mm-color" id="mm2cor" value="#06b6d4"><span class="mm-label" style="margin-left:10px">Opacidade</span><input type="number" class="mm-op" id="mm2op" value="0.55" min="0.1" max="1" step="0.05"></div>
+    <div class="mm-row">
+      <span class="mm-label">Espessura</span><input type="number" class="mm-num" id="mm2lw" value="1.2" min="0.5" max="5" step="0.5"><span style="font-size:8px;color:var(--txt3);margin-left:4px">px</span>
+      <span class="mm-label" style="margin-left:10px">Traçado</span>
+      <select id="mm2dash" class="mm-sel"><option value="solid">Sólida</option><option value="dash" selected>Tracejada</option><option value="dot">Pontilhada</option></select>
+    </div>
+    <div class="mm-row"><span class="mm-label">Tipo curva</span><select id="mm2curva" class="mm-sel" style="flex:1"><option value="linear" selected>Linear (reta)</option><option value="smooth">Smooth (suave)</option><option value="bezier">Bezier</option><option value="step">Step (degrau)</option></select></div>
+
+    <!-- MM3 -->
+    <div style="font-size:8px;color:var(--gn);letter-spacing:.8px;margin-top:8px;padding-bottom:4px;border-bottom:1px solid var(--brd)">MÉDIA MÓVEL 3 (extra)</div>
+    <div class="mm-row"><span class="mm-label">Ativar</span><div class="mm-toggle" id="mm3tog" onclick="mmToggle(3)"></div></div>
+    <div class="mm-row"><span class="mm-label">Período</span><input type="number" class="mm-num" id="mm3per" value="50" min="2" max="500"><span style="font-size:8px;color:var(--txt3);margin-left:4px">períodos</span></div>
+    <div class="mm-row"><span class="mm-label">Cor</span><input type="color" class="mm-color" id="mm3cor" value="#22c55e"><span class="mm-label" style="margin-left:10px">Opacidade</span><input type="number" class="mm-op" id="mm3op" value="0.50" min="0.1" max="1" step="0.05"></div>
+    <div class="mm-row">
+      <span class="mm-label">Espessura</span><input type="number" class="mm-num" id="mm3lw" value="1.0" min="0.5" max="5" step="0.5"><span style="font-size:8px;color:var(--txt3);margin-left:4px">px</span>
+      <span class="mm-label" style="margin-left:10px">Traçado</span>
+      <select id="mm3dash" class="mm-sel"><option value="solid">Sólida</option><option value="dash">Tracejada</option><option value="dot" selected>Pontilhada</option></select>
+    </div>
+    <div class="mm-row"><span class="mm-label">Tipo curva</span><select id="mm3curva" class="mm-sel" style="flex:1"><option value="linear">Linear (reta)</option><option value="smooth">Smooth (suave)</option><option value="bezier" selected>Bezier</option><option value="step">Step (degrau)</option></select></div>
+
+    <div style="font-size:8px;color:var(--txt3);text-align:right;margin-top:6px">Config salva automaticamente</div>
+    <div class="m-btns" style="margin-top:6px">
+      <button class="mbtn mb-g" onclick="aplicarCfgMM()">&#10003; Aplicar</button>
+      <button class="mbtn mb-r" onclick="resetCfgMM()">&#8635; Reset</button>
+      <button class="mbtn mb-c" onclick="closeCfgMM()">Fechar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL SERVIDOR -->
+<div class="modal-bg" id="serverModal" onclick="if(event.target===this)closeServer()">
+  <div class="modal">
+    <div class="m-title">&#9775; Servidor Render <span class="m-x" onclick="closeServer()">&#10005;</span></div>
+    <div class="m-group"><label>URL Base</label><input type="text" id="cfgUrl" value="https://aviator-trader.onrender.com"></div>
+    <div class="m-row">
+      <div class="m-group"><label>Endpoint GET</label><input type="text" id="cfgGet" value="/api/velas"></div>
+      <div class="m-group"><label>Painel</label>
+        <select id="cfgPainel"><option value="1">Aviator 1</option><option value="2">Aviator 2</option></select>
+      </div>
+    </div>
+    <div class="m-row">
+      <div class="m-group"><label>Polling (ms)</label><input type="number" id="cfgPoll" value="1500" min="500"></div>
+      <div class="m-group"><label>Endpoint POST</label><input type="text" id="cfgPost" value="/api/nova-vela"></div>
+    </div>
+    <div class="m-status" id="srvStatus">Status: desconectado</div>
+    <div class="m-btns">
+      <button class="mbtn mb-g" onclick="conectar()">&#10003; Conectar</button>
+      <button class="mbtn mb-b" onclick="testar()">&#9654; Testar</button>
+      <button class="mbtn mb-r" onclick="desconectar()">&#9632; Parar</button>
+      <button class="mbtn mb-c" onclick="closeServer()">Fechar</button>
+    </div>
+  </div>
+</div>
+
+<div id="rodPopup">
+  <b>&#9313; Número da Rodada</b>
+  <small>Vela: <span id="rpV">—</span> &nbsp;·&nbsp; <span id="rpM">—</span></small>
+  <input type="number" id="rpN" placeholder="Nº da rodada..." min="1">
+  <em>Enter confirma &nbsp;·&nbsp; Esc cancela</em>
+</div>
+<div class="modal-bg" id="rodAviso">
+  <div class="modal" style="width:300px">
+    <div class="m-title" style="color:var(--pk)">&#9888; Atenção</div>
+    <p style="font-size:10px;color:var(--txt2);line-height:1.8">Desativar irá <b style="color:var(--pk)">remover todas as rodadas</b> do gráfico. Continuar?</p>
+    <div class="m-btns" style="margin-top:10px">
+      <button class="mbtn mb-r" onclick="confirmarDesativarRodada()">&#10005; Sim, remover</button>
+      <button class="mbtn mb-c" onclick="document.getElementById('rodAviso').classList.remove('open')">Cancelar</button>
+    </div>
+  </div>
+</div>
+<div id="textWrap"><input id="textInput" type="text" placeholder="Texto + Enter..."></div>
+
+<script>
+// ═══════════ ESTADO ═══════════
+const canvas = document.getElementById('cv');
+const ctx    = canvas.getContext('2d');
+const cwrap  = document.getElementById('cwrap');
+const canvasRaw = document.getElementById('cvRaw');
+const ctxRaw    = canvasRaw.getContext('2d');
+const G2_CHART_TOP = 112; // deixa o Gráfico 2 abaixo dos blocos de minutos sem pagar
+const G2_CHART_BOTTOM = 18;
+let graficoAtivo = 1;
+const rawWrap   = document.getElementById('rawWrap');
+
+const MAX_HIST = 1000;
+let pts = [];
+
+const CFG = {
+  showN: 60,
+  showMA: true,
+  sinalMMOn: true,
+  // MM1 — âmbar, Smooth, Tracejada
+  mm1On:   true,
+  mm1Per:  9,
+  mm1Cor:  '#f59e0b',
+  mm1Op:   0.80,
+  mm1Lw:   1.5,
+  mm1Dash: [4,5],
+  mm1Curva: 'smooth',
+  // MM2 — ciano, Linear, Tracejada
+  mm2On:   true,
+  mm2Per:  21,
+  mm2Cor:  '#06b6d4',
+  mm2Op:   0.55,
+  mm2Lw:   1.2,
+  mm2Dash: [4,5],
+  mm2Curva: 'linear',
+  // MM3 — verde, Bezier, Pontilhada (desligada por padrão)
+  mm3On:   false,
+  mm3Per:  50,
+  mm3Cor:  '#22c55e',
+  mm3Op:   0.50,
+  mm3Lw:   1.0,
+  mm3Dash: [2,4],
+  mm3Curva: 'bezier',
+  // MM2 adaptativa — calibra automaticamente com compressão
+  mm2Adaptive: true,
+  mm2CompBoost: 1.0,
+};
+
+// Zoom / Pan horizontal
+let viewOffset = 0;   // velas deslocadas do fim
+let zoomLevel  = 1.0;
+
+// Pan vertical (scroll)
+let vertOffset = 0;
+
+// Escala direita arrastável
+let scaleW = 60;
+let scaleResizing = false, scaleRX = 0, scaleRW = 0;
+
+// Ferramentas
+let drawTool = 'cursor';
+let drawings = [], selIdx = -1;
+let dStart = null, dCurr = null, dActive = false;
+let isPanning = false, panX0 = 0, panOff0 = 0;
+let _mx=0,_my=0;
+
+// Servidor
+const srv = { url:'https://aviator-trader.onrender.com', get:'/api/velas', post:'/api/nova-vela', painel:1, poll:1500 };
+let pollingTimer = null, simInt = null, modoFonte = 'simulado';
+let ultimaChave = null;
+
+// Áudio
+let audioCtx = null;
+
+// Numeração de rodadas
+let rodadaConfig = {
+  velaNro:  1,      // índice da vela encontrada (1-based) — calculado automaticamente
+  rodadaNro: 1,     // número da rodada correspondente
+  multRef:   null,  // multiplicador da vela de referência (para encontrá-la)
+  horario:   '',    // horário da vela de referência (HH:MM) — só exibição
+  ativo:     false
+};
+function getRodada(idxVela){
+  // Primeiro usa a rodada que veio no arquivo exportado do TipMiner.
+  // Assim o Gráfico 1 e o Gráfico 2 já abrem com o histórico real importado.
+  const p = pts[idxVela];
+  if(p && p.rodada !== undefined && p.rodada !== null && String(p.rodada).trim() !== '') return p.rodada;
+  if(!rodadaConfig.ativo) return null;
+  const ref = rodadaConfig.velaNro - 1; // 0-based
+  const n = rodadaConfig.rodadaNro + (idxVela - ref);
+  return n > 0 ? n : null; // não mostra rodadas negativas
+}
+
+// ═══════════ SERVIDOR ═══════════
+function openServer(){ document.getElementById('serverModal').classList.add('open'); }
+function closeServer(){ document.getElementById('serverModal').classList.remove('open'); }
+function setSrv(msg,c){ const e=document.getElementById('srvStatus'); e.textContent='Status: '+msg; e.style.color=c||'var(--txt2)'; }
+function setWs(cls,lbl){ document.getElementById('wsStatus').className='ws-pill '+cls; document.getElementById('wsLabel').textContent=lbl; }
+
+function testar(){
+  const url=document.getElementById('cfgUrl').value+document.getElementById('cfgGet').value+'?painel=1&limit=1';
+  setSrv('testando...','var(--am)');
+  fetch(url).then(r=>{if(!r.ok)throw new Error('HTTP '+r.status);return r.json();})
+    .then(d=>setSrv('OK — '+JSON.stringify(d).slice(0,60),'var(--gn)'))
+    .catch(e=>setSrv('erro: '+e.message,'var(--pk)'));
+}
+
+function conectar(){
+  srv.url    = document.getElementById('cfgUrl').value.replace(/\/$/,'');
+  srv.get    = document.getElementById('cfgGet').value;
+  srv.post   = document.getElementById('cfgPost').value;
+  srv.painel = parseInt(document.getElementById('cfgPainel').value)||1;
+  srv.poll   = parseInt(document.getElementById('cfgPoll').value)||1500;
+  desconectar(true);
+  setSrv('conectando...','var(--am)');
+  setWs('am','CONECTANDO');
+  salvarConfig();
+  buscar(true);
+}
+
+function desconectar(silencioso){
+  if(pollingTimer){clearInterval(pollingTimer);pollingTimer=null;}
+  if(!silencioso){
+    modoFonte='simulado';
+    setWs('err','SIMULADO');
+    setSrv('parado','var(--txt2)');
+    document.getElementById('oSrc').textContent='Simulado';
+    iniciarSim();
+  }
+}
+
+function buscar(primeiro){
+  const limit=primeiro?1000:1;
+  const url=srv.url+srv.get+'?painel='+srv.painel+'&limit='+limit;
+  fetch(url)
+    .then(r=>{if(!r.ok)throw new Error('HTTP '+r.status);return r.json();})
+    .then(data=>{
+      const lista=Array.isArray(data)?data:(data.velas||data.ultimos||data.data||(data.dado?[data.dado]:[]));
+      if(primeiro){
+        if(simInt){clearInterval(simInt);simInt=null;}
+        modoFonte='extensao';
+        setWs('ok','ONLINE');
+        setSrv('Conectado — aguardando velas novas — '+srv.url,'var(--gn)');
+        document.getElementById('oSrc').textContent='Render';
+        document.getElementById('oSrc').style.color='var(--am)';
+        // Carrega histórico real do servidor (últimas 1000 velas)
+        if(lista&&lista.length){
+          pts=[];
+          ultimaChave=null;
+          lista.forEach(p=>{
+            const v=parseFloat(p.multiplicador||p.valor||p.val||0);
+            if(!isNaN(v)&&v>0){
+              const ts=p.timestamp||p.ts||p.created_at||p.data||null;
+              const rod=p.rodada||p.round||p.id||p.game||null;
+              // Usa push direto para não bloquear o histórico pelo anti-duplicata de tempo
+              const _ts=ts?new Date(ts):new Date();
+              const tFinal=isNaN(_ts.getTime())?new Date():_ts;
+              push(v,tFinal,rod);
+            }
+          });
+          removerDuplicadasHistorico();
+          salvarHistoricoLocal();
+        }
+        // Garante que ao carregar, mostra as últimas 60 velas (não tenta mostrar tudo)
+        zoomLevel = 1.0;
+        viewOffset = 0;
+        vertOffset = 0;
+        draw();
+        pollingTimer=setInterval(()=>buscar(false),srv.poll);
+      } else {
+        if(!lista||!lista.length)return;
+        const u=lista[lista.length-1];
+        const v=parseFloat(u.multiplicador||u.valor||u.val||0);
+        const rodadaNova = u.rodada || u.round || u.id || u.game || null;
+        const tsNova = u.timestamp || u.ts || u.created_at || u.data || null;
+        const chave=(rodadaNova||v)+'_'+srv.painel+'_'+(tsNova||'');
+        if(!isNaN(v)&&v>0&&chave!==ultimaChave){
+          ultimaChave=chave;
+          receberVela(v,tsNova,'extensao',rodadaNova);
+        }
+      }
+    })
+    .catch(e=>{
+      if(primeiro){setSrv('erro: '+e.message,'var(--pk)');setWs('err','ERRO');setTimeout(()=>buscar(true),5000);}
+    });
+}
+
+// ═══════════ VELAS ═══════════
+function mesmaRodada(a,b){
+  if(a===null||a===undefined||a===''||b===null||b===undefined||b==='') return false;
+  return String(a).trim() === String(b).trim();
+}
+function mesmaVelaTempoReal(mult,t,rodada){
+  if(!pts.length) return false;
+  const last = pts[pts.length-1];
+  const m = parseFloat(mult);
+
+  // 1) Mesma rodada = mesma vela com certeza
+  if(mesmaRodada(last.rodada, rodada)) return true;
+
+  const lastT = last.time instanceof Date ? last.time.getTime() : new Date(last.time).getTime();
+  const nowT  = t instanceof Date ? t.getTime() : new Date(t).getTime();
+
+  // 2) Mesmo multiplicador dentro de 8s = duplicata de polling
+  const janela = Math.max(8000, (parseInt(srv.poll)||1500) * 5);
+  if(!isNaN(lastT) && !isNaN(nowT) && Math.abs(last.val - m) < 0.000001 && Math.abs(nowT-lastT) <= janela){
+    return true;
+  }
+
+  // 3) Verifica também penúltima (proteção extra contra burst)
+  if(pts.length >= 2){
+    const prev = pts[pts.length-2];
+    if(mesmaRodada(prev.rodada, rodada)) return true;
+  }
+
+  return false;
+}
+function recalcularScores(){
+  // Recalcula todos os pontos depois de importar ou remover duplicadas, mantendo a regra final VR5.
+  let valor = 0;
+  let ultimoFoi10 = false;
+  pts.forEach(p=>{
+    const mult = parseFloat(p.val);
+    let delta;
+    if(mult >= 10){ delta = ultimoFoi10 ? 1 : 10; ultimoFoi10 = true; }
+    else{ delta = -1; ultimoFoi10 = false; }
+    valor += delta;
+    p.delta = delta;
+    p.score = valor;
+  });
+}
+function removerDuplicadasHistorico(){
+  const vistosRodada = new Set();
+  const limpo = [];
+  pts.forEach((p,i)=>{
+    const rod = (p.rodada!==null && p.rodada!==undefined && p.rodada!=='') ? String(p.rodada).trim() : '';
+    if(rod){
+      if(vistosRodada.has(rod)) return; // descarta duplicata por rodada
+      vistosRodada.add(rod);
+    } else {
+      // Sem rodada: descarta se valor idêntico ao anterior e timestamp muito próximo (<5s)
+      if(limpo.length > 0){
+        const prev = limpo[limpo.length-1];
+        const dt = Math.abs(new Date(p.time).getTime() - new Date(prev.time).getTime());
+        if(Math.abs(prev.val - parseFloat(p.val)) < 0.000001 && dt < 5000) return;
+      }
+    }
+    limpo.push(p);
+  });
+  pts = limpo;
+  recalcularScores();
+}
+function push(val,time,rodada){
+  // Garante timestamp válido sempre
+  let t = time instanceof Date && !isNaN(time) ? time : new Date();
+
+  // LÓGICA VR5 DO GRÁFICO 2 POR PONTOS:
+  // abaixo de 10.00x = -1 linha
+  // se vier depois de vela abaixo de 10x = +10 linhas
+  // se vier 10x+ colado em sequência = +1 linha
+  const mult = parseFloat(val);
+  const anterior = pts.length ? (pts[pts.length-1].score || 0) : 0;
+  const ultimoFoi10 = pts.length ? ((parseFloat(pts[pts.length-1].val) || 0) >= 10) : false;
+
+  let delta;
+  if(mult >= 10){
+    delta = ultimoFoi10 ? 1 : 10;
+  }else{
+    delta = -1;
+  }
+
+  const score = anterior + delta;
+
+  // val continua sendo o multiplicador real; score é a altura do gráfico 2
+  pts.push({val:mult, score, delta, time:t, rodada: rodada ?? null});
+  if(pts.length>MAX_HIST)pts.shift();
+  return true;
+}
+
+
+// ════════════════════════════════════════════════════════════
+// BARRAS DE ROLAGEM — Gráfico 2
+// ════════════════════════════════════════════════════════════
+(function(){
+  let hDrag=false, hDragX=0, hDragOff0=0;
+  let vDrag=false, vDragY=0, vDragVert0=0;
+
+  function updateScrollBars(){
+    const W=canvas.width, H=canvas.height;
+    const total=pts.length;
+    const visN=getVisN();
+    const maxOff=Math.max(0,total-visN);
+
+    // ── Scroll Horizontal
+    const track=document.getElementById('scrollHTrack');
+    const thumb=document.getElementById('scrollHThumb');
+    if(!track||!thumb) return;
+    const tw=track.clientWidth;
+    const ratio=Math.min(1,visN/(total||1));
+    const thumbW=Math.max(24,Math.round(tw*ratio));
+    thumb.style.width=thumbW+'px';
+    const thumbX=maxOff>0?Math.round((1-viewOffset/maxOff)*(tw-thumbW)):0;
+    thumb.style.left=Math.max(0,Math.min(tw-thumbW,thumbX))+'px';
+
+    // ── Scroll Vertical
+    const vTrack=document.getElementById('scrollVTrack');
+    const vThumb=document.getElementById('scrollVThumb');
+    if(!vTrack||!vThumb) return;
+    const th=vTrack.clientHeight;
+    // vertOffset varia em px: positivo = zoom in vertical, negativo = zoom out
+    const vertRange=200; // range -100..+100 → normaliza 0..1
+    const vRatio=0.3; // thumb ocupa 30% da trilha
+    const thumbH=Math.max(24,Math.round(th*vRatio));
+    vThumb.style.height=thumbH+'px';
+    const vNorm=Math.max(0,Math.min(1,(vertOffset+100)/200));
+    const thumbY=Math.round(vNorm*(th-thumbH));
+    vThumb.style.top=Math.max(0,Math.min(th-thumbH,thumbY))+'px';
+  }
+
+  // Arrastar thumb horizontal
+  document.addEventListener('mousedown',e=>{
+    const th=document.getElementById('scrollHThumb');
+    if(th&&th.contains(e.target)){
+      hDrag=true; hDragX=e.clientX; hDragOff0=viewOffset;
+      e.preventDefault();
+    }
+    const vt=document.getElementById('scrollVThumb');
+    if(vt&&vt.contains(e.target)){
+      vDrag=true; vDragY=e.clientY; vDragVert0=vertOffset;
+      e.preventDefault();
+    }
+  });
+  document.addEventListener('mousemove',e=>{
+    if(hDrag){
+      const track=document.getElementById('scrollHTrack');
+      const thumb=document.getElementById('scrollHThumb');
+      if(!track||!thumb) return;
+      const tw=track.clientWidth, thumbW=thumb.clientWidth;
+      const visN=getVisN(), maxOff=Math.max(0,pts.length-visN);
+      const pxPerVela=(tw-thumbW)/Math.max(1,maxOff);
+      const delta=Math.round((e.clientX-hDragX)/pxPerVela);
+      viewOffset=Math.max(0,Math.min(maxOff,hDragOff0-delta));
+      document.getElementById('btnBack').classList.toggle('show',viewOffset>2);
+      draw(); updateScrollBars();
+    }
+    if(vDrag){
+      const track=document.getElementById('scrollVTrack');
+      const thumb=document.getElementById('scrollVThumb');
+      if(!track||!thumb) return;
+      const th=track.clientHeight, thumbH=thumb.clientHeight;
+      const pxPerUnit=(th-thumbH)/200;
+      const delta=Math.round((e.clientY-vDragY)/pxPerUnit);
+      vertOffset=Math.max(-100,Math.min(100,vDragVert0+delta));
+      draw(); updateScrollBars();
+    }
+  });
+  document.addEventListener('mouseup',()=>{ hDrag=false; vDrag=false; });
+
+  // Clicar na trilha horizontal (pula para posição)
+  document.getElementById('scrollHTrack').addEventListener('click',e=>{
+    const track=e.currentTarget;
+    const thumb=document.getElementById('scrollHThumb');
+    const tw=track.clientWidth, thumbW=thumb?thumb.clientWidth:30;
+    const rect=track.getBoundingClientRect();
+    const clickX=e.clientX-rect.left-thumbW/2;
+    const visN=getVisN(), maxOff=Math.max(0,pts.length-visN);
+    const pct=Math.max(0,Math.min(1,clickX/(tw-thumbW)));
+    viewOffset=Math.round((1-pct)*maxOff);
+    document.getElementById('btnBack').classList.toggle('show',viewOffset>2);
+    draw(); updateScrollBars();
+  });
+
+  // Expõe para uso no draw
+  window._updateScrollBars = updateScrollBars;
+})();
+
+// ════════════════════════════════════════════════════════════
+// LINHA DE SUPORTE DINÂMICA
+// Detecta o mínimo local das últimas N velas
+// Aparece como linha horizontal fraca; some quando rompida
+// ════════════════════════════════════════════════════════════
+const SUPORTE = {
+  nivel: null,       // valor do suporte atual
+  ativo: true,
+  janela: 15,        // velas para calcular o mínimo local
+};
+
+function calcSuporteDinamico(){
+  if(pts.length < 4){ SUPORTE.nivel=null; return; }
+  const win = pts.slice(-SUPORTE.janela);
+  const ultimaVela = pts[pts.length-1];
+
+  // Mínimo das últimas N velas (excluindo a atual)
+  const anteriores = win.slice(0,-1);
+  if(!anteriores.length){ SUPORTE.nivel=null; return; }
+  const minLocal = Math.min(...anteriores.map(p=>parseFloat(p.val)||0));
+
+  // Se a vela atual ROMPEU para baixo (ficou abaixo do suporte) → reseta
+  if(parseFloat(ultimaVela.val) < minLocal * 0.97){
+    SUPORTE.nivel = null;
+    return;
+  }
+  // Se a vela atual SUBIU acima do suporte → suporte confirmado
+  SUPORTE.nivel = minLocal;
+}
+
+function drawSuporteDinamico(sx, sy, sub, W, scaleW){
+  calcSuporteDinamico();
+  if(SUPORTE.nivel === null || SUPORTE.nivel <= 0) return;
+
+  const y = sy(SUPORTE.nivel);
+  if(y < 20 || y > canvas.height - 10) return;
+
+  // Linha fraca mas visível — ciano claro, tracejada longa
+  ctx.save();
+  ctx.setLineDash([12, 8]);
+  ctx.strokeStyle = 'rgba(6,182,212,0.28)';
+  ctx.lineWidth = 1.2;
+  ctx.shadowColor = 'rgba(6,182,212,0.15)';
+  ctx.shadowBlur = 4;
+  ctx.beginPath();
+  ctx.moveTo(12, y);
+  ctx.lineTo(W - scaleW, y);
+  ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.shadowBlur = 0;
+
+  // Label flutuante
+  ctx.fillStyle = 'rgba(6,182,212,0.5)';
+  ctx.font = '7px JetBrains Mono,monospace';
+  ctx.textAlign = 'right';
+  ctx.fillText('SUP ' + SUPORTE.nivel.toFixed(2) + 'x', W - scaleW - 4, y - 3);
+  ctx.restore();
+}
+
+// ════════════════════════════════════════════════════════════
+// QUADRADINHOS SIDEBAR — última vela de cada cor
+// ════════════════════════════════════════════════════════════
+
+
+let _drawPending=false;
+function scheduleDraw(){
+  if(_drawPending)return;
+  _drawPending=true;
+  requestAnimationFrame(()=>{_drawPending=false;renderTipGrid();atualizarTopoGrafico2();draw();});
+}
+
+const ULTIMAS = { rosa:null, ouro:null, roxo:null, ciano:null };
+
+function atualizarUltimas(val, time){
+  const v = parseFloat(val)||0;
+  const t = time instanceof Date ? time : new Date(time||Date.now());
+  const fmtT = t2 => {
+    try{ return t2.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit',second:'2-digit'}); }
+    catch(_){ return '—'; }
+  };
+  if(v >= 50){ ULTIMAS.ouro = {v,t}; }
+  else if(v >= 10){ ULTIMAS.rosa = {v,t}; }
+  else if(v >= 2){ ULTIMAS.roxo = {v,t}; }
+  else { ULTIMAS.ciano = {v,t}; }
+
+  const set=(id,u)=>{
+    const elV=document.getElementById(id+'Val');
+    const elT=document.getElementById(id+'Time');
+    if(u && elV){ elV.textContent=u.v.toFixed(2)+'x'; }
+    if(u && elT){ elT.textContent=fmtT(u.t); }
+  };
+  set('lcRosa', ULTIMAS.rosa);
+  set('lcOuro', ULTIMAS.ouro);
+  set('lcRoxo', ULTIMAS.roxo);
+  set('lcCiano', ULTIMAS.ciano);
+}
+
+// Converte timestamp para Date com fuso correto (America/Sao_Paulo)
+function parseTsBrasilia(timestamp){
+  if(!timestamp) return new Date();
+  // Se for string de hora simples tipo "20:43:31" (sem data), usa data de hoje em Brasília
+  if(typeof timestamp === 'string' && /^\d{1,2}:\d{2}(:\d{2})?$/.test(timestamp.trim())){
+    const agora = new Date();
+    const partes = timestamp.trim().split(':');
+    const d = new Date(agora.toLocaleDateString('pt-BR',{timeZone:'America/Sao_Paulo'}).split('/').reverse().join('-')
+      + 'T' + partes[0].padStart(2,'0') + ':' + (partes[1]||'00') + ':' + (partes[2]||'00') + '-03:00');
+    return isNaN(d.getTime()) ? new Date() : d;
+  }
+  const d = new Date(timestamp);
+  return isNaN(d.getTime()) ? new Date() : d;
+}
+function receberVela(val,timestamp,fonte,rodada){
+  const tFinal = parseTsBrasilia(timestamp);
+
+  // Anti-fantasma: bloqueia vela duplicada para TODAS as fontes (não só extensao)
+  if(mesmaVelaTempoReal(val,tFinal,rodada)){
+    scheduleDraw();
+    return false;
+  }
+
+  // Validação extra: ignora multiplicadores absurdos (> 10000x são claramente erros da API)
+  const v = parseFloat(val);
+  if(isNaN(v) || v <= 0 || v > 10000){
+    return false;
+  }
+
+  push(val, tFinal, rodada);
+  // Atualiza quadradinhos de última vela por cor
+  atualizarUltimas(val, tFinal);
+  document.getElementById('sCot').textContent=val.toFixed(2)+'x';
+  document.getElementById('sCot').style.color=val>=50?'#facc15':val>=10?'#22c55e':'#ef4444';
+  document.getElementById('sTot').textContent=pts.length;
+  if(fonte!=='seed') addLog(val,fonte==='extensao'?'EXT':null);
+  salvarHistoricoLocal();
+  scheduleDraw();
+  return true;
+}
+
+// ═══════════ LOG ═══════════
+function addLog(val,tag){
+  const t=new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+  const v=val||0;
+  const col=tag==='EXT'?'var(--am)':v>=10?'#f472b6':v>=2?'var(--up)':'var(--dn)';
+  const cls=tag==='EXT'?'t-ext':v>=10?'t-pk':v>=2?'t-up':'t-dn';
+  const lbl=tag==='EXT'?'EXT':v>=10?'ROSA':v>=2?'ROXO':'CIANO';
+  const area=document.getElementById('logArea');
+  const row=document.createElement('div'); row.className='log-row';
+  row.innerHTML=`<div class="ldot" style="background:${col}"></div><span class="lt">${t}</span><span class="lv" style="color:${col}">${v>0?v.toFixed(2)+'x':'—'}</span><span class="ltag ${cls}">${lbl}</span>`;
+  area.insertBefore(row,area.firstChild);
+  while(area.children.length>60)area.removeChild(area.lastChild);
+}
+
+// ═══════════ ÁUDIO ═══════════
+function getAC(){if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext)();return audioCtx;}
+function beep(notes,type='sine',vol=0.15){
+  try{const ac=getAC();notes.forEach(([f,d,dur])=>{const o=ac.createOscillator(),g=ac.createGain();o.connect(g);g.connect(ac.destination);o.type=type;o.frequency.value=f;const t=ac.currentTime+d;g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(vol,t+.04);g.gain.exponentialRampToValueAtTime(.001,t+dur);o.start(t);o.stop(t+dur);});}catch(_){}
+}
+
+// ═══════════ ALERT ═══════════
+let alertTmr=null;
+function showAlert(msg,color,dur=3500){
+  const el=document.getElementById('alertBox');
+  el.textContent=msg; el.style.cssText=`background:${color}22;border:1px solid ${color};color:${color}`;
+  el.className='alert show'; clearTimeout(alertTmr); alertTmr=setTimeout(()=>el.className='alert',dur);
+}
+function triggerFlash(){const f=document.getElementById('flash');f.className='flash on';setTimeout(()=>f.className='flash',700);}
+
+// ═══════════ ZOOM / PAN ═══════════
+function getVisN(){ return Math.max(5,Math.round(CFG.showN/zoomLevel)); }
+function zoomIn(){ zoomLevel=Math.min(10,zoomLevel*1.25); draw(); }
+function zoomOut(){ zoomLevel=Math.max(0.1,zoomLevel/1.25); draw(); }
+function resetView(){ zoomLevel=1.0; viewOffset=0; vertOffset=0; draw(); }
+function voltarPresente(){
+  viewOffset = 0;
+  zoomLevel = 1;
+  vertOffset = 0;
+  const btn = document.getElementById('btnBack');
+  if(btn) btn.classList.remove('show');
+  draw();
+  if(window._updateScrollBars){ window._updateScrollBars(); }
+}
+function toggleMA(){ CFG.showMA=!CFG.showMA; document.getElementById('maBtn').classList.toggle('on',CFG.showMA); draw(); }
+function resetPainelCompleto(){
+  localStorage.removeItem(HISTORY_KEY);
+  viewOffset = 0;
+  zoomLevel = 1;
+  vertOffset = 0;
+  pts = pts.slice(-500);
+  draw();
+  setTimeout(()=>{ location.reload(); }, 300);
+}
+
+// ═══════════ ESCALA ═══════════
+function getViewSub(){
+  const n=getVisN();
+  const end=Math.max(n,pts.length-viewOffset);
+  const start=Math.max(0,end-n);
+  return pts.slice(start,end);
+}
+function getViewSubExt(extra){
+  // Sub com pontos extras à frente (para MM look-ahead)
+  const n=getVisN();
+  const end=Math.min(pts.length, Math.max(n,pts.length-viewOffset)+(extra||0));
+  const start=Math.max(0,end-n-(extra||0));
+  return pts.slice(start,end);
+}
+
+function getScale(sub,W,H){
+  scaleW=Math.max(44,scaleW);
+  const vals=sub.map(p=>yVal(p));
+  const isScore = sub.some(p=>p && p.score !== undefined);
+  const chartTop = (graficoAtivo===2 ? G2_CHART_TOP : 44);
+  const chartBottom = (graficoAtivo===2 ? G2_CHART_BOTTOM : 20);
+  const cW=W-12-scaleW, cH=Math.max(80,H-chartTop-chartBottom);
+  const n=sub.length;
+
+  if(isScore){
+    let minV=Math.min(...vals), maxV=Math.max(...vals);
+    if(!isFinite(minV)) minV=0;
+    if(!isFinite(maxV)) maxV=10;
+    if(minV===maxV){ minV-=5; maxV+=5; }
+    const pad=Math.max(3,(maxV-minV)*0.15);
+    minV-=pad; maxV+=pad;
+    const vsh=(vertOffset/cH)*(maxV-minV);
+    return{
+      sx:i=>12+i*((cW-40)/(n-1||1)),
+      sy:v=>chartTop+cH*(1-((v-minV+vsh)/(maxV-minV||1))),
+      yToV:y=>minV+(maxV-minV)*(1-(y-chartTop)/cH)-vsh,
+      minV,maxV,cW,cH,isScore:true
+    };
+  }
+
+  // Escala Y flexível: mostra 100% dos valores sem comprimir
+  const sortedV=[...vals].sort((a,b)=>a-b);
+  const absMax=Math.max(...vals,10);
+  // Usa sempre o valor real máximo com 8% de margem acima
+  const maxV = absMax * 1.08;
+  const minV=0.7;
+  const logMin=Math.log10(minV), logMax=Math.log10(maxV);
+  const vsh=(vertOffset/cH)*(logMax-logMin);
+  return{
+    sx:i=>12+i*((cW-40)/(n-1||1)),
+    sy:v=>chartTop+cH*(1-(Math.log10(Math.max(v,minV))-logMin+vsh)/(logMax-logMin||1)),
+    yToV:y=>Math.pow(10,logMin+(logMax-logMin)*(1-(y-chartTop)/cH))-vsh,
+    minV,maxV,cW,cH,isScore:false
+  };
+}
+
+// ═══════════ DRAW ═══════════
+function col(v){
+  v=parseFloat(v)||0;
+  if(v>=50) return '#facc15';     // 🟡 ouro  — 50x+
+  if(v>=10) return '#f472b6';     // 🌸 rosa  — 10x–49x
+  if(v>=2)  return '#a855f7';     // 🟣 roxo  — 2x–9.99x
+  return '#06b6d4';               // 🔵 ciano — abaixo de 2x (ProfitChart style)
+}
+function colAlpha(v,a){
+  v=parseFloat(v)||0;
+  if(v>=50) return 'rgba(250,204,21,'+a+')';
+  if(v>=10) return 'rgba(244,114,182,'+a+')';
+  if(v>=2)  return 'rgba(168,85,247,'+a+')';
+  return 'rgba(6,182,212,'+a+')';
+}
+function yVal(p){ return (p && p.score !== undefined) ? p.score : (p ? p.val : 0); }
+
+function draw(){
+  const W=canvas.width, H=canvas.height;
+  if(!W||!H)return;
+  ctx.clearRect(0,0,W,H);
+  renderTipGrid();
+  const sub=getViewSub();
+  if(sub.length<2)return;
+  const {sx,sy,yToV,minV,maxV,cW,cH,isScore}=getScale(sub,W,H);
+
+  // GRID — estilo ProfitChart com linhas de referência coloridas
+  ctx.font='8px JetBrains Mono,monospace'; ctx.textAlign='left';
+  const gridLevels = [1,1.5,2,3,5,10,20,50,100,200,500,1000,2000,5000];
+  gridLevels.filter(v=>v>=minV&&v<=maxV*1.05).forEach(v=>{
+    const py=sy(v);
+    if(v===10){
+      // Linha rosa de referência (10x) — mais visível
+      ctx.strokeStyle='rgba(244,114,182,.18)';
+      ctx.lineWidth=1; ctx.setLineDash([6,4]);
+    } else if(v===2){
+      // Linha roxa de referência (2x)
+      ctx.strokeStyle='rgba(168,85,247,.15)';
+      ctx.lineWidth=0.8; ctx.setLineDash([4,6]);
+    } else if(v===1.5){
+      ctx.strokeStyle='rgba(6,182,212,.08)';
+      ctx.lineWidth=0.5; ctx.setLineDash([2,8]);
+    } else {
+      ctx.strokeStyle=v>=50?'rgba(250,204,21,.06)':'rgba(30,58,88,.5)';
+      ctx.lineWidth=0.5; ctx.setLineDash([]);
+    }
+    ctx.beginPath();ctx.moveTo(12,py);ctx.lineTo(W-scaleW,py);ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle=v>=50?'#92400e':v>=10?'#be185d':v>=2?'#6b21a8':'#1e3a58';
+    ctx.fillText(isScore ? (Math.round(v)+'p') : (v+'x'),W-scaleW+4,py+3);
+  });
+
+  // GRIP DA ESCALA
+  const bx=W-scaleW;
+  ctx.strokeStyle='rgba(32,53,85,0.7)';ctx.lineWidth=2;ctx.setLineDash([]);
+  ctx.beginPath();ctx.moveTo(bx,0);ctx.lineTo(bx,H);ctx.stroke();
+  for(let gy=H/2-15;gy<=H/2+15;gy+=6){ctx.fillStyle='rgba(74,110,148,.5)';ctx.fillRect(bx-1,gy,3,3);}
+
+  // MONTANHA — bezier segmentada por cor
+  const yBase=sy(minV);
+  for(let i=1;i<sub.length;i++){
+    const p0=sub[i-1],p1=sub[i];
+    const x0=sx(i-1),y0=sy(yVal(p0)),x1=sx(i),y1=sy(yVal(p1));
+    const vm=Math.max(p0.val,p1.val);
+    const cpx1=x0+(x1-x0)*0.42,cpy1=y0,cpx2=x0+(x1-x0)*0.58,cpy2=y1;
+    // área
+    ctx.beginPath();ctx.moveTo(x0,yBase);ctx.lineTo(x0,y0);
+    ctx.bezierCurveTo(cpx1,cpy1,cpx2,cpy2,x1,y1);
+    ctx.lineTo(x1,yBase);ctx.closePath();
+    ctx.fillStyle=colAlpha(vm,.13);ctx.fill();
+    // linha
+    ctx.beginPath();ctx.moveTo(x0,y0);
+    ctx.bezierCurveTo(cpx1,cpy1,cpx2,cpy2,x1,y1);
+    ctx.strokeStyle=col(vm);ctx.lineWidth=2;ctx.stroke();
+  }
+
+  // PONTOS DE DESTAQUE — velas rosa/ouro com círculo (ProfitChart)
+  sub.forEach((p,i)=>{
+    if(p.val >= 10){
+      const x=sx(i), y=sy(yVal(p));
+      const cor = p.val>=50?'#facc15':'#f472b6';
+      // Halo externo
+      ctx.beginPath();ctx.arc(x,y,6,0,Math.PI*2);
+      ctx.fillStyle=p.val>=50?'rgba(250,204,21,.15)':'rgba(244,114,182,.15)';ctx.fill();
+      // Ponto central
+      ctx.beginPath();ctx.arc(x,y,3,0,Math.PI*2);
+      ctx.fillStyle=cor;ctx.fill();
+      // Label do valor
+      ctx.font='bold 8px JetBrains Mono,monospace';ctx.textAlign='center';
+      ctx.fillStyle=cor;
+      const label=p.val>=10?p.val.toFixed(0)+'x':'';
+      if(label) ctx.fillText(label,x,y-10);
+      ctx.textAlign='left';
+    }
+  });
+
+  // MÉDIAS MÓVEIS (pré-calculadas sobre todos pts)
+  // MÉDIAS MÓVEIS — 3 MMs configuráveis, pré-calculadas sobre todos pts
+  if(CFG.showMA && pts.length>=3){
+    const allVals=pts.map(p=>yVal(p));
+    const subStart=Math.max(0,pts.length-viewOffset-sub.length);
+
+    // Converte hex+alpha para rgba
+    const hexToRgb=h=>{const r=parseInt(h.slice(1,3),16),g=parseInt(h.slice(3,5),16),b=parseInt(h.slice(5,7),16);return r+','+g+','+b;};
+
+    // Função de desenho por tipo de curva
+    function drawMmCurve(slice, curva){
+      const n=slice.length;
+      if(n<2) return;
+      ctx.beginPath();
+      if(curva==='linear'){
+        // Linha reta entre pontos
+        slice.forEach((ev,i)=>i===0?ctx.moveTo(sx(i),sy(ev)):ctx.lineTo(sx(i),sy(ev)));
+      } else if(curva==='smooth'){
+        // Bezier suavizado (tension=0.35)
+        ctx.moveTo(sx(0),sy(slice[0]));
+        for(let i=0;i<n-1;i++){
+          const x0=sx(Math.max(0,i-1)), y0=sy(slice[Math.max(0,i-1)]);
+          const x1=sx(i),              y1=sy(slice[i]);
+          const x2=sx(i+1),            y2=sy(slice[i+1]);
+          const x3=sx(Math.min(n-1,i+2)), y3=sy(slice[Math.min(n-1,i+2)]);
+          const t=0.35;
+          const cp1x=x1+(x2-x0)*t, cp1y=y1+(y2-y0)*t;
+          const cp2x=x2-(x3-x1)*t, cp2y=y2-(y3-y1)*t;
+          ctx.bezierCurveTo(cp1x,cp1y,cp2x,cp2y,x2,y2);
+        }
+      } else if(curva==='bezier'){
+        // Bezier simples (curva quadrática suave)
+        ctx.moveTo(sx(0),sy(slice[0]));
+        for(let i=0;i<n-1;i++){
+          const cpx=(sx(i)+sx(i+1))/2;
+          const cpy=(sy(slice[i])+sy(slice[i+1]))/2;
+          ctx.quadraticCurveTo(sx(i),sy(slice[i]),cpx,cpy);
+        }
+        ctx.lineTo(sx(n-1),sy(slice[n-1]));
+      } else if(curva==='step'){
+        // Degrau (step)
+        ctx.moveTo(sx(0),sy(slice[0]));
+        for(let i=1;i<n;i++){
+          ctx.lineTo(sx(i),sy(slice[i-1])); // horizontal
+          ctx.lineTo(sx(i),sy(slice[i]));   // vertical
+        }
+      }
+      ctx.stroke();
+    }
+
+    // Calcula compressão atual para MM2 adaptativa
+    previsaoRosa = predictRosa();
+    ultimaCompressao = previsaoRosa.compressao;
+    const comp = ultimaCompressao;
+    const boost = CFG.mm2CompBoost || 1.0;
+
+    // Atualiza sidebar com info de compressão
+    const elComp = document.getElementById('sCompVal');
+    if(elComp) elComp.textContent = (comp*100).toFixed(0)+'%';
+    const elRosa = document.getElementById('sRosaProb');
+    if(elRosa) elRosa.textContent = previsaoRosa.velas>0 ? previsaoRosa.velas+'v' : '—';
+
+    [{on:CFG.mm1On,per:CFG.mm1Per,cor:CFG.mm1Cor,op:CFG.mm1Op,lw:CFG.mm1Lw,dash:CFG.mm1Dash,curva:CFG.mm1Curva},
+     {on:CFG.mm2On,per:CFG.mm2Per,cor:CFG.mm2Cor,op:CFG.mm2Op,lw:CFG.mm2Lw,dash:CFG.mm2Dash,curva:CFG.mm2Curva, adaptive:true, idx:2},
+     {on:CFG.mm3On,per:CFG.mm3Per,cor:CFG.mm3Cor,op:CFG.mm3Op,lw:CFG.mm3Lw,dash:CFG.mm3Dash,curva:CFG.mm3Curva}
+    ].forEach(mm=>{
+      if(!mm.on||pts.length<mm.per) return;
+      const k=2/(mm.per+1);
+      let e=allVals[0];
+      const emaFull=allVals.map((v,i)=>{if(i>0)e=v*k+e*(1-k);return e;});
+      const slice=emaFull.slice(subStart,Math.min(subStart+sub.length+5,emaFull.length));
+
+      // MM2 adaptativa: propriedades dinâmicas baseadas na compressão
+      let dynOp = mm.op, dynLw = mm.lw, dynCurva = mm.curva, dynCor = mm.cor;
+      if(mm.adaptive && CFG.mm2Adaptive && comp>0.15){
+        // Opacidade: aumenta com compressão (mais brilhante)
+        dynOp = Math.min(1, mm.op + comp*0.5*boost);
+        // Espessura: aumenta progressivamente (curva maior/grossa)
+        dynLw = Math.min(6, mm.lw + comp*4.0*boost);
+        // Curva: muda para bezier suave quando compressão > 40%
+        if(comp>0.4) dynCurva = 'bezier';
+        if(comp>0.6) dynCurva = 'smooth';
+        // Cor: transita de ciano para rosa conforme compressão aumenta
+        if(comp>0.5){
+          const t = Math.min(1, (comp-0.5)/0.5); // 0..1 quando comp 0.5..1.0
+          const hexToRgbRaw=h=>{const r=parseInt(h.slice(1,3),16),g=parseInt(h.slice(3,5),16),b=parseInt(h.slice(5,7),16);return {r,g,b};};
+          const cBase = hexToRgbRaw(mm.cor);     // ciano #06b6d4 → (6,182,212)
+          const cRosa = {r:244,g:114,b:182};      // rosa #f472b6
+          const r = Math.round(cBase.r + (cRosa.r-cBase.r)*t);
+          const g = Math.round(cBase.g + (cRosa.g-cBase.g)*t);
+          const b = Math.round(cBase.b + (cRosa.b-cBase.b)*t);
+          dynCor = '#' + [r,g,b].map(x=>Math.min(255,Math.max(0,x)).toString(16).padStart(2,'0')).join('');
+        }
+      }
+
+      const corFinal=dynCor.startsWith('#')?'rgba('+hexToRgb(dynCor)+','+dynOp+')':dynCor;
+
+      // Glow na MM2 quando compressão alta
+      if(mm.adaptive && CFG.mm2Adaptive && comp>0.4){
+        ctx.save();
+        ctx.shadowColor = corFinal;
+        ctx.shadowBlur = comp*18*boost;
+        ctx.setLineDash(mm.dash);
+        ctx.strokeStyle=corFinal;
+        ctx.lineWidth=dynLw;
+        drawMmCurve(slice, dynCurva||'linear');
+        ctx.setLineDash([]);
+        ctx.restore();
+      }
+
+      ctx.setLineDash(mm.dash);
+      ctx.strokeStyle=corFinal;
+      ctx.lineWidth=dynLw;
+      drawMmCurve(slice, dynCurva||'linear');
+      ctx.setLineDash([]);
+    });
+
+    // Roda o detector de sinal com os dados da MM
+    if(CFG.mm1On&&CFG.mm2On&&pts.length>=CFG.mm2Per){
+      const k1=2/(CFG.mm1Per+1),k2=2/(CFG.mm2Per+1);
+      let e1=allVals[0],e2=allVals[0];
+      const emaCheck=allVals.map((v,i)=>{if(i>0){e1=v*k1+e1*(1-k1);e2=v*k2+e2*(1-k2);}return{e1,e2};});
+      checkSinalEntrada(emaCheck, subStart);
+    }
+  }
+
+  // LINHAS DE ZONA FIXAS REMOVIDAS
+  // Agora o gráfico abre limpo: sem linhas 1x/2x/10x automáticas.
+  // Use as ferramentas da barra superior para marcar somente onde desejar.
+
+  // BOLINHAS + NÚMERO DA RODADA
+  // Calcula índice real no array pts para cada ponto do sub
+  const subStart=Math.max(0,pts.length-viewOffset-sub.length);
+
+  sub.forEach((p,i)=>{
+    const x=sx(i),y=sy(yVal(p)),v=p.val;
+    const r=v>=100?9:v>=10?6:v>=2?4.5:3;
+    if(v>=10){ctx.beginPath();ctx.arc(x,y,r+5,0,Math.PI*2);ctx.fillStyle=colAlpha(v,.1);ctx.fill();}
+    ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.fillStyle=col(v);ctx.fill();
+    ctx.strokeStyle=v>=10?'#be185d':v>=2?'#7e22ce':'#0891b2';ctx.lineWidth=.8;ctx.stroke();
+    if(v>=10){ctx.fillStyle=col(v);ctx.font='bold '+(v>=100?8:7)+'px JetBrains Mono,monospace';ctx.textAlign='center';ctx.fillText(v.toFixed(v>=100?0:1)+'x',x,y-r-5);}
+
+    // RODADA — oculta, aparece no hover (30px), ACIMA da bolinha
+    const rodN=getRodada(subStart+i);
+    if(rodN!==null&&rodN>0&&Math.hypot(x-_mx,y-_my)<35){
+      const rodCol='#fff', rodBg='rgba(6,9,15,0.9)', rodBdr=v>=10?'#f472b6':v>=2?'#a855f7':'#06b6d4';
+      ctx.font='bold 12px JetBrains Mono,monospace'; ctx.textAlign='center';
+      const txt='#'+rodN, tw=ctx.measureText(txt).width;
+      const bx=x-tw/2-5, bw=tw+10, bh=18, by=y-r-22;
+      ctx.shadowColor='rgba(0,0,0,.7)'; ctx.shadowBlur=5;
+      ctx.fillStyle=rodBg; ctx.beginPath(); ctx.roundRect(bx,by,bw,bh,4); ctx.fill();
+      ctx.shadowBlur=0;
+      ctx.strokeStyle=rodBdr; ctx.lineWidth=1.2; ctx.beginPath(); ctx.roundRect(bx,by,bw,bh,4); ctx.stroke();
+      ctx.fillStyle=rodCol; ctx.fillText(txt,x,by+13);
+
+      // horário da vela de referência (só naquela vela específica)
+      if(rodadaConfig.horario && (rodadaConfig.velaNro-1) === (subStart+i)){
+        ctx.font='bold 9px JetBrains Mono,monospace';
+        ctx.fillStyle='rgba(255,255,255,0.75)';
+        ctx.fillText(rodadaConfig.horario, x, ty+13);
+      }
+    }
+  });
+
+  // MARCADOR DE SINAL DE ENTRADA
+  sub.forEach((p,i)=>{
+    if(!p.sinalEntrada) return;
+    const x=sx(i), y=sy(yVal(p));
+    // Círculo pulsante verde
+    [22,14,7].forEach((r,ri)=>{
+      ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);
+      ctx.fillStyle='rgba(34,197,94,'+([ 0.07,0.14,0.9][ri])+')';ctx.fill();
+    });
+    ctx.strokeStyle='#166534';ctx.lineWidth=1;ctx.beginPath();ctx.arc(x,y,7,0,Math.PI*2);ctx.stroke();
+    ctx.fillStyle='#22c55e';ctx.font='bold 8px JetBrains Mono,monospace';ctx.textAlign='center';
+    ctx.fillText('ENTRADA',x,y-28);
+    ctx.fillText('▲',x,y-18);
+  });
+
+  // PREVISÃO ROSA — indicador de vela rosa prevista (MM2 adaptativa)
+  if(CFG.mm2Adaptive && CFG.mm2On && previsaoRosa.velas>0 && sub.length>previsaoRosa.velas){
+    const prob = previsaoRosa.prob;
+    const alvo = Math.min(previsaoRosa.velas, 5);
+    // Desenha zona de alerta rosa nos próximos N candles (espaços vazios à direita)
+    const lastX = sx(sub.length-1);
+    const step = (lastX - sx(0)) / (sub.length-1||1);
+    for(let v=1; v<=alvo; v++){
+      const px = lastX + v*step;
+      if(px > W-scaleW) break;
+      const alpha = 0.15 + (alvo-v+1)/alvo * 0.35;
+      const glowAlpha = 0.03 + (alvo-v+1)/alvo * 0.08;
+
+      // Glow de fundo rosa
+      ctx.fillStyle='rgba(244,114,182,'+glowAlpha+')';
+      ctx.fillRect(px-12, G2_CHART_TOP, 24, cH);
+
+      // Linha vertical tracejada rosa
+      ctx.setLineDash([3,6]);
+      ctx.strokeStyle='rgba(244,114,182,'+alpha+')';
+      ctx.lineWidth=1.2+(alvo-v+1)*0.5;
+      ctx.beginPath();ctx.moveTo(px,G2_CHART_TOP);ctx.lineTo(px,G2_CHART_TOP+cH);ctx.stroke();
+      ctx.setLineDash([]);
+
+      // Badge contagem regressiva
+      const badgeY = G2_CHART_TOP + cH/2 - (alvo-1)*14 + (v-1)*28;
+      ctx.fillStyle='rgba(244,114,182,'+alpha+')';
+      ctx.beginPath();ctx.roundRect(px-16, badgeY-10, 32, 20, 5);ctx.fill();
+      ctx.fillStyle='#fff';ctx.font='bold 10px JetBrains Mono,monospace';ctx.textAlign='center';
+      ctx.fillText('R'+v, px, badgeY+4);
+
+      // Label "ROSA?" no primeiro
+      if(v===1){
+        ctx.fillStyle='rgba(244,114,182,'+(alpha+0.2)+')';
+        ctx.font='bold 8px JetBrains Mono,monospace';
+        ctx.fillText('ROSA?', px, badgeY-16);
+      }
+    }
+
+    // Barra de progresso da compressão no topo da área de desenho
+    if(ultimaCompressao>0.3){
+      const barW = (W-12-scaleW-20) * Math.min(1, ultimaCompressao);
+      const barH = 6;
+      const barX = 16;
+      const barY = G2_CHART_TOP + 4;
+      // Fundo
+      ctx.fillStyle='rgba(0,0,0,0.4)';
+      ctx.fillRect(barX-2, barY-2, (W-12-scaleW-20)+4, barH+4);
+      // Gradiente: ciano → rosa baseado na compressão
+      const grad = ctx.createLinearGradient(barX,0,barX+barW,0);
+      grad.addColorStop(0,'#06b6d4');
+      grad.addColorStop(0.5,'#a855f7');
+      grad.addColorStop(1,'#f472b6');
+      ctx.fillStyle=grad;
+      ctx.fillRect(barX, barY, barW, barH);
+      // Label
+      ctx.fillStyle='rgba(255,255,255,0.6)';ctx.font='7px JetBrains Mono,monospace';ctx.textAlign='left';
+      ctx.fillText('COMPRESSÃO '+(ultimaCompressao*100).toFixed(0)+'%', barX+4, barY+barH-1);
+    }
+  }
+
+  // LINHA AUTOMÁTICA DA COTAÇÃO ATUAL REMOVIDA
+  // Nenhuma linha fixa fica no gráfico sem você desenhar.
+
+  // LINHA DE SUPORTE DINÂMICA
+  drawSuporteDinamico(sx, sy, sub, W, scaleW);
+
+  // DESENHOS
+  drawings.forEach((d,di)=>{
+    ctx.setLineDash([]);
+    const sel=di===selIdx;
+    const dc=d.color||'rgba(251,191,36,.85)';
+    const sc=sel?'#fff':dc;
+    ctx.strokeStyle=sc;ctx.lineWidth=sel?2:1.4;
+
+    // Reposiciona âncoras temporais: recalcula X/Y a partir do valor guardado
+    if(d.a1 && d.a2){
+      const subStart_d = Math.max(0,pts.length-viewOffset-sub.length);
+      const step_d = (W-12-scaleW)/(sub.length-1||1);
+      const relIdx1 = d.a1.idxGlobal - subStart_d;
+      const relIdx2 = d.a2.idxGlobal - subStart_d;
+      d.x1 = 12 + relIdx1 * step_d;
+      d.x2 = 12 + relIdx2 * step_d;
+      d.y1 = sy(d.a1.yVal);
+      d.y2 = sy(d.a2.yVal);
+    }
+
+    if(d.type==='hline'){
+      const hy=d.yVal!==undefined?sy(d.yVal):d.y;
+      ctx.setLineDash([5,4]);ctx.beginPath();ctx.moveTo(12,hy);ctx.lineTo(W-scaleW,hy);ctx.stroke();ctx.setLineDash([]);
+      ctx.fillStyle=sc;ctx.font='7px JetBrains Mono,monospace';ctx.textAlign='left';
+      ctx.fillText((d.yVal||yToV(hy)).toFixed(2)+'x',16,hy-3);
+    } else if(d.type==='vline'){
+      ctx.setLineDash([5,4]);ctx.beginPath();ctx.moveTo(d.x,G2_CHART_TOP);ctx.lineTo(d.x,H-10);ctx.stroke();ctx.setLineDash([]);
+    } else if(d.type==='tline'||d.type==='arrow'){
+      ctx.beginPath();ctx.moveTo(d.x1,d.y1);ctx.lineTo(d.x2,d.y2);ctx.stroke();
+      if(d.type==='arrow'){const a=Math.atan2(d.y2-d.y1,d.x2-d.x1);ctx.beginPath();ctx.moveTo(d.x2,d.y2);ctx.lineTo(d.x2-12*Math.cos(a-.4),d.y2-12*Math.sin(a-.4));ctx.moveTo(d.x2,d.y2);ctx.lineTo(d.x2-12*Math.cos(a+.4),d.y2-12*Math.sin(a+.4));ctx.stroke();}
+      if(sel)[[d.x1,d.y1],[d.x2,d.y2]].forEach(([hx,hy])=>{ctx.beginPath();ctx.arc(hx,hy,4,0,Math.PI*2);ctx.fillStyle='#fbbf24';ctx.fill();});
+    } else if(d.type==='channel'){
+      const gap=d.gap||40;
+      ctx.beginPath();ctx.moveTo(d.x1,d.y1);ctx.lineTo(d.x2,d.y2);ctx.stroke();
+      ctx.strokeStyle=sc+'88';ctx.setLineDash([4,4]);
+      ctx.beginPath();ctx.moveTo(d.x1,d.y1+gap);ctx.lineTo(d.x2,d.y2+gap);ctx.stroke();ctx.setLineDash([]);
+      ctx.fillStyle=sc+'0c';ctx.beginPath();ctx.moveTo(d.x1,d.y1);ctx.lineTo(d.x2,d.y2);ctx.lineTo(d.x2,d.y2+gap);ctx.lineTo(d.x1,d.y1+gap);ctx.closePath();ctx.fill();
+    } else if(d.type==='rect'){
+      ctx.strokeStyle=sel?'var(--up)':'rgba(168,85,247,.7)';
+      ctx.strokeRect(d.x1,d.y1,d.x2-d.x1,d.y2-d.y1);
+      ctx.fillStyle='rgba(168,85,247,.04)';ctx.fillRect(d.x1,d.y1,d.x2-d.x1,d.y2-d.y1);
+    } else if(d.type==='fib'){
+      [0,.236,.382,.5,.618,.786,1].forEach((l,i)=>{
+        const fc=['#22c55e','#a855f7','#06b6d4','#fbbf24','#06b6d4','#a855f7','#22c55e'][i];
+        const fy=d.y1+(d.y2-d.y1)*l;
+        ctx.strokeStyle=fc+'88';ctx.lineWidth=.9;ctx.setLineDash([3,4]);
+        ctx.beginPath();ctx.moveTo(12,fy);ctx.lineTo(W-scaleW,fy);ctx.stroke();ctx.setLineDash([]);
+        ctx.fillStyle=fc;ctx.font='7px JetBrains Mono,monospace';ctx.textAlign='right';
+        ctx.fillText((l*100).toFixed(1)+'%  '+Math.max(0,yToV(fy)).toFixed(2)+'x',W-scaleW-4,fy-2);
+      });
+    } else if(d.type==='pointmark'){
+      const ss=Math.max(0,pts.length-viewOffset-sub.length);
+      const local=(d.idxGlobal??-999)-ss;
+      if(local>=0 && local<sub.length){
+        const p=sub[local], mx=sx(local), my=sy(yVal(p));
+        ctx.save();
+        ctx.strokeStyle=sel?'#fff':(d.color||'rgba(251,191,36,.9)');
+        ctx.lineWidth=sel?2.2:1.5; ctx.setLineDash([5,4]);
+        ctx.beginPath();ctx.moveTo(12,my);ctx.lineTo(W-scaleW,my);ctx.stroke();
+        ctx.beginPath();ctx.moveTo(mx,G2_CHART_TOP);ctx.lineTo(mx,H-10);ctx.stroke();
+        ctx.setLineDash([]);
+        ctx.beginPath();ctx.arc(mx,my,8,0,Math.PI*2);ctx.stroke();
+        ctx.fillStyle=ctx.strokeStyle;ctx.font='bold 9px JetBrains Mono,monospace';ctx.textAlign='left';
+        const rod=getRodada(d.idxGlobal) || (d.idxGlobal+1);
+        ctx.fillText('MARCA #'+rod+' · '+fmtMult(p.val), Math.min(mx+10,W-scaleW-120), Math.max(G2_CHART_TOP+12,my-10));
+        ctx.restore();
+      }
+    } else if(d.type==='text'&&d.txt){
+      ctx.fillStyle=sc;ctx.font='bold 11px JetBrains Mono,monospace';ctx.textAlign='left';ctx.fillText(d.txt,d.x,d.y);
+    }
+  });
+
+  // PREVIEW durante desenho
+  if(dActive&&dStart&&dCurr&&drawTool!=='cursor'){
+    ctx.setLineDash([3,3]);ctx.strokeStyle='rgba(251,191,36,.55)';ctx.lineWidth=1.2;
+    if(drawTool==='hline'){ctx.beginPath();ctx.moveTo(12,dStart.y);ctx.lineTo(W-scaleW,dStart.y);ctx.stroke();}
+    else if(drawTool==='vline'){ctx.beginPath();ctx.moveTo(dStart.x,G2_CHART_TOP);ctx.lineTo(dStart.x,H-10);ctx.stroke();}
+    else if(drawTool==='tline'||drawTool==='arrow'||drawTool==='channel'){ctx.beginPath();ctx.moveTo(dStart.x,dStart.y);ctx.lineTo(dCurr.x,dCurr.y);ctx.stroke();}
+    else if(drawTool==='rect'){ctx.strokeStyle='rgba(168,85,247,.5)';ctx.strokeRect(dStart.x,dStart.y,dCurr.x-dStart.x,dCurr.y-dStart.y);}
+    else if(drawTool==='fib'){ctx.beginPath();ctx.moveTo(dStart.x,dStart.y);ctx.lineTo(dCurr.x,dCurr.y);ctx.stroke();}
+    ctx.setLineDash([]);
+  }
+
+  // X LABELS
+  const s3=[sub[0],sub[Math.floor(sub.length/2)],sub[sub.length-1]].filter(Boolean);
+  ['xL','xM','xR'].forEach((id,i)=>{const p=s3[i];if(p&&p.time&&!isNaN(p.time))document.getElementById(id).textContent=p.time.toLocaleTimeString('pt-BR',{timeZone:'America/Sao_Paulo',hour:'2-digit',minute:'2-digit'});});
+  // xNow atualizado por timer próprio (não bloqueia draw)
+  document.getElementById('xZoom').textContent = getVisN()+'v / '+pts.length+'t'
+  document.getElementById('xslider').value=CFG.showN;
+  // Atualiza barras de rolagem
+  if(typeof _updateScrollBars==='function') _updateScrollBars();
+}
+
+// ═══════════ MOUSE ═══════════
+function getPos(e){const r=cwrap.getBoundingClientRect();return{x:e.clientX-r.left,y:e.clientY-r.top};}
+
+function onScaleBorder(pos){return Math.abs(pos.x-(canvas.width-scaleW))<7;}
+
+function hitDraw(pos){
+  for(let i=drawings.length-1;i>=0;i--){
+    const d=drawings[i];
+    if(d.type==='hline'){const hy=d.yVal!==undefined?getScale(getViewSub(),canvas.width,canvas.height).sy(d.yVal):d.y;if(Math.abs(pos.y-hy)<10)return i;}
+    else if(d.type==='vline'&&Math.abs(pos.x-d.x)<10)return i;
+    else if(d.type==='tline'||d.type==='arrow'){
+      const dx=d.x2-d.x1,dy=d.y2-d.y1,len=Math.sqrt(dx*dx+dy*dy);
+      const t=Math.max(0,Math.min(1,((pos.x-d.x1)*dx+(pos.y-d.y1)*dy)/(len*len||1)));
+      if(Math.sqrt((pos.x-d.x1-t*dx)**2+(pos.y-d.y1-t*dy)**2)<12)return i;
+    }
+    else if(d.type==='channel'){
+      const dx=d.x2-d.x1,dy=d.y2-d.y1,len=Math.sqrt(dx*dx+dy*dy);
+      const t=Math.max(0,Math.min(1,((pos.x-d.x1)*dx+(pos.y-d.y1)*dy)/(len*len||1)));
+      if(Math.sqrt((pos.x-d.x1-t*dx)**2+(pos.y-d.y1-t*dy)**2)<12)return i;
+    }
+    else if(d.type==='rect'){const x1=Math.min(d.x1,d.x2),x2=Math.max(d.x1,d.x2),y1=Math.min(d.y1,d.y2),y2=Math.max(d.y1,d.y2);if(pos.x>=x1-5&&pos.x<=x2+5&&pos.y>=y1-5&&pos.y<=y2+5)return i;}
+    else if(d.type==='fib'){for(const l of[0,.236,.382,.5,.618,.786,1]){const fy=d.y1+(d.y2-d.y1)*l;if(Math.abs(pos.y-fy)<10)return i;}}
+    else if(d.type==='pointmark'){
+      const sub=getViewSub(); const ss=Math.max(0,pts.length-viewOffset-sub.length); const local=(d.idxGlobal??-999)-ss;
+      if(local>=0&&local<sub.length){const sca=getScale(sub,canvas.width,canvas.height); const px=sca.sx(local), py=sca.sy(yVal(sub[local])); if(Math.abs(pos.x-px)<12||Math.abs(pos.y-py)<12)return i;}
+    }
+    else if(d.type==='text'&&d.txt&&pos.x>=d.x-4&&pos.x<=d.x+d.txt.length*7&&pos.y<=d.y+4&&pos.y>=d.y-14)return i;
+  }
+  return -1;
+}
+function nearestPointMark(pos){
+  const sub=getViewSub(); if(sub.length<1) return null;
+  const sca=getScale(sub,canvas.width,canvas.height); const ss=Math.max(0,pts.length-viewOffset-sub.length);
+  let best=null, bestD=999999;
+  sub.forEach((p,i)=>{const x=sca.sx(i), y=sca.sy(yVal(p)); const d=Math.hypot(pos.x-x,pos.y-y); if(d<bestD){bestD=d; best={idxGlobal:ss+i, x, y, p};}});
+  return bestD<=42 ? best : null;
+}
+
+cwrap.addEventListener('mousedown',e=>{
+  const pos=getPos(e);
+  if(onScaleBorder(pos)){scaleResizing=true;scaleRX=pos.x;scaleRW=scaleW;return;}
+  if(modoRodada){
+    const sub=getViewSub(),W=canvas.width,H=canvas.height;
+    if(sub.length>=2){
+      const {sx,sy}=getScale(sub,W,H);
+      const step=(W-12-scaleW)/(sub.length-1||1);
+      const idx=Math.round((pos.x-12)/step);
+      if(idx>=0&&idx<sub.length){
+        const ss=Math.max(0,pts.length-viewOffset-sub.length);
+        const p=sub[idx]; const px=sx(idx),py=sy(yVal(p));
+        const rect=cwrap.getBoundingClientRect();
+        document.getElementById('rpV').textContent=(ss+idx+1);
+        document.getElementById('rpM').textContent=p.val.toFixed(2)+'x';
+        const inp=document.getElementById('rpN');
+        const cur=getRodada(ss+idx); inp.value=cur&&cur>0?cur:'';
+        const popup=document.getElementById('rodPopup');
+        popup.style.left=Math.min(rect.left+px+12,window.innerWidth-220)+'px';
+        popup.style.top=Math.max(rect.top+py-130,8)+'px';
+        popup.classList.add('show');
+        // guarda índice
+        popup.dataset.idx=ss+idx;
+        setTimeout(()=>inp.select(),40);
+      }
+    }
+    return;
+  }
+  if(drawTool==='cursor'){
+    const hi=hitDraw(pos);
+    if(hi>=0){selIdx=hi;dActive=true;dStart=pos;dCurr=pos;document.getElementById('pov').style.display='block';}
+    else{selIdx=-1;isPanning=true;panX0=pos.x;panOff0=viewOffset;document.getElementById('pov').style.display='block';}
+    draw();return;
+  }
+  // Botão esquerdo em qualquer outra ferramenta: arrastar para o passado/futuro
+  if(e.button===0 && drawTool!=='cursor'){
+    isPanning=true;panX0=pos.x;panOff0=viewOffset;
+    document.getElementById('pov').style.display='block';
+    return;
+  }
+  if(drawTool==='mark' || drawTool==='cross'){
+    const alvo=nearestPointMark(pos);
+    if(alvo){
+      drawings.push({type:'pointmark', idxGlobal:alvo.idxGlobal, color: drawTool==='cross'?'rgba(34,197,94,.95)':'rgba(251,191,36,.92)'});
+      selIdx=drawings.length-1; salvarConfig(); draw(); showAlert(drawTool==='cross'?'✓ Linhas cruzadas no ponto':'✓ Ponto marcado', drawTool==='cross'?'#22c55e':'#fbbf24',1800);
+    }else showAlert('Clique mais perto de uma bolinha','#f43f5e',1800);
+    return;
+  }
+  if(drawTool==='text'){
+    const wrap=document.getElementById('textWrap'),inp=document.getElementById('textInput');
+    const r=cwrap.getBoundingClientRect();
+    wrap.style.left=(r.left+pos.x)+'px';wrap.style.top=(r.top+pos.y-20)+'px';wrap.style.display='block';
+    inp.value='';inp.focus();
+    inp.onkeydown=ev=>{if(ev.key==='Enter'){drawings.push({type:'text',x:pos.x,y:pos.y,txt:inp.value,color:'#fbbf24'});selIdx=drawings.length-1;wrap.style.display='none';draw();}if(ev.key==='Escape')wrap.style.display='none';};
+    return;
+  }
+  dStart=pos;dActive=true;selIdx=-1;
+});
+
+cwrap.addEventListener('mousemove',e=>{
+  const pos=getPos(e); _mx=pos.x; _my=pos.y;
+  if(rodadaConfig.ativo)draw();
+  if(scaleResizing){scaleW=Math.max(44,Math.min(200,scaleRW+(scaleRX-pos.x)));draw();return;}
+  if(!onScaleBorder(pos)) cwrap.style.cursor='default';
+  else cwrap.style.cursor='col-resize';
+  // TOOLTIP
+  if(drawTool==='cursor'&&!dActive&&!isPanning){
+    const sub=getViewSub();if(sub.length<2){document.getElementById('ttBox').style.display='none';}
+    else{
+      const {sx,sy}=getScale(sub,canvas.width,canvas.height);
+      const step=(canvas.width-12-scaleW)/(sub.length-1||1);
+      const idx=Math.round((pos.x-12)/step);
+      const tt=document.getElementById('ttBox');
+      if(idx>=0&&idx<sub.length&&pos.x<canvas.width-scaleW){
+        const p=sub[idx];const c=col(p.val);
+        document.getElementById('ttV').textContent=p.val.toFixed(2)+'x';
+        document.getElementById('ttV').style.color=c;
+        document.getElementById('ttS').textContent=p.time&&!isNaN(p.time)?p.time.toLocaleTimeString('pt-BR',{timeZone:'America/Sao_Paulo',hour:'2-digit',minute:'2-digit',second:'2-digit'}):'';
+        document.getElementById('ttS').style.color=c;
+        tt.style.display='block';tt.style.left=Math.min(pos.x+12,canvas.width-scaleW-15)+'px';tt.style.top=Math.max(5,pos.y-42)+'px';
+      }else tt.style.display='none';
+    }
+  }
+  // PAN
+  if(isPanning&&!dActive){
+    const sub=getViewSub();if(sub.length<2)return;
+    const step=(canvas.width-12-scaleW)/(sub.length-1||1);
+    const shift=Math.round((panX0-pos.x)/step);
+    viewOffset=Math.max(0,Math.min(pts.length-getVisN(),panOff0+shift));
+    document.getElementById('btnBack').classList.toggle('show',viewOffset>2);
+    draw();return;
+  }
+  // ARRASTAR DESENHO
+  if(dActive&&drawTool==='cursor'&&selIdx>=0){
+    const d=drawings[selIdx];if(!d)return;
+    const dx=pos.x-(dCurr?.x||pos.x),dy=pos.y-(dCurr?.y||pos.y);
+    if(d.type==='hline'){
+      d.y+=dy;
+      if(d.yVal!==undefined){const {yToV}=getScale(getViewSub(),canvas.width,canvas.height);d.yVal=yToV(d.y);}
+    }else if(d.type==='vline'){d.x+=dx;}
+    else if(d.type==='tline'||d.type==='arrow'||d.type==='channel'||d.type==='fib'){d.x1+=dx;d.y1+=dy;d.x2+=dx;d.y2+=dy;}
+    else if(d.type==='rect'){d.x1+=dx;d.y1+=dy;d.x2+=dx;d.y2+=dy;}
+    else if(d.type==='text'){d.x+=dx;d.y+=dy;}
+    dCurr=pos;draw();return;
+  }
+  dCurr=pos;if(dActive)draw();
+});
+
+cwrap.addEventListener('mouseup',e=>{
+  if(scaleResizing){scaleResizing=false;cwrap.style.cursor='default';return;}
+  document.getElementById('pov').style.display='none';
+  isPanning=false;
+  if(!dActive)return;
+  const end=getPos(e);
+  if(drawTool!=='cursor'&&drawTool!=='text'){
+    const dx=Math.abs(end.x-(dStart?.x||0)),dy=Math.abs(end.y-(dStart?.y||0));
+    if(dx+dy>5){
+      const {yToV}=getScale(getViewSub(),canvas.width,canvas.height);
+      const {sx:_sx,sy:_sy,yToV:_yToV}=getScale(getViewSub(),canvas.width,canvas.height);
+      const subN=getViewSub().length;
+      const step=(canvas.width-12-scaleW)/(subN-1||1);
+      // Converte pixel X → índice relativo de vela (float)
+      const xToRelIdx=px=>((px-12)/step);
+      const subStart0=Math.max(0,pts.length-viewOffset-subN);
+      // Âncora temporal: guarda índice global + valor Y para tlines
+      const mkAnchor=(px,py)=>({
+        idxGlobal: subStart0 + xToRelIdx(px),
+        yVal: _yToV(py)
+      });
+      if(drawTool==='hline') drawings.push({type:'hline',y:dStart.y,yVal:_yToV(dStart.y),color:'rgba(251,191,36,.85)'});
+      else if(drawTool==='vline')   drawings.push({type:'vline',x:dStart.x,color:'rgba(251,191,36,.85)'});
+      else if(drawTool==='tline'){
+        const a1=mkAnchor(dStart.x,dStart.y), a2=mkAnchor(end.x,end.y);
+        drawings.push({type:'tline',x1:dStart.x,y1:dStart.y,x2:end.x,y2:end.y,
+          a1,a2,color:'rgba(251,191,36,.85)'});
+      }
+      else if(drawTool==='channel'){
+        const a1=mkAnchor(dStart.x,dStart.y), a2=mkAnchor(end.x,end.y);
+        drawings.push({type:'channel',x1:dStart.x,y1:dStart.y,x2:end.x,y2:end.y,
+          a1,a2,gap:40,color:'rgba(34,197,94,.8)'});
+      }
+      else if(drawTool==='rect'){
+        const a1=mkAnchor(dStart.x,dStart.y), a2=mkAnchor(end.x,end.y);
+        drawings.push({type:'rect',x1:dStart.x,y1:dStart.y,x2:end.x,y2:end.y,a1,a2});
+      }
+      else if(drawTool==='fib'){
+        const a1=mkAnchor(dStart.x,dStart.y), a2=mkAnchor(end.x,end.y);
+        drawings.push({type:'fib',x1:dStart.x,y1:dStart.y,x2:end.x,y2:end.y,a1,a2});
+      }
+      else if(drawTool==='arrow'){
+        const a1=mkAnchor(dStart.x,dStart.y), a2=mkAnchor(end.x,end.y);
+        drawings.push({type:'arrow',x1:dStart.x,y1:dStart.y,x2:end.x,y2:end.y,a1,a2,color:'rgba(248,113,113,.9)'});
+      }
+      selIdx=drawings.length-1;
+      salvarConfig();
+    }
+  }
+  dActive=false;dStart=null;dCurr=null;draw();
+});
+
+cwrap.addEventListener('mouseleave',()=>{
+  document.getElementById('ttBox').style.display='none';
+  document.getElementById('pov').style.display='none';
+  scaleResizing=false;isPanning=false;
+  if(drawTool!=='cursor'){dActive=false;dStart=null;dCurr=null;}
+});
+
+
+// Botão direito ou duplo clique sobre uma linha/marcação remove somente aquela linha
+cwrap.addEventListener('contextmenu',e=>{
+  e.preventDefault();
+  const pos=getPos(e);
+  const hi=hitDraw(pos);
+  if(hi>=0){
+    drawings.splice(hi,1);
+    selIdx=-1;
+    salvarConfig();
+    draw();
+    showAlert('Linha removida','#f43f5e',1600);
+  }
+});
+cwrap.addEventListener('dblclick',e=>{
+  const pos=getPos(e);
+  const hi=hitDraw(pos);
+  if(hi>=0){
+    drawings.splice(hi,1);
+    selIdx=-1;
+    salvarConfig();
+    draw();
+    showAlert('Linha removida','#f43f5e',1600);
+  }
+});
+
+cwrap.addEventListener('wheel',e=>{
+  e.preventDefault();
+  if(e.shiftKey){
+    // Shift+Wheel = scroll vertical
+    vertOffset += (e.deltaY > 0 ? -12 : 12);
+    draw();
+  } else if(e.ctrlKey){
+    // Ctrl+Wheel = zoom vertical
+    const factor = e.deltaY > 0 ? 0.85 : 1.18;
+    vertOffset = Math.round(vertOffset * factor);
+    draw();
+  } else {
+    // Wheel normal = zoom horizontal centrado no cursor
+    const pos = getPos(e);
+    const sub = getViewSub();
+    const W = canvas.width;
+    const step = (W - 12 - scaleW) / (sub.length - 1 || 1);
+    // Índice da vela sob o cursor (relativo ao fim)
+    const cursorIdx = Math.round((pos.x - 12) / step);
+    const subStart = Math.max(0, pts.length - viewOffset - sub.length);
+    const absIdx = subStart + cursorIdx; // índice absoluto em pts
+
+    const oldZoom = zoomLevel;
+    const fz = e.ctrlKey ? 1.25 : 1.12;
+    if(e.deltaY < 0) zoomLevel = Math.min(20, zoomLevel * fz);
+    else             zoomLevel = Math.max(0.05, zoomLevel / fz);
+
+    // Reajusta viewOffset para manter a vela sob o cursor no lugar
+    const newVisN = getVisN();
+    const newSubStart = Math.max(0, absIdx - cursorIdx);
+    viewOffset = Math.max(0, Math.min(pts.length - newVisN, pts.length - newSubStart - newVisN));
+    document.getElementById('btnBack').classList.toggle('show', viewOffset > 2);
+    draw();
+  }
+},{passive:false});
+
+document.addEventListener('keydown',e=>{
+  if(document.activeElement.tagName==='INPUT')return;
+  if(e.key==='ArrowLeft'){viewOffset=Math.min(pts.length-getVisN(),viewOffset+3);document.getElementById('btnBack').classList.toggle('show',viewOffset>2);}
+  if(e.key==='ArrowRight'){viewOffset=Math.max(0,viewOffset-3);document.getElementById('btnBack').classList.toggle('show',viewOffset>2);}
+  if(e.key==='+'||e.key==='=')zoomIn();
+  if(e.key==='-')zoomOut();
+  if((e.key==='Delete'||e.key==='Backspace')&&selIdx>=0){drawings.splice(selIdx,1);selIdx=-1;salvarConfig();}
+  draw();
+});
+
+// ═══════════ FERRAMENTAS ═══════════
+function setTool(t){
+  drawTool=t;selIdx=-1;
+  document.querySelectorAll('.tb,[id^=tool-]').forEach(el=>{
+    el.classList.toggle('active',el.id==='tb-'+t);
+    el.classList.toggle('on',el.id==='tool-'+t);
+  });
+}
+function clearDrawings(){drawings=[];selIdx=-1;salvarConfig();draw();}
+
+// ── CONFIG MM ──────────────────────────
+function openIndicadores(){
+  // Atualiza status das MMs
+  document.getElementById('ind-mm1per').textContent=CFG.mm1Per;
+  document.getElementById('ind-mm2per').textContent=CFG.mm2Per;
+  document.getElementById('ind-mm3per').textContent=CFG.mm3Per;
+  document.getElementById('ind-mm1st').textContent=CFG.mm1On?'✓ Ativa':'✗ Inativa';
+  document.getElementById('ind-mm1st').style.color=CFG.mm1On?'var(--gn)':'var(--pk)';
+  document.getElementById('ind-mm2st').textContent=CFG.mm2On?'✓ Ativa':'✗ Inativa';
+  document.getElementById('ind-mm2st').style.color=CFG.mm2On?'var(--gn)':'var(--pk)';
+  document.getElementById('ind-mm3st').textContent=CFG.mm3On?'✓ Ativa':'✗ Inativa';
+  document.getElementById('ind-mm3st').style.color=CFG.mm3On?'var(--gn)':'var(--pk)';
+  const sm=document.getElementById('sinalMMOn');
+  if(sm) sm.checked=CFG.sinalMMOn!==false;
+  document.getElementById('indModal').classList.add('open');
+}
+function closeIndicadores(){ document.getElementById('indModal').classList.remove('open'); }
+function closeThenOpenMM(){ closeIndicadores(); openCfgMM(); }
+
+function resetCfgMM(){
+  CFG.mm1On=true;  CFG.mm1Per=9;  CFG.mm1Cor='#f59e0b'; CFG.mm1Op=0.80; CFG.mm1Lw=1.5; CFG.mm1Dash=[4,5]; CFG.mm1Curva='smooth';
+  CFG.mm2On=true;  CFG.mm2Per=21; CFG.mm2Cor='#06b6d4'; CFG.mm2Op=0.55; CFG.mm2Lw=1.2; CFG.mm2Dash=[4,5]; CFG.mm2Curva='linear';
+  CFG.mm3On=false; CFG.mm3Per=50; CFG.mm3Cor='#22c55e'; CFG.mm3Op=0.50; CFG.mm3Lw=1.0; CFG.mm3Dash=[2,4]; CFG.mm3Curva='bezier';
+  CFG.showMA=true; salvarConfig(); openCfgMM(); draw();
+}
+
+function openCfgMM(){
+  // Sincroniza UI com CFG atual
+  const g=(id,val)=>{const e=document.getElementById(id);if(e)e.value=val;};
+  const gt=(id,on)=>{const e=document.getElementById(id);if(e)e.classList.toggle('on',on);};
+  const dashStr=d=>Array.isArray(d)?(d[0]===4&&d[1]===5?'dash':d[0]===2?'dot':'solid'):'dash';
+  gt('mm1tog',CFG.mm1On); g('mm1per',CFG.mm1Per); g('mm1cor',CFG.mm1Cor); g('mm1op',CFG.mm1Op); g('mm1lw',CFG.mm1Lw); document.getElementById('mm1dash').value=dashStr(CFG.mm1Dash); document.getElementById('mm1curva').value=CFG.mm1Curva||'smooth';
+  gt('mm2tog',CFG.mm2On); g('mm2per',CFG.mm2Per); g('mm2cor',CFG.mm2Cor); g('mm2op',CFG.mm2Op); g('mm2lw',CFG.mm2Lw); document.getElementById('mm2dash').value=dashStr(CFG.mm2Dash); document.getElementById('mm2curva').value=CFG.mm2Curva||'linear';
+  gt('mm3tog',CFG.mm3On); g('mm3per',CFG.mm3Per); g('mm3cor',CFG.mm3Cor); g('mm3op',CFG.mm3Op); g('mm3lw',CFG.mm3Lw); document.getElementById('mm3dash').value=dashStr(CFG.mm3Dash); document.getElementById('mm3curva').value=CFG.mm3Curva||'bezier';
+  document.getElementById('mmModal').classList.add('open');
+}
+function closeCfgMM(){ document.getElementById('mmModal').classList.remove('open'); }
+
+function mmToggle(n){
+  const el=document.getElementById('mm'+n+'tog');
+  el.classList.toggle('on');
+}
+
+function dashFromStr(s){ return s==='solid'?[0,0]:s==='dot'?[2,4]:[4,5]; }
+
+function aplicarCfgMM(){
+  const gv=(id,def,isFloat)=>{const v=document.getElementById(id)?.value;return v?(isFloat?parseFloat(v):parseInt(v)):def;};
+  const gt=(id)=>document.getElementById(id)?.classList.contains('on')??false;
+  const gd=(id)=>dashFromStr(document.getElementById(id)?.value||'dash');
+  const gc=(id)=>document.getElementById(id)?.value||'#ffffff';
+
+  CFG.mm1On=gt('mm1tog'); CFG.mm1Per=gv('mm1per',9); CFG.mm1Cor=gc('mm1cor'); CFG.mm1Op=gv('mm1op',.8,true); CFG.mm1Lw=gv('mm1lw',1.5,true); CFG.mm1Dash=gd('mm1dash'); CFG.mm1Curva=document.getElementById('mm1curva')?.value||'smooth';
+  CFG.mm2On=gt('mm2tog'); CFG.mm2Per=gv('mm2per',21); CFG.mm2Cor=gc('mm2cor'); CFG.mm2Op=gv('mm2op',.55,true); CFG.mm2Lw=gv('mm2lw',1.2,true); CFG.mm2Dash=gd('mm2dash'); CFG.mm2Curva=document.getElementById('mm2curva')?.value||'linear';
+  CFG.mm3On=gt('mm3tog'); CFG.mm3Per=gv('mm3per',50); CFG.mm3Cor=gc('mm3cor'); CFG.mm3Op=gv('mm3op',.5,true); CFG.mm3Lw=gv('mm3lw',1.0,true); CFG.mm3Dash=gd('mm3dash'); CFG.mm3Curva=document.getElementById('mm3curva')?.value||'bezier';
+
+  // Atualiza botão MM na topbar
+  const anyOn=CFG.mm1On||CFG.mm2On||CFG.mm3On;
+  document.getElementById('maBtn').classList.toggle('on', anyOn);
+  CFG.showMA=anyOn;
+  salvarConfig();
+  closeCfgMM();
+  draw();
+}
+
+// Aplicar rodadas direto da topbar
+// ═══════════ INDICADOR DE ENTRADA MM ═══════════
+let fundoDetectado=false, fundoMin=999;
+
+function checkSinalEntrada(emaArr){
+  if(CFG.sinalMMOn===false||emaArr.length<4) return;
+  const n=emaArr.length;
+  const a0=emaArr[n-1], a1=emaArr[n-2], a2=emaArr[n-3];
+  const acima0=a0.e1>a0.e2, acima1=a1.e1>a1.e2, acima2=a2.e1>a2.e2;
+
+  // Queda: MM1 cruzou para baixo
+  if(acima2&&acima1&&!acima0){
+    fundoDetectado=true; fundoMin=999;
+  }
+  // Atualiza mínimo durante queda
+  if(fundoDetectado&&pts.length>0){
+    fundoMin=Math.min(fundoMin,pts[pts.length-1].val);
+  }
+  // SINAL: MM1 cruzou de volta para cima após queda real
+  if(!acima2&&!acima1&&acima0&&fundoDetectado){
+    fundoDetectado=false;
+    if(pts.length>0) pts[pts.length-1].sinalEntrada=true;
+    showAlert('🚀 SINAL MM — ENTRADA NA PRÓXIMA VELA!','#22c55e',10000);
+    triggerFlash();
+  }
+}
+
+// ═══════════ COMPRESSÃO E PREVISÃO ROSA (MM2 ADAPTATIVA) ═══════════
+let ultimaCompressao = 0;
+let previsaoRosa = { prob: 0, velas: 0, compressao: 0 };
+
+function calcCompressao(){
+  if(pts.length<8) return 0;
+  const n = Math.min(12, pts.length);
+  const vals = pts.slice(-n).map(p=>p.val);
+  const min = Math.min(...vals);
+  const max = Math.max(...vals);
+  const spread = max - min;
+
+  // spreadScore: 1 quando valores muito colados, 0 quando espalhados
+  const spreadScore = Math.max(0, Math.min(1, 1 - spread/6));
+  // avg proximo de 1x é mais compressão real (não apenas lateralização alta)
+  const avgVal = vals.reduce((a,b)=>a+b,0)/vals.length;
+  const lowScore = Math.max(0, Math.min(1, 1 - (avgVal-1)/5));
+
+  // Tendência: se últimos 3 estão diminuindo amplitude = compressão aumentando
+  let tendScore = 0;
+  if(vals.length>=6){
+    const half = Math.floor(vals.length/2);
+    const spread1 = Math.max(...vals.slice(-half)) - Math.min(...vals.slice(-half));
+    const spread2 = Math.max(...vals.slice(0,half)) - Math.min(...vals.slice(0,half));
+    if(spread2>0) tendScore = Math.max(0, Math.min(1, 1 - spread1/spread2));
+  }
+
+  return Math.min(1, spreadScore*0.5 + lowScore*0.3 + tendScore*0.2);
+}
+
+function predictRosa(){
+  if(pts.length<20) return {prob:0, velas:0, compressao:0};
+  const comp = calcCompressao();
+
+  // Análise histórica: quais compressões precederam >=10x
+  let acertos=0, total=0;
+  for(let i=15; i<pts.length-5; i++){
+    const histVals = pts.slice(Math.max(0,i-10), i).map(p=>p.val);
+    const hMin = Math.min(...histVals);
+    const hMax = Math.max(...histVals);
+    const hSpread = hMax - hMin;
+    const hComp = Math.max(0, Math.min(1, 1 - hSpread/6));
+    if(hComp>0.35){
+      total++;
+      const fut = pts.slice(i, Math.min(i+5, pts.length));
+      if(fut.some(p=>p.val>=10)) acertos++;
+    }
+  }
+  const probHist = total>0 ? acertos/total : 0.15;
+
+  // Prob atual: compressão atual * probabilidade histórica
+  const probAtual = comp>0.4 ? comp * probHist : 0;
+  const velasPrevistas = probAtual>0.45 ? Math.max(1, Math.ceil(5-Math.sqrt(probAtual)*5)) : 0;
+
+  return {prob: probAtual, velas: velasPrevistas, compressao: comp};
+}
+
+let modoRodada=false;
+
+function toggleModoRodada(){
+  if(modoRodada){
+    document.getElementById('rodAviso').classList.add('open');
+  } else {
+    modoRodada=true;
+    const b=document.getElementById('btnRodada');
+    b.classList.add('on'); b.textContent='⑬ RODADA ON';
+    // Abre popup automaticamente na última vela
+    if(pts.length>0){
+      const sub=getViewSub();
+      const W=canvas.width, H=canvas.height;
+      const {sx,sy}=getScale(sub,W,H);
+      const lastI=sub.length-1;
+      const p=sub[lastI];
+      const ss=Math.max(0,pts.length-viewOffset-sub.length);
+      const rect=cwrap.getBoundingClientRect();
+      document.getElementById('rpV').textContent=(ss+lastI+1);
+      document.getElementById('rpM').textContent=p.val.toFixed(2)+'x';
+      const inp=document.getElementById('rpN');
+      const cur=getRodada(ss+lastI); inp.value=cur&&cur>0?cur:'';
+      const popup=document.getElementById('rodPopup');
+      popup.style.left=Math.min(rect.left+sx(lastI)+12, window.innerWidth-220)+'px';
+      popup.style.top=Math.max(rect.top+sy(yVal(p))-130, 8)+'px';
+      popup.classList.add('show');
+      popup.dataset.idx=ss+lastI;
+      setTimeout(()=>inp.select(),60);
+    } else {
+      showAlert('Clique em uma vela para definir a rodada','#22c55e',4000);
+    }
+  }
+}
+function confirmarDesativarRodada(){
+  modoRodada=false; rodadaConfig.ativo=false;
+  document.getElementById('rodPopup').classList.remove('show');
+  document.getElementById('rodAviso').classList.remove('open');
+  const b=document.getElementById('btnRodada');
+  b.classList.remove('on'); b.textContent='⑬ RODADA';
+  salvarConfig(); draw();
+  showAlert('Rodadas removidas','#f43f5e',3000);
+}
+
+// Enter/Esc no popup
+document.addEventListener('keydown',ev=>{
+  const p=document.getElementById('rodPopup');
+  if(!p.classList.contains('show'))return;
+  if(ev.key==='Escape'){p.classList.remove('show');ev.stopPropagation();return;}
+  if(ev.key==='Enter'){
+    const n=parseInt(document.getElementById('rpN').value||'');
+    if(isNaN(n)||n<1){showAlert('Digite um número válido','#f43f5e',2000);return;}
+    const idx=parseInt(p.dataset.idx||'0');
+    rodadaConfig.velaNro=idx+1; rodadaConfig.rodadaNro=n; rodadaConfig.ativo=true;
+    salvarConfig(); p.classList.remove('show'); draw();
+    showAlert('✓ Rodada '+n+' = vela '+(idx+1),'#22c55e',3000);
+    ev.stopPropagation();
+  }
+},{capture:true});
+document.addEventListener('mousedown',ev=>{
+  const p=document.getElementById('rodPopup');
+  if(p.classList.contains('show')&&!p.contains(ev.target))p.classList.remove('show');
+});
+
+function aplicarRodadasTop(){
+  const multInput = 0;
+  const horaInput = '';
+  const rodada    = 0;
+
+  if(isNaN(multInput)||multInput<=0){
+    showAlert('Informe o multiplicador da vela (ex: 2.80)','#f43f5e',3000); return;
+  }
+  if(isNaN(rodada)||rodada<1){
+    showAlert('Informe o número da rodada','#f43f5e',3000); return;
+  }
+
+  // Encontra a vela pelo multiplicador — busca a mais próxima do valor informado
+  // Se informou horário, prioriza a que também bate o horário
+  let melhorIdx = -1;
+  let melhorDiff = Infinity;
+
+  pts.forEach((p, i) => {
+    const diff = Math.abs(p.val - multInput);
+    // Se tem horário, verifica se o horário bate
+    let horaOk = true;
+    if(horaInput && horaInput.includes(':')){
+      const hm = p.time.toLocaleTimeString('pt-BR',{timeZone:'America/Sao_Paulo',hour:'2-digit',minute:'2-digit'});
+      horaOk = hm === horaInput;
+    }
+    if(horaOk && diff < melhorDiff){
+      melhorDiff = diff;
+      melhorIdx  = i;
+    }
+  });
+
+  // Se não achou com horário, tenta só pelo mult
+  if(melhorIdx < 0){
+    pts.forEach((p, i) => {
+      const diff = Math.abs(p.val - multInput);
+      if(diff < melhorDiff){ melhorDiff=diff; melhorIdx=i; }
+    });
+  }
+
+  if(melhorIdx < 0){
+    showAlert('Nenhuma vela encontrada','#f43f5e',2500); return;
+  }
+
+  const velaEncontrada = melhorIdx + 1; // 1-based
+  rodadaConfig.velaNro  = velaEncontrada;
+  rodadaConfig.rodadaNro= rodada;
+  rodadaConfig.multRef  = multInput;
+  rodadaConfig.horario  = horaInput;
+  rodadaConfig.ativo    = true;
+  salvarConfig();
+  draw();
+
+  const horaStr = horaInput ? ' às '+horaInput : '';
+  showAlert('✓ Vela #'+velaEncontrada+' ('+pts[melhorIdx].val.toFixed(2)+'x'+horaStr+') = rodada '+rodada,'#22c55e',4000);
+}
+
+function openRodadas(){
+  // Preenche com valores atuais se já configurado
+  if(rodadaConfig.ativo){
+    document.getElementById('rodVela').value=rodadaConfig.velaNro;
+    document.getElementById('rodNro').value=rodadaConfig.rodadaNro;
+  }
+  document.getElementById('rodModal').classList.add('open');
+}
+function closeRodadas(){ document.getElementById('rodModal').classList.remove('open'); }
+function limparRodadas(){
+  rodadaConfig.ativo=false;
+  document.getElementById('rodVela').value='';
+  document.getElementById('rodNro').value='';
+  document.getElementById('rodStatus').textContent='Numeração removida.';
+  document.getElementById('rodStatus').style.color='var(--txt2)';
+  salvarConfig(); closeRodadas(); draw();
+}
+
+function aplicarRodadas(){
+  const vela  = parseInt(document.getElementById('rodVela').value);
+  const rodada= parseInt(document.getElementById('rodNro').value);
+  if(isNaN(vela)||isNaN(rodada)||vela<1||rodada<1){
+    showAlert('Preencha o nº da vela e o nº da rodada','#f43f5e',3000);
+    return;
+  }
+  rodadaConfig.velaNro  = vela;
+  rodadaConfig.rodadaNro= rodada;
+  rodadaConfig.ativo    = true;
+  const st=document.getElementById('rodStatus');
+  if(st){ st.textContent='✓ Vela '+vela+' = rodada '+rodada+' ('+pts.length+' velas configuradas)'; st.style.color='var(--gn)'; }
+  salvarConfig();
+  closeRodadas();
+  draw();
+  showAlert('Rodadas: vela '+vela+' = rodada '+rodada,'#22c55e',3000);
+}
+
+// ═══════════ PERSISTÊNCIA — localStorage ═══════════
+const STORAGE_KEY = 'aviator_v7_cfg';
+const HISTORY_KEY = 'aviator_vr5_historico_tipminer';
+
+function salvarConfig(){
+  try{
+    const dados = {
+      cfg: {
+        showN:    CFG.showN,
+        showMA:   CFG.showMA,
+        mm1On:    CFG.mm1On,  mm1Per: CFG.mm1Per, mm1Cor: CFG.mm1Cor, mm1Op: CFG.mm1Op, mm1Lw: CFG.mm1Lw, mm1Dash: CFG.mm1Dash, mm1Curva: CFG.mm1Curva,
+        mm2On:    CFG.mm2On,  mm2Per: CFG.mm2Per, mm2Cor: CFG.mm2Cor, mm2Op: CFG.mm2Op, mm2Lw: CFG.mm2Lw, mm2Dash: CFG.mm2Dash, mm2Curva: CFG.mm2Curva,
+        mm3On:    CFG.mm3On,  mm3Per: CFG.mm3Per, mm3Cor: CFG.mm3Cor, mm3Op: CFG.mm3Op, mm3Lw: CFG.mm3Lw, mm3Dash: CFG.mm3Dash, mm3Curva: CFG.mm3Curva,
+        mm2Adaptive: CFG.mm2Adaptive, mm2CompBoost: CFG.mm2CompBoost,
+        sinalMMOn: CFG.sinalMMOn,
+      },
+      rodada: rodadaConfig,
+      drawings: drawings,
+      servidor: {
+        url:    srv.url,
+        get:    srv.get,
+        post:   srv.post,
+        painel: srv.painel,
+        poll:   srv.poll
+      }
+    };
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(dados));
+  } catch(e){ console.warn('Erro ao salvar config:', e); }
+}
+
+function carregarConfig(){
+  try{
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if(!raw) return;
+    const dados = JSON.parse(raw);
+
+    // Restaura CFG
+    if(dados.cfg){
+      Object.assign(CFG, dados.cfg);
+      // Mantém o painel abrindo com 100 rodadas visíveis para o histórico de pontos
+      CFG.showN = Math.max(10, parseInt(CFG.showN)||60);
+      // Garante que dash seja array
+      ['mm1Dash','mm2Dash','mm3Dash'].forEach(k=>{
+        if(!Array.isArray(CFG[k])) CFG[k]=[4,5];
+      });
+    }
+
+    // Restaura rodadaConfig
+    if(dados.rodada) Object.assign(rodadaConfig, dados.rodada);
+
+    // Restaura desenhos/marcações
+    if(Array.isArray(dados.drawings)) drawings = dados.drawings;
+
+    // Restaura servidor
+    if(dados.servidor) Object.assign(srv, dados.servidor);
+
+    // Atualiza UI do botão MM
+    const anyOn = CFG.mm1On||CFG.mm2On||CFG.mm3On;
+    document.getElementById('maBtn')?.classList.toggle('on', anyOn);
+
+    // Restaura checkbox MM2 adaptativa
+    const cbMM2 = document.getElementById('sinalMM2Adaptive');
+    if(cbMM2) cbMM2.checked = CFG.mm2Adaptive!==false;
+
+    // Atualiza slider
+    const sl = document.getElementById('xslider');
+    if(sl) sl.value = CFG.showN;
+
+    // Atualiza campos do servidor no modal
+    const setVal=(id,v)=>{const e=document.getElementById(id);if(e)e.value=v;};
+    setVal('cfgUrl',    srv.url);
+    setVal('cfgGet',    srv.get);
+    setVal('cfgPost',   srv.post);
+    setVal('cfgPainel', srv.painel);
+    setVal('cfgPoll',   srv.poll);
+
+  } catch(e){ console.warn('Erro ao carregar config:', e); }
+}
+
+// ═══════════ SIMULAÇÃO ═══════════
+function iniciarSim(){
+  if(simInt)return;
+  simInt=setInterval(()=>{
+    if(modoFonte!=='simulado')return;
+    const r=Math.random();let v;
+    if(r<.52)v=+(Math.random()*.9+1.01).toFixed(2);
+    else if(r<.78)v=+(Math.random()*3+2).toFixed(2);
+    else if(r<.93)v=+(Math.random()*10+5).toFixed(2);
+    else v=+(Math.random()*50+10).toFixed(2);
+    receberVela(v,null,'simulado');
+  },3000);
+}
+
+// Seeds
+(function(){
+  const S=[
+    1.01,1.30,1.70,2.20,3.10,4.50,6.20,8.80,11.50,14.20,
+    16.90,18.75,15.80,12.40,9.30,6.80,4.90,3.20,2.10,1.50,
+    1.20,1.80,2.60,3.90,5.70,8.10,11.00,14.50,17.20,20.10,
+    23.40,19.00,15.20,11.80,8.40,5.90,3.70,2.30,1.60,2.80,
+    4.20,6.50,9.10,12.30,1.10,1.40,2.00,3.50,5.20,7.80,
+    1.40,1.10,1.83,4.45,4.66,4.96,2.96,1.04,5.70,1.11,
+    4.13,1.68,5.37,3.98,1.78,5.98,1.61,1.17,1.00,1.01,
+    1.00,2.06,4.94,1.00,6.02,1.71,1.61,3.99,1.93,1.46,
+    2.30,25.05,1.33,1.23,6.25,1.26,8.61,1.12,2.01,1.64,
+    15.12,4.00,9.30,1.36,2.63,1.90,3.87,1.14,11.77,3.16,
+    4.19,21.74,1.94,4.52,1.76,8.94,1.00,3.05,1.37,1.10,
+    2.13,6.02,1.28,60.41,36.82,41.97,2.57,9.10,1.16,1.19,
+    10.14,2.04,1.01,1.85,1.88,1.12,1.05,1.47,28.53,4.83,
+    1.12,1.02,3.80,1.50,1.23,4.74,74.11,1.17,2.06,1.20,
+    1.52,1.06,3.40,1.04,1.42,3.37,1.00,1.57,14.41,2.67,
+    1.18,1.12,1.12,5.41,1.47,10.23,53.36,2.50,1.25,3.77,
+    1.04,1.45,1.31,3.18,1.09,1.23,5.72,1.41,1.10,1.48,
+    1.91,1.14,1.86,1.30,2.02,1.09,1.53,8.52,2.01,11.26,
+    1.89,7.67,1.27,1.13,1.87,1.00,1.48,1.21,3.50,2.29,
+    2.17,6.26,21.26,3.77,1.06,1.01,2.61,3.01,3.55,3.97
+  ];
+  // Seed removido: gráfico inicia vazio, recebe apenas velas reais
+})();
+
+// Auto-conectar silencioso
+// ═══ RELÓGIO INDEPENDENTE ═══
+setInterval(()=>{
+  const el=document.getElementById('xNow');
+  if(el) el.textContent=new Date().toLocaleTimeString('pt-BR',{timeZone:'America/Sao_Paulo',hour:'2-digit',minute:'2-digit',second:'2-digit'});
+  atualizarTopoGrafico2();
+},500);
+
+setTimeout(()=>{
+  fetch('https://aviator-trader.onrender.com/api/status')
+    .then(r=>{if(r.ok)buscar(true);})
+    .catch(()=>{});
+},2000);
+
+
+// ═══════════ GRÁFICO 1 — TIPMINER NORMAL / HISTÓRICO IMPORTADO EM CARDS ═══════════
+function setGrafico(n){
+  graficoAtivo = n;
+  const raw=document.getElementById('rawWrap');
+  const pontos=document.getElementById('cwrap');
+  const xbar=document.getElementById('xbarPontos');
+  const sH=document.getElementById('scrollHWrap');
+  const b1=document.getElementById('btnGraf1');
+  const b2=document.getElementById('btnGraf2');
+  if(raw) raw.style.display = n===1 ? 'block' : 'none';
+  if(pontos) pontos.style.display = n===2 ? 'block' : 'none';
+  if(xbar) xbar.style.display = n===2 ? 'flex' : 'none';
+  if(sH) sH.style.display = n===2 ? 'block' : 'none';
+  if(b1) b1.classList.toggle('on', n===1);
+  if(b2) b2.classList.toggle('on', n===2);
+  resize();
+  atualizarTopoGrafico2();
+  draw();
+}
+function classeTip(v){ v=parseFloat(v)||0; return v>=50 ? 'c50' : v>=10 ? 'c10' : 'c1'; }
+function fmtMult(v){ return (Number(v)||0).toFixed(2).replace('.', ',')+'x'; }
+function fmtHora(t){
+  try{return (t instanceof Date?t:new Date(t)).toLocaleTimeString('pt-BR',{timeZone:'America/Sao_Paulo',hour:'2-digit',minute:'2-digit',second:'2-digit'});}catch(_){return '—';}
+}
+
+function g2UltimoAcima(limite){
+  for(let i=pts.length-1;i>=0;i--){
+    const v=parseFloat(pts[i].val)||0;
+    if(v>=limite) return pts[i];
+  }
+  return null;
+}
+function g2MinutosTexto(p){
+  if(!p || !p.time) return '—';
+  const t = p.time instanceof Date ? p.time : new Date(p.time);
+  if(isNaN(t.getTime())) return '—';
+  const m = Math.max(0, Math.floor((Date.now()-t.getTime())/60000));
+  if(m < 1) return 'agora';
+  return m + ' min';
+}
+function g2HoraTexto(p){
+  if(!p) return 'aguardando';
+  return fmtMult(p.val) + ' às ' + fmtHora(p.time);
+}
+function atualizarTopoGrafico2(){
+  const p10=g2UltimoAcima(10), p30=g2UltimoAcima(30), p50=g2UltimoAcima(50), p100=g2UltimoAcima(100);
+  const e10=document.getElementById('g2Min10'), e30=document.getElementById('g2Min30'), e50=document.getElementById('g2Min50'), e100=document.getElementById('g2Min100');
+  const v10=document.getElementById('g2Val10'), v30=document.getElementById('g2Val30'), v50=document.getElementById('g2Val50'), v100=document.getElementById('g2Val100');
+  if(e10) e10.textContent=g2MinutosTexto(p10); if(v10) v10.textContent=g2HoraTexto(p10);
+  if(e30) e30.textContent=g2MinutosTexto(p30); if(v30) v30.textContent=g2HoraTexto(p30);
+  if(e50) e50.textContent=g2MinutosTexto(p50); if(v50) v50.textContent=g2HoraTexto(p50);
+  if(e100) e100.textContent=g2MinutosTexto(p100); if(v100) v100.textContent=g2HoraTexto(p100);
+}
+
+function abrirImportTipMiner(){
+  const inp=document.getElementById('tipminerImportInput');
+  if(inp){ inp.value=''; inp.click(); }
+}
+function limparTextoMult(v){
+  return parseFloat(String(v??'').replace(',', '.').replace(/x/gi,'').replace(/[^0-9.]/g,''));
+}
+function extrairDataHoraDaLinha(row){
+  const vals=Object.values(row||{}).map(v=>String(v??''));
+  let hora=vals.find(v=>/\b\d{1,2}:\d{2}(:\d{2})?\b/.test(v));
+  let data=vals.find(v=>/\b\d{1,2}[\/\-]\d{1,2}[\/\-]\d{2,4}\b/.test(v) || /\b\d{4}-\d{1,2}-\d{1,2}\b/.test(v));
+  if(hora){ hora=(hora.match(/\b\d{1,2}:\d{2}(:\d{2})?\b/)||[])[0]; }
+  let t=new Date();
+  if(data && hora){
+    const d=(data.match(/\b\d{1,2}[\/\-]\d{1,2}[\/\-]\d{2,4}\b/)||data.match(/\b\d{4}-\d{1,2}-\d{1,2}\b/)||[])[0];
+    const tentativa=new Date((d||'')+' '+hora);
+    if(!isNaN(tentativa.getTime())) t=tentativa;
+  }else if(hora){
+    const [hh,mm,ss='0']=hora.split(':');
+    t.setHours(parseInt(hh)||0,parseInt(mm)||0,parseInt(ss)||0,0);
+  }
+  return t;
+}
+function extrairRodadaDaLinha(row){
+  const keys=Object.keys(row||{});
+  const key=keys.find(k=>/rodada|round|game|id/i.test(k));
+  if(key){
+    const txt=String(row[key]??'').trim();
+    const m=txt.match(/\d+/);
+    if(m) return m[0];
+  }
+  const vals=Object.values(row||{}).map(v=>String(v??''));
+  const possivel=vals.find(v=>/(rodada|round|game|id)\D*\d+/i.test(v));
+  if(possivel){
+    const m=possivel.match(/\d+/);
+    if(m) return m[0];
+  }
+  return null;
+}
+function ordenarHistoricoTipMiner(novos){
+  // TipMiner pode exportar do mais novo para o mais antigo. O painel precisa do histórico em ordem antiga → nova
+  // para montar corretamente a linha do Gráfico 1 e a pontuação do Gráfico 2.
+  if(!novos || novos.length < 2) return novos;
+  const first=novos[0].time instanceof Date ? novos[0].time.getTime() : NaN;
+  const last=novos[novos.length-1].time instanceof Date ? novos[novos.length-1].time.getTime() : NaN;
+  if(!isNaN(first) && !isNaN(last) && first > last) return novos.reverse();
+  const r0=parseInt(novos[0].rodada), r1=parseInt(novos[novos.length-1].rodada);
+  if(!isNaN(r0) && !isNaN(r1) && r0 > r1) return novos.reverse();
+  return novos;
+}
+function escolherColunaMultiplicador(rows){
+  if(!rows || !rows.length) return null;
+  const keys=Object.keys(rows[0]);
+  const prefer=keys.find(k=>/multiplic|multiplier|resultado|crash|payout|odd|vela/i.test(k));
+  if(prefer) return prefer;
+  let best=null,bestCount=0;
+  keys.forEach(k=>{
+    let c=0;
+    rows.forEach(r=>{ const n=limparTextoMult(r[k]); if(!isNaN(n)&&n>0&&n<100000)c++; });
+    if(c>bestCount){best=k;bestCount=c;}
+  });
+  return bestCount ? best : null;
+}
+function carregarRowsTipMiner(rows, origem){
+  if(!rows || !rows.length) throw new Error('Arquivo vazio.');
+  const col=escolherColunaMultiplicador(rows);
+  if(!col) throw new Error('Não achei coluna de multiplicador no arquivo.');
+  const novos=[];
+  rows.forEach((r,i)=>{
+    const mult=limparTextoMult(r[col]);
+    if(!isNaN(mult)&&mult>0){ novos.push({mult, time:extrairDataHoraDaLinha(r), rodada:extrairRodadaDaLinha(r), i}); }
+  });
+  if(!novos.length) throw new Error('Não encontrei velas no arquivo.');
+  pts=[]; viewOffset=0; zoomLevel=1; vertOffset=0;
+  ordenarHistoricoTipMiner(novos).forEach(n=>push(n.mult,n.time,n.rodada));
+  removerDuplicadasHistorico();
+  salvarHistoricoLocal();
+  renderTipGrid(); atualizarTopoGrafico2(); resize(); draw();
+  showAlert('✓ Histórico TipMiner aplicado nos Gráficos 1 e 2: '+pts.length+' velas','#22c55e',5000);
+  document.getElementById('sTot').textContent=pts.length;
+  const last=pts[pts.length-1];
+  if(last){ document.getElementById('sCot').textContent=last.val.toFixed(2)+'x'; }
+}
+async function importarHistoricoTipMiner(file){
+  if(!file) return;
+  try{
+    const name=file.name.toLowerCase();
+    let rows=[];
+    if(name.endsWith('.csv')){
+      const txt=await file.text();
+      const sep=(txt.split('\n')[0].split(';').length > txt.split('\n')[0].split(',').length) ? ';' : ',';
+      const lines=txt.split(/\r?\n/).filter(Boolean);
+      const headers=lines.shift().split(sep).map(h=>h.trim());
+      rows=lines.map(line=>{ const vals=line.split(sep); const o={}; headers.forEach((h,i)=>o[h||('col'+i)]=vals[i]??''); return o; });
+    }else{
+      if(typeof XLSX==='undefined') throw new Error('Leitor de Excel não carregou. Tente exportar CSV no TipMiner.');
+      const buf=await file.arrayBuffer();
+      const wb=XLSX.read(buf,{type:'array'});
+      const ws=wb.Sheets[wb.SheetNames[0]];
+      rows=XLSX.utils.sheet_to_json(ws,{defval:''});
+    }
+    carregarRowsTipMiner(rows,'import_tipminer');
+  }catch(e){ showAlert('Erro importando: '+e.message,'#f43f5e',6500); }
+}
+function montarHistoricoParaExportar(){
+  return pts.map((p,i)=>({
+    rodada: getRodada(i) || (i+1),
+    horario: fmtHora(p.time),
+    multiplicador: fmtMult(p.val),
+    ponto_grafico2: p.score ?? 0,
+    movimento: p.delta ?? '',
+    faixa: p.val>=100?'100x+':p.val>=50?'50x+':p.val>=10?'10x+':'abaixo_10x'
+  }));
+}
+function baixarBlob(nome, blob){
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=nome; document.body.appendChild(a); a.click();
+  setTimeout(()=>{URL.revokeObjectURL(a.href); a.remove();},500);
+}
+function exportarHistoricoExcel(){
+  const rows=montarHistoricoParaExportar();
+  if(!rows.length){ showAlert('Sem histórico para exportar','#f43f5e',2500); return; }
+  const nome='historico_tipminer_painel_vr5.xlsx';
+  try{
+    if(typeof XLSX==='undefined') throw new Error('xlsx indisponível');
+    const ws=XLSX.utils.json_to_sheet(rows);
+    const wb=XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb,ws,'Historico VR5');
+    XLSX.writeFile(wb,nome);
+    showAlert('✓ Excel exportado','#22c55e',2600);
+  }catch(e){
+    const csv=[Object.keys(rows[0]).join(';')].concat(rows.map(r=>Object.values(r).join(';'))).join('\n');
+    baixarBlob('historico_tipminer_painel_vr5.csv', new Blob([csv],{type:'text/csv;charset=utf-8'}));
+    showAlert('✓ CSV exportado','#22c55e',2600);
+  }
+}
+function salvarHistoricoLocal(){
+  try{
+    const dados = pts.slice(-1000).map(p=>({val:p.val,score:p.score,delta:p.delta,time:p.time instanceof Date ? p.time.toISOString() : p.time,rodada:p.rodada ?? null}));
+    localStorage.setItem(HISTORY_KEY, JSON.stringify(dados));
+  }catch(e){}
+}
+function carregarHistoricoLocal(){
+  try{
+    const raw=localStorage.getItem(HISTORY_KEY); if(!raw) return false;
+    const arr=JSON.parse(raw); if(!Array.isArray(arr)||!arr.length) return false;
+    pts=arr.map(p=>({val:parseFloat(p.val), score:parseFloat(p.score), delta:parseFloat(p.delta), time:new Date(p.time), rodada:p.rodada ?? null})).filter(p=>!isNaN(p.val));
+    if(pts.length > 1000){
+      pts = pts.slice(-1000);
+    }
+    return pts.length>0;
+  }catch(e){return false;}
+}
+
+function renderTipGrid(){
+  const grid=document.getElementById('tipGrid');
+  if(!grid) return;
+  const lista=pts.slice(-100).reverse();
+  let html='';
+  lista.forEach((p,i)=>{
+    const idxOriginal = pts.length - 1 - i;
+    const rod = getRodada(idxOriginal) || (idxOriginal + 1);
+    html += `<div class="tip-card ${classeTip(p.val)}"><div class="mult">${fmtMult(p.val)}</div><div class="rod">${rod}</div><div class="hora">${fmtHora(p.time)}</div></div>`;
+  });
+  grid.innerHTML = html || '<div style="color:var(--txt2);padding:12px;font-size:12px">Aguardando rodadas...</div>';
+}
+function drawRawChart(){ renderTipGrid(); }
+
+function resize(){
+  const dpr=window.devicePixelRatio||1;
+  const w=cwrap.clientWidth, h=cwrap.clientHeight;
+  canvas.width=Math.round(w*dpr);
+  canvas.height=Math.round(h*dpr);
+  canvas.style.width=w+'px';
+  canvas.style.height=h+'px';
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  if(canvasRaw && rawWrap){
+    const rw=rawWrap.clientWidth, rh=rawWrap.clientHeight;
+    canvasRaw.width=Math.round(rw*dpr);
+    canvasRaw.height=Math.round(rh*dpr);
+    canvasRaw.style.width=rw+'px';
+    canvasRaw.style.height=rh+'px';
+    ctxRaw.setTransform(dpr,0,0,dpr,0,0);
+  }
+  draw();
+}
+new ResizeObserver(resize).observe(cwrap);
+setTimeout(()=>{
+  carregarConfig(); // restaura configurações (zoom, cores, etc)
+  // ✅ CORRIGIDO: carrega histórico salvo pela extensão VR5 Connector (não apaga mais!)
+  const carregou = carregarHistoricoLocal();
+  if(!carregou){
+    pts = [];
+  }
+  renderTipGrid();
+  atualizarTopoGrafico2();
+  resize();
+  if(carregou){
+    console.log('✅ Histórico VR5 carregado do localStorage: '+pts.length+' velas');
+    draw();
+  }
+  // Enter nos campos de rodada
+  const rv=document.getElementById('rodVela'),rn=document.getElementById('rodNro');
+  if(rv) rv.addEventListener('keydown',e=>{if(e.key==='Enter')aplicarRodadas();});
+  if(rn) rn.addEventListener('keydown',e=>{if(e.key==='Enter')aplicarRodadas();});
+  // Enter nos campos da topbar
+  // Restaura botão rodada se estava ativo
+  if(rodadaConfig.ativo&&modoRodada){
+    const b=document.getElementById('btnRodada');
+    if(b){b.classList.add('on');b.textContent='⑬ RODADA ON';}
+  }
+},80);
+</script>
+
+<script>
+// ═══════════════════════════════════════════════════════════════════
+// MOTOR 5-IAs v3  —  Calibrado com dados reais do Aviator 03/06/2026
+// IA1 Score de Velas · IA2 Sequência Ciano · IA3 Pressão Temporal
+// IA4 Memória 30v · IA5 Heatmap Composto
+// Probabilidades: 5x · 10x · 20x · Rosa (baseadas nos dados reais)
+// ═══════════════════════════════════════════════════════════════════
+
+// ── Estado global
+const IA5 = {
+  heatmap: 0,         // 0-100 temperatura atual
+  nivel: 'frio',      // frio | atencao | quente | explosao
+  ia1: 0, ia2: 0, ia3: 0, ia4: 0,
+  consec: 0,          // cianos consecutivos atuais
+  distRosa: 0,        // velas desde última rosa
+  prob5x: 0, prob10x: 0, prob20x: 0, probRosa: 0,
+  lastAlertTs: 0,
+  cooldown: 9000,
+  countdownTimer: null,
+  ultimoNivel: 'frio',
+};
+
+// ── IA 1: Score de velas (últimas 8) — calibrado pelos dados
+function calcIA1(win){
+  let s = 0;
+  for(const v of win){
+    if(v < 1.30)      s += 3;
+    else if(v < 2.0)  s += 2;
+    else if(v < 5.0)  s += 1;
+    else if(v < 10)   s -= 2;
+    else              s -= 6;
+  }
+  return Math.max(0, Math.min(30, s));
+}
+
+// ── IA 2: Sequência pura de cianos consecutivos
+// Dados reais: 4+ cianos = lift 1.7x. Mas curto é mais frequente.
+function calcIA2(win){
+  let consec = 0;
+  for(let i = win.length-1; i >= 0; i--){
+    if(win[i] < 2.0) consec++;
+    else break;
+  }
+  // Ponderação real: 2–4 cianos é o padrão mais comum antes de rosa
+  let pts = 0;
+  if(consec === 0) pts = 0;
+  else if(consec === 1) pts = 8;
+  else if(consec === 2) pts = 16;
+  else if(consec === 3) pts = 22;
+  else if(consec >= 4)  pts = 28; // 4+ cianos: lift 1.7x (dado real)
+  return { pts: Math.min(30, pts), consec };
+}
+
+// ── IA 3: Pressão temporal (distância da última rosa)
+// Dados reais: dist 6-8v tem maior lift (1.6x). Não cresce linearmente.
+function calcIA3(valsFull){
+  let dist = 0;
+  for(let i = valsFull.length-1; i >= 0; i--){
+    if(valsFull[i] >= 10) break;
+    dist++;
+  }
+  // Curva calibrada pelos dados: peak em 6-8 velas
+  let pts;
+  if(dist <= 2)       pts = 8;   // acabou de sair rosa
+  else if(dist <= 5)  pts = 12;  // zona de baixa probabilidade (lift 0.7x)
+  else if(dist <= 8)  pts = 22;  // ZONA QUENTE — lift 1.6x nos dados reais
+  else if(dist <= 12) pts = 18;
+  else if(dist <= 16) pts = 14;
+  else                pts = 10;  // muito longa, pode ser ciclo ruim
+  return { pts, dist };
+}
+
+// ── IA 4: Memória 30 velas (frequência de rosas esperada)
+// Taxa base real: 10.1% (19 rosas em 189 velas)
+function calcIA4(valsFull){
+  const TAXA_BASE = 0.101;
+  const win30 = valsFull.slice(-30);
+  const rosas30 = win30.filter(v => v >= 10).length;
+  const esperado = TAXA_BASE * win30.length;
+  let pts = 0;
+  if(rosas30 === 0 && win30.length >= 10)      pts = 20; // mercado devendo muito
+  else if(rosas30 < esperado * 0.5)            pts = 15;
+  else if(rosas30 < esperado * 0.75)           pts = 10;
+  else if(rosas30 < esperado)                  pts = 5;
+  else                                         pts = 0;  // normal ou acima
+  return { pts, rosas30, esperado: esperado.toFixed(1) };
+}
+
+// ── IA 5: Heatmap composto + probabilidades calibradas
+function calcIA5(valsFull){
+  if(valsFull.length < 5) return { heatmap:0, nivel:'frio', prob5x:0, prob10x:0, prob20x:0, probRosa:0 };
+
+  const win8 = valsFull.slice(-8);
+  const r1   = calcIA1(win8);
+  const r2   = calcIA2(win8);
+  const r3   = calcIA3(valsFull);
+  const r4   = calcIA4(valsFull);
+
+  // Heatmap ponderado (soma max = 100)
+  const heat = r1 * 0.30 + r2.pts * 0.30 + r3.pts * 0.25 + r4.pts * 0.15;
+  const heatmap = Math.min(100, Math.round(heat * (100/30)));
+
+  // Probabilidades calibradas pelos dados reais (base 10.1%)
+  // Aplicando os lifts encontrados: cianos consecutivos e distância
+  let liftCiano = 1.0;
+  if(r2.consec >= 4) liftCiano = 1.7;
+  else if(r2.consec >= 2) liftCiano = 1.2;
+
+  let liftDist = 1.0;
+  if(r3.dist >= 6 && r3.dist <= 8) liftDist = 1.6;
+  else if(r3.dist <= 2) liftDist = 1.0;
+  else if(r3.dist <= 5) liftDist = 0.7;
+
+  const liftMem = r4.pts > 15 ? 1.3 : r4.pts > 5 ? 1.1 : 1.0;
+
+  const liftTotal = liftCiano * liftDist * liftMem;
+  const baseRosa  = Math.min(35, Math.round(10.1 * liftTotal)); // cap em 35%
+
+  // Probabilidades das faixas (cumulativas com base nos dados reais)
+  const prob5x   = Math.min(92, Math.round(55 + heatmap * 0.2));
+  const prob10x  = Math.min(85, Math.round(baseRosa * 2.5));
+  const prob20x  = Math.min(75, Math.round(baseRosa * 1.8));
+  const probRosa = baseRosa;
+
+  // Nível heatmap
+  let nivel;
+  if(heatmap >= 80)      nivel = 'explosao';
+  else if(heatmap >= 60) nivel = 'quente';
+  else if(heatmap >= 35) nivel = 'atencao';
+  else                   nivel = 'frio';
+
+  return { heatmap, nivel, prob5x, prob10x, prob20x, probRosa,
+           ia1: r1, ia2: r2.pts, ia3: r3.pts, ia4: r4.pts,
+           consec: r2.consec, dist: r3.dist };
+}
+
+// ── Utilitários
+function velasSemRosaAtual(){
+  for(let i = pts.length-1; i >= 0; i--){
+    if(pts[i].val >= 10) return pts.length - 1 - i;
+  }
+  return pts.length;
+}
+
+function roxasNosUltimosMinutos(mins){
+  const limite = Date.now() - mins * 60 * 1000;
+  return pts.filter(p => {
+    const t = p.time instanceof Date ? p.time.getTime() : new Date(p.time).getTime();
+    return p.val >= 2 && p.val < 10 && t >= limite;
+  }).length;
+}
+
+// ── Atualiza botões topbar
+function atualizarBotoesTopbar(){
+  const semRosa = velasSemRosaAtual();
+  const roxas10 = roxasNosUltimosMinutos(10);
+  const btnSR = document.getElementById('btnSemRosa');
+  const btnRX = document.getElementById('btnRoxas10');
+  if(btnSR){
+    btnSR.textContent = '🌸 SEM ROSA: '+semRosa+'v';
+    if(semRosa >= 8){ btnSR.style.borderColor='#f472b6'; btnSR.style.color='#f472b6'; btnSR.style.background='rgba(244,114,182,.15)'; }
+    else if(semRosa >= 5){ btnSR.style.borderColor='#f59e0b'; btnSR.style.color='#f59e0b'; btnSR.style.background='rgba(245,158,11,.1)'; }
+    else { btnSR.style.borderColor='var(--brd2)'; btnSR.style.color='var(--txt2)'; btnSR.style.background='var(--bg3)'; }
+  }
+  if(btnRX){
+    btnRX.textContent = '🟣 ROXAS/10min: '+roxas10;
+    if(roxas10 >= 5){ btnRX.style.borderColor='#a855f7'; btnRX.style.color='#a855f7'; btnRX.style.background='rgba(168,85,247,.15)'; }
+    else { btnRX.style.borderColor='var(--brd2)'; btnRX.style.color='var(--txt2)'; btnRX.style.background='var(--bg3)'; }
+  }
+}
+
+// ── Notificação flutuante
+let _bnotifTimer = null;
+function mostrarBurstNotif(tag, titulo, sub, duracaoMs, cor){
+  cor = cor||'#f472b6';
+  clearTimeout(_bnotifTimer); clearInterval(IA5.countdownTimer);
+  const el=document.getElementById('burstNotif');
+  const inner=el?.querySelector('.bnotif-inner');
+  const set=(id,txt,prop,val)=>{ const e=document.getElementById(id); if(e){ if(txt!==null)e.textContent=txt; if(prop)e.style[prop]=val; }};
+  set('bnotifTag',tag,'color',cor); set('bnotifTitle',titulo,null,null);
+  set('bnotifSub',sub,null,null); set('bnotifCountdown',null,'color',cor);
+  if(inner){ inner.style.borderColor=cor; inner.style.boxShadow=`0 8px 40px ${cor}66`; }
+  document.getElementById('bnotifBar').style.background=`linear-gradient(90deg,${cor},#a855f7)`;
+  el?.classList.add('show');
+  let r=Math.round(duracaoMs/1000);
+  const tick=()=>{ set('bnotifCountdown',r>0?r+'s':'⚡ AGORA',null,null); document.getElementById('bnotifBar').style.width=Math.max(0,r/Math.round(duracaoMs/1000)*100)+'%'; };
+  tick();
+  IA5.countdownTimer=setInterval(()=>{ r--; tick(); if(r<=0)clearInterval(IA5.countdownTimer); },1000);
+  _bnotifTimer=setTimeout(()=>{ el?.classList.remove('show'); clearInterval(IA5.countdownTimer); },duracaoMs+500);
+}
+
+// ── Sons
+function beepWatch(){ beep([[440,0,.1],[520,0.11,.08]],'sine',0.05); }
+function beepFire(){  beep([[700,0,.08],[900,0.09,.08],[1100,0.18,.12],[1400,0.28,.2]],'sine',0.15); }
+function beepExplosao(){ beep([[500,0,.06],[700,.07,.06],[1000,.14,.1],[1300,.21,.12],[1600,.29,.2]],'triangle',0.2); }
+
+// ── Atualiza painel lateral
+function atualizarBurstPanel(){
+  const R = IA5._ultima || { heatmap:0, nivel:'frio', prob5x:0, prob10x:0, prob20x:0, probRosa:0, ia1:0, ia2:0, ia3:0, ia4:0, consec:0, dist:0 };
+
+  // Cores por nível
+  const CORES = { frio:'#38bdf8', atencao:'#f59e0b', quente:'#f472b6', explosao:'#22c55e' };
+  const EMOJIS = { frio:'🔵', atencao:'🟡', quente:'🔴', explosao:'🔥' };
+  const cor = CORES[R.nivel] || '#38bdf8';
+  const emoji = EMOJIS[R.nivel] || '🔵';
+
+  // Card principal — heatmap
+  const lbl = document.getElementById('burstCardCompLbl');
+  const elPct = document.getElementById('burstCompPct');
+  const elLblV = document.getElementById('burstCompLabel');
+  const elBar = document.getElementById('burstCompBar');
+  const elDot = document.getElementById('burstDot');
+  const elStat = document.getElementById('burstStatusTxt');
+  const card = document.getElementById('burstCardComp');
+
+  if(lbl) lbl.textContent = emoji+' Heatmap 5-IAs';
+  if(elPct){ elPct.textContent=R.heatmap; elPct.style.color=cor; }
+  if(elLblV){ elLblV.textContent=R.nivel.toUpperCase(); elLblV.style.color=cor; }
+  if(elBar){ elBar.style.width=R.heatmap+'%'; elBar.style.background=`linear-gradient(90deg,#06b6d4,${cor})`; }
+
+  const dotMap = {frio:'idle',atencao:'watch',quente:'alert',explosao:'fire'};
+  if(elDot) elDot.className='burst-dot '+(dotMap[R.nivel]||'idle');
+  if(elStat){ elStat.textContent=`${R.consec}v ciano · dist ${R.dist}v · IA4:${R.ia4}`; elStat.style.color='var(--txt3)'; }
+  if(card){ card.className='burst-card'+(R.nivel!=='frio'?' active':''); if(R.nivel!=='frio') card.style.borderColor=cor; else card.style.borderColor=''; }
+
+  // Card Rosa — probabilidades
+  const cardRosa = document.getElementById('burstCardRosa');
+  if(cardRosa){
+    cardRosa.style.display = R.nivel!=='frio' ? 'block':'none';
+    if(R.nivel!=='frio'){
+      const elV = document.getElementById('burstRosaVelas');
+      const elS = document.getElementById('burstRosaSub');
+      const elB = document.getElementById('burstRosaBar');
+      if(elV){ elV.textContent=R.probRosa+'%'; elV.style.color=cor; }
+      if(elS) elS.innerHTML=
+        `<span style="color:${cor}">Rosa(10x)</span>: ${R.probRosa}%  `+
+        `<span style="color:#a855f7">20x</span>: ${R.prob20x}%<br>`+
+        `<span style="color:#06b6d4">5x</span>: ${R.prob5x}%  `+
+        `<span style="color:#f59e0b">10x</span>: ${R.prob10x}%`;
+      if(elB){ elB.style.width=R.probRosa+'%'; elB.style.background=`linear-gradient(90deg,${cor},#a855f7)`; }
+    }
+  }
+
+  // Card Fire — só em explosão
+  const cardFire = document.getElementById('burstCardFire');
+  if(cardFire){
+    cardFire.style.display = R.nivel==='explosao'?'block':'none';
+    if(R.nivel==='explosao' && pts.length>0){
+      const elM = document.getElementById('burstFireMult');
+      if(elM) elM.textContent = '🔥 ZONA QUENTE';
+    }
+  }
+
+  // Minigráfico de IAs no card principal (barra composta)
+  renderIABars(R);
+  atualizarBotoesTopbar();
+}
+
+// ── Minigráfico das 4 IAs
+function renderIABars(R){
+  let el = document.getElementById('ia5bars');
+  if(!el){
+    const card = document.getElementById('burstCardComp');
+    if(!card) return;
+    el = document.createElement('div');
+    el.id='ia5bars';
+    el.style.cssText='margin-top:8px;display:flex;flex-direction:column;gap:3px';
+    card.appendChild(el);
+  }
+  const bars = [
+    { lbl:'IA1 Score', val: R.ia1, max:30, cor:'#38bdf8' },
+    { lbl:'IA2 Seq',   val: R.ia2, max:30, cor:'#a855f7' },
+    { lbl:'IA3 Dist',  val: R.ia3, max:25, cor:'#f59e0b' },
+    { lbl:'IA4 Mem',   val: R.ia4, max:20, cor:'#22c55e' },
+  ];
+  el.innerHTML = bars.map(b=>`
+    <div style="display:flex;align-items:center;gap:5px">
+      <span style="font-size:7px;color:var(--txt3);width:48px;flex-shrink:0">${b.lbl}</span>
+      <div style="flex:1;height:4px;background:var(--brd);border-radius:2px;overflow:hidden">
+        <div style="height:4px;width:${Math.round(b.val/b.max*100)}%;background:${b.cor};border-radius:2px;transition:width .4s"></div>
+      </div>
+      <span style="font-size:7px;color:${b.cor};width:18px;text-align:right">${Math.round(b.val)}</span>
+    </div>`).join('');
+}
+
+// ── Log de eventos no sidebar
+function addBurstLog(label, cor, detalhe){
+  const area = document.getElementById('logArea');
+  if(!area) return;
+  const t = new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+  const row = document.createElement('div');
+  row.className = 'log-row';
+  row.innerHTML = `<div class="ldot" style="background:${cor};width:7px;height:7px"></div><span class="lt">${t}</span><span class="lv" style="color:${cor};font-size:8px">${label}</span><span class="ltag" style="background:${cor}22;color:${cor};border:1px solid ${cor}44;margin-left:auto;font-size:7px;padding:1px 4px;border-radius:3px">${detalhe}</span>`;
+  area.insertBefore(row, area.firstChild);
+  while(area.children.length > 80) area.removeChild(area.lastChild);
+}
+
+// ── Motor principal
+function rodarMotorIA5(){
+  if(pts.length < 5) return;
+  const valsFull = pts.map(p=>parseFloat(p.val)||0).filter(v=>v>0);
+  const R = calcIA5(valsFull);
+  IA5._ultima = R;
+
+  const agora = Date.now();
+  const cooldownOk = (agora - IA5.lastAlertTs) > IA5.cooldown;
+  const CORES = { frio:'#38bdf8', atencao:'#f59e0b', quente:'#f472b6', explosao:'#22c55e' };
+
+  // EXPLOSÃO (80+)
+  if(R.nivel === 'explosao' && cooldownOk && IA5.ultimoNivel !== 'explosao'){
+    IA5.lastAlertTs = agora;
+    beepExplosao(); triggerFlash();
+    mostrarBurstNotif(
+      '🔥 ZONA DE EXPLOSÃO',
+      'ROSA MUITO PROVÁVEL!',
+      `Heatmap ${R.heatmap}/100 · Rosa ${R.probRosa}% · 10x ${R.prob10x}%`,
+      8000, '#22c55e'
+    );
+    showAlert('🔥 EXPLOSÃO — Rosa '+R.probRosa+'% | 10x '+R.prob10x+'%','#22c55e',10000);
+    addBurstLog('IA5 🔥 EXPLOSÃO','#22c55e','heat='+R.heatmap+' Rosa='+R.probRosa+'%');
+  }
+  // QUENTE (60–79)
+  else if(R.nivel === 'quente' && cooldownOk && IA5.ultimoNivel==='atencao'){
+    IA5.lastAlertTs = agora;
+    beepFire();
+    mostrarBurstNotif(
+      '🔴 ZONA QUENTE',
+      'SINAL DE ENTRADA',
+      `Heatmap ${R.heatmap}/100 · Rosa ${R.probRosa}% · Dist ${R.dist}v`,
+      6000, '#f472b6'
+    );
+    addBurstLog('IA5 🔴 QUENTE','#f472b6','heat='+R.heatmap+' Rosa='+R.probRosa+'%');
+  }
+  // ATENÇÃO (35–59) — discreto
+  else if(R.nivel === 'atencao' && IA5.ultimoNivel === 'frio'){
+    beepWatch();
+    addBurstLog('IA5 🟡 ATENÇÃO','#f59e0b','heat='+R.heatmap+' consec='+R.consec+'v dist='+R.dist+'v');
+  }
+
+  IA5.ultimoNivel = R.nivel;
+  atualizarBurstPanel();
+}
+
+// ── Hook: intercepta cada vela nova
+const _receberVelaOrig = receberVela;
+window.receberVela = function(val, timestamp, fonte, rodada){
+  const resultado = _receberVelaOrig(val, timestamp, fonte, rodada);
+  if(resultado !== false){
+    const v = parseFloat(val)||0;
+    // Rosa recebida: reseta o ultimoNivel para que o próximo ciclo
+    // possa disparar alerta novamente (sem cooldown de 9s travado)
+    if(v >= 10){
+      IA5.ultimoNivel = 'frio';
+      IA5.lastAlertTs = 0; // libera cooldown
+      // Log automático da rosa detectada
+      const corRosa = v >= 50 ? '#facc15' : '#22c55e';
+      addBurstLog('🌸 ROSA DETECTADA', corRosa, v.toFixed(2)+'x');
+      atualizarBotoesTopbar();
+    }
+    setTimeout(rodarMotorIA5, 80);
+  }
+  return resultado;
+};
+
+// ── Init
+setTimeout(()=>{ rodarMotorIA5(); }, 700);
+setInterval(()=>{ atualizarBotoesTopbar(); }, 4000);
+
+// ══════════════════════════════════════════════════════════
+// VR5 CONNECTOR — Integração com Extensão Chrome
+// ══════════════════════════════════════════════════════════
+
+// ✅ Escuta evento da extensão VR5 Connector para recarregar em tempo real
+window.addEventListener('vr5_dados_atualizados', (e)=>{
+  const ok = carregarHistoricoLocal();
+  if(ok){
+    renderTipGrid();
+    atualizarTopoGrafico2();
+    draw();
+    console.log('🔄 Dados atualizados pela extensão VR5:', pts.length, 'velas');
+  }
+});
+
+// ✅ Bridge: quando aberto como página da extensão, escuta mensagens diretas
+(function(){
+  if(typeof chrome !== 'undefined' && chrome.runtime && chrome.runtime.onMessage){
+    chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+      if(message.type === 'VR5_DADOS_ATUALIZADOS' && Array.isArray(message.dados)){
+        try{
+          localStorage.setItem('aviator_vr5_historico_tipminer', JSON.stringify(message.dados));
+          const ok = carregarHistoricoLocal();
+          if(ok){ renderTipGrid(); atualizarTopoGrafico2(); draw(); }
+          sendResponse({ success: true });
+        }catch(e){ sendResponse({ success: false }); }
+      }
+      return true;
+    });
+
+    // Polling no chrome.storage.local (modo extensão)
+    let _vr5StorageTotal = 0;
+    setInterval(()=>{
+      try{
+        chrome.storage.local.get(['vr5_dados'], (result) => {
+          const dados = result.vr5_dados || [];
+          if(dados.length > 0 && dados.length !== _vr5StorageTotal){
+            _vr5StorageTotal = dados.length;
+            localStorage.setItem('aviator_vr5_historico_tipminer', JSON.stringify(dados));
+            const ok = carregarHistoricoLocal();
+            if(ok){ renderTipGrid(); atualizarTopoGrafico2(); draw(); }
+          }
+        });
+      }catch(e){}
+    }, 3000);
+  }
+})();
+
+// ✅ Polling localStorage (modo arquivo local)
+let _vr5LastTotal = 0;
+setInterval(()=>{
+  try{
+    const raw = localStorage.getItem('aviator_vr5_historico_tipminer');
+    if(!raw) return;
+    const arr = JSON.parse(raw);
+    if(Array.isArray(arr) && arr.length > 0 && arr.length !== _vr5LastTotal){
+      _vr5LastTotal = arr.length;
+      const ok = carregarHistoricoLocal();
+      if(ok){ renderTipGrid(); atualizarTopoGrafico2(); draw(); }
+    }
+  }catch(e){}
+}, 3000);
+
+// ✅ Auto-verificação: dados via URL hash
+(function(){
+  try{
+    const hash = window.location.hash;
+    if(hash && hash.startsWith('#vr5=')){
+      const json = decodeURIComponent(hash.slice(5));
+      const arr = JSON.parse(json);
+      if(Array.isArray(arr) && arr.length > 0){
+        localStorage.setItem('aviator_vr5_historico_tipminer', json);
+      }
+    }
+  }catch(e){}
+})();
+</script>
+
+<!-- ═══ MODAL VR5 CONNECTOR ═══ -->
+<div id="vr5Modal" style="position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.75);display:none;align-items:center;justify-content:center;">
+  <div style="background:#0e1522;border:1px solid #a855f7;border-radius:12px;padding:22px;width:480px;max-width:95vw;font-family:monospace;">
+    <div style="font-size:14px;font-weight:700;color:#a855f7;margin-bottom:14px;">🔌 VR5 Connector — Carregar Dados</div>
+    <div style="font-size:11px;color:#b8d0ec;margin-bottom:10px;line-height:1.7;">
+      <b>Como usar:</b><br>
+      1. Abra <b>tipminer.com/br/historico</b> com a extensão instalada<br>
+      2. Clique no ícone da extensão → <b>📋 Copiar Array</b><br>
+      3. Cole abaixo e clique <b>Carregar</b>
+    </div>
+    <textarea id="vr5JsonInput" placeholder='Cole o JSON aqui... (começa com [{"val":...)' style="width:100%;height:120px;background:#06090f;border:1px solid #203555;border-radius:6px;color:#b8d0ec;font-family:monospace;font-size:10px;padding:8px;outline:none;resize:vertical;margin-bottom:10px;"></textarea>
+    <div style="display:flex;gap:8px;">
+      <button onclick="aplicarVR5JSON()" style="flex:1;padding:9px;background:#a855f7;border:none;border-radius:6px;color:white;font-weight:700;font-family:monospace;cursor:pointer;font-size:12px;">✅ Carregar Velas</button>
+      <button onclick="document.getElementById('vr5Modal').style.display='none'" style="padding:9px 16px;background:#18273d;border:1px solid #203555;border-radius:6px;color:#b8d0ec;font-family:monospace;cursor:pointer;font-size:12px;">Fechar</button>
+    </div>
+    <div id="vr5ModalStatus" style="margin-top:8px;font-size:10px;min-height:16px;"></div>
+    <hr style="border-color:#18273d;margin:14px 0 10px;">
+    <div style="font-size:9px;color:#4a6e94;">
+      💡 Dica: Abra o painel pelo popup da extensão para sincronização em tempo real.
+    </div>
+  </div>
+</div>
+
+<script>
+// ═══ VR5 CONNECTOR — Funções do Modal ═══
+function carregarDoVR5Connector(){
+  const modal = document.getElementById('vr5Modal');
+  if(modal){ modal.style.display = 'flex'; setTimeout(()=>document.getElementById('vr5JsonInput')?.focus(), 100); }
+}
+function aplicarVR5JSON(){
+  const txt = (document.getElementById('vr5JsonInput')?.value || '').trim();
+  const status = document.getElementById('vr5ModalStatus');
+  if(!txt){ status.style.color='#f59e0b'; status.textContent='⚠️ Cole o JSON primeiro!'; return; }
+  try{
+    let arr = JSON.parse(txt);
+    if(!Array.isArray(arr)){ arr = arr.dados || arr.velas || arr.historico || arr.data || null; if(!Array.isArray(arr)) throw new Error('Não é um array de velas'); }
+    if(!arr.length) throw new Error('Array vazio');
+    pts = []; viewOffset = 0; zoomLevel = 1; vertOffset = 0;
+    arr.forEach(p => {
+      const v = parseFloat(p.val || p.multiplicador || p.valor || 0);
+      const ts = p.time || p.timestamp || p.ts || p.data || null;
+      const rod = p.rodada || p.round || p.id || null;
+      if(!isNaN(v) && v > 0){ const t = ts ? new Date(ts) : new Date(); push(v, isNaN(t.getTime()) ? new Date() : t, rod); }
+    });
+    removerDuplicadasHistorico();
+    salvarHistoricoLocal();
+    renderTipGrid(); atualizarTopoGrafico2(); draw();
+    localStorage.setItem('aviator_vr5_historico_tipminer', JSON.stringify(arr.map(p=>({val:parseFloat(p.val||p.multiplicador||p.valor),score:p.score||0,delta:p.delta||0,time:p.time||p.timestamp||new Date().toISOString(),rodada:p.rodada||null}))));
+    status.style.color='#22c55e'; status.textContent='✅ '+pts.length+' velas carregadas com sucesso!';
+    showAlert('✅ VR5 Connector: '+pts.length+' velas carregadas!','#22c55e',4000);
+    setTimeout(()=>{ document.getElementById('vr5Modal').style.display = 'none'; }, 1500);
+  }catch(e){ status.style.color='#f43f5e'; status.textContent='❌ Erro: '+e.message; }
+}
+
+</body>
+</html>
