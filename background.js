@@ -10,5 +10,5 @@ chrome.alarms.onAlarm.addListener((alarm) => {
 });
 
 setInterval(() => {
-  fetch("https://aviator-trader.onrender.com/api/status").catch(() => {});
+  fetch("https://aviator-trader-quadrado.onrender.com/api/status").catch(() => {});
 }, 4 * 60 * 1000);
