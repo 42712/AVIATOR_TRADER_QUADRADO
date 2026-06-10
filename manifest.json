@@ -1,0 +1,52 @@
+{
+  "manifest_version": 3,
+  "name": "VR5 Connector - TipMiner",
+  "version": "3.1",
+  "description": "Conecta dados do TipMiner ao Painel VR5 — v14 + Render + Extensão",
+  "permissions": [
+    "activeTab",
+    "storage",
+    "scripting",
+    "tabs"
+  ],
+  "host_permissions": [
+    "https://www.tipminer.com/*",
+    "https://tipminer.com/*",
+    "file:///*"
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "VR5 Connector",
+    "default_icon": {
+      "16": "icon16.png",
+      "48": "icon48.png",
+      "128": "icon128.png"
+    }
+  },
+  "icons": {
+    "16": "icon16.png",
+    "48": "icon48.png",
+    "128": "icon128.png"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://www.tipminer.com/br/historico/*",
+        "https://tipminer.com/br/historico/*",
+        "https://www.tipminer.com/*",
+        "https://tipminer.com/*"
+      ],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "web_accessible_resources": [
+    {
+      "resources": ["painel_vr5_v15_CORRIGIDO.html", "popup.html", "popup.js", "icons/*"],
+      "matches": ["<all_urls>"]
+    }
+  ]
+}

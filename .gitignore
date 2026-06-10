@@ -1,4 +1,7 @@
 dados.txt
+acesso.txt
 .env
 __pycache__/
 *.pyc
+*.log
+node_modules/
