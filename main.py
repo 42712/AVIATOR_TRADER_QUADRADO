@@ -1,10 +1,11 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, FileResponse
 from pydantic import BaseModel
 from typing import Optional
 from collections import deque
 import time
+import os
 
 app = FastAPI(title="Sortenabet Aviator Server")
 
@@ -30,6 +31,10 @@ class Vela(BaseModel):
 
 @app.get("/", response_class=HTMLResponse)
 def root():
+    html_path = os.path.join(os.path.dirname(__file__), "aviator_engine_v6.2.html")
+    if os.path.exists(html_path):
+        with open(html_path, "r", encoding="utf-8") as f:
+            return HTMLResponse(content=f.read())
     total = sum(len(v) for v in velas.values())
     return f"""
     <html><body style="font-family:monospace;background:#06090f;color:#b8d0ec;padding:2rem">
