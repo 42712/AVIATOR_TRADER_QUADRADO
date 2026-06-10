@@ -66,53 +66,13 @@ function extrairRodada() {
     return null;
 }
 
-function atualizarCacheRodada() {
-    const r = extrairRodada();
-    if (r) rodadaCache = r;
-}
-setInterval(atualizarCacheRodada, 300);
-atualizarCacheRodada();
+setInterval(() => { const r = extrairRodada(); if (r) rodadaCache = r; }, 300);
+extrairRodada();
 
-function formatarTimestamp(isoStr) {
-    if (!isoStr) return null;
-    try {
-        const d = new Date(isoStr);
-        return d.toLocaleTimeString('pt-BR', { timeZone: 'America/Sao_Paulo', hour12: false });
-    } catch (e) { return null; }
-}
-
-// ===== WEBSOCKET (fonte principal) =====
-let ultimoEnvioWS = 0;
-
-function conectarWS() {
-    try {
-        const ws = new WebSocket("wss://apiglobal.appbackend.tech/ws/signals/v2/aviator");
-        ws.onopen = () => console.log("✅ WS conectado");
-        ws.onmessage = (e) => {
-            try {
-                const msg = JSON.parse(e.data);
-                if (msg.casa !== 'sortenabet') return;
-                const mult = parseFloat(msg.data?.valor);
-                if (isNaN(mult) || mult <= 0) return;
-                const rodada = rodadaCache || extrairRodada() || `ws-${Date.now()}`;
-                const timestamp = formatarTimestamp(msg.data.createdAt);
-                console.log(`🎯 SINAL WS: ${mult}x rodada ${rodada}`);
-                enviarVela(mult, rodada, timestamp, "ws-sortenabet");
-                ultimoEnvioWS = Date.now();
-            } catch (ex) {}
-        };
-        ws.onclose = () => { setTimeout(conectarWS, 5000); };
-        ws.onerror = () => ws.close();
-    } catch (e) { setTimeout(conectarWS, 5000); }
-}
-conectarWS();
-
-// ===== DOM SCANNER (fallback) =====
-let ultPayout = 0;
-let maxPayoutRodada = 0;
+// ===== DOM SCANNER (fallback caso WebSocket do background falhe) =====
+let ultPayout = 0, maxPayoutRodada = 0;
 
 setInterval(() => {
-    if (Date.now() - ultimoEnvioWS <= 60000) return;
     const el = document.querySelector('.payout');
     if (!el) return;
     const m = el.textContent.match(/(\d+\.?\d*)x/);
