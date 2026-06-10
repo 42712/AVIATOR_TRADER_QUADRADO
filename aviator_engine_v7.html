@@ -238,7 +238,32 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:var(--fon
       <div id="ind-mm3" style="flex:1;min-width:100px;background:var(--bg3);border:1px solid var(--brd2);border-radius:6px;padding:8px 10px;cursor:pointer" onclick="closeThenOpenMM()">
         <div style="font-size:9px;color:var(--gn);font-weight:700">MM3 (EMA <span id="ind-mm3per">50</span>)</div>
         <div style="font-size:8px;color:var(--txt2);margin-top:3px">Bezier · Pontilhada</div>
-        <div style="font-size:8px;color:var(--pk);margin-top:2px" id="ind-mm3st">✗ Inativa</div>
+        <div style="font-size:8px;color:var(--gn);margin-top:2px" id="ind-mm3st">✓ Ativa</div>
+      </div>
+      <div id="ind-mm4" style="flex:1;min-width:100px;background:var(--bg3);border:1px solid var(--brd2);border-radius:6px;padding:8px 10px;cursor:pointer" onclick="closeThenOpenMM()">
+        <div style="font-size:9px;color:#ef4444;font-weight:700">MM4 (EMA <span id="ind-mm4per">100</span>)</div>
+        <div style="font-size:8px;color:var(--txt2);margin-top:3px">Smooth · Tracejada</div>
+        <div style="font-size:8px;color:var(--gn);margin-top:2px" id="ind-mm4st">✓ Ativa</div>
+      </div>
+      <div id="ind-mm5" style="flex:1;min-width:100px;background:var(--bg3);border:1px solid var(--brd2);border-radius:6px;padding:8px 10px;cursor:pointer" onclick="closeThenOpenMM()">
+        <div style="font-size:9px;color:#eab308;font-weight:700">MM5 (EMA <span id="ind-mm5per">200</span>)</div>
+        <div style="font-size:8px;color:var(--txt2);margin-top:3px">Linear · Tracejada</div>
+        <div style="font-size:8px;color:var(--gn);margin-top:2px" id="ind-mm5st">✓ Ativa</div>
+      </div>
+      <div id="ind-mm6" style="flex:1;min-width:100px;background:var(--bg3);border:1px solid var(--brd2);border-radius:6px;padding:8px 10px;cursor:pointer" onclick="closeThenOpenMM()">
+        <div style="font-size:9px;color:#fff;font-weight:700">MM6 (EMA <span id="ind-mm6per">7</span>)</div>
+        <div style="font-size:8px;color:var(--txt2);margin-top:3px">Smooth · Tracejada</div>
+        <div style="font-size:8px;color:var(--pk);margin-top:2px" id="ind-mm6st">✗ Inativa</div>
+      </div>
+      <div id="ind-mm7" style="flex:1;min-width:100px;background:var(--bg3);border:1px solid var(--brd2);border-radius:6px;padding:8px 10px;cursor:pointer" onclick="closeThenOpenMM()">
+        <div style="font-size:9px;color:#ec4899;font-weight:700">MM7 (EMA <span id="ind-mm7per">14</span>)</div>
+        <div style="font-size:8px;color:var(--txt2);margin-top:3px">Bezier · Pontilhada</div>
+        <div style="font-size:8px;color:var(--pk);margin-top:2px" id="ind-mm7st">✗ Inativa</div>
+      </div>
+      <div id="ind-mm8" style="flex:1;min-width:100px;background:var(--bg3);border:1px solid var(--brd2);border-radius:6px;padding:8px 10px;cursor:pointer" onclick="closeThenOpenMM()">
+        <div style="font-size:9px;color:#3b82f6;font-weight:700">MM8 (EMA <span id="ind-mm8per">30</span>)</div>
+        <div style="font-size:8px;color:var(--txt2);margin-top:3px">Linear · Tracejada</div>
+        <div style="font-size:8px;color:var(--pk);margin-top:2px" id="ind-mm8st">✗ Inativa</div>
       </div>
     </div>
 
@@ -305,6 +330,66 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:var(--fon
     </div>
     <div class="mm-row"><span class="mm-label">Tipo curva</span><select id="mm3curva" class="mm-sel" style="flex:1"><option value="linear">Linear (reta)</option><option value="smooth">Smooth (suave)</option><option value="bezier" selected>Bezier</option><option value="step">Step (degrau)</option></select></div>
 
+    <!-- MM4 -->
+    <div style="font-size:8px;color:#ef4444;letter-spacing:.8px;margin-top:8px;padding-bottom:4px;border-bottom:1px solid var(--brd)">MÉDIA MÓVEL 4</div>
+    <div class="mm-row"><span class="mm-label">Ativar</span><div class="mm-toggle on" id="mm4tog" onclick="mmToggle(4)"></div></div>
+    <div class="mm-row"><span class="mm-label">Período</span><input type="number" class="mm-num" id="mm4per" value="100" min="2" max="500"><span style="font-size:8px;color:var(--txt3);margin-left:4px">períodos</span></div>
+    <div class="mm-row"><span class="mm-label">Cor</span><input type="color" class="mm-color" id="mm4cor" value="#ef4444"><span class="mm-label" style="margin-left:10px">Opacidade</span><input type="number" class="mm-op" id="mm4op" value="0.45" min="0.1" max="1" step="0.05"></div>
+    <div class="mm-row">
+      <span class="mm-label">Espessura</span><input type="number" class="mm-num" id="mm4lw" value="1.0" min="0.5" max="5" step="0.5"><span style="font-size:8px;color:var(--txt3);margin-left:4px">px</span>
+      <span class="mm-label" style="margin-left:10px">Traçado</span>
+      <select id="mm4dash" class="mm-sel"><option value="solid">Sólida</option><option value="dash" selected>Tracejada</option><option value="dot">Pontilhada</option></select>
+    </div>
+    <div class="mm-row"><span class="mm-label">Tipo curva</span><select id="mm4curva" class="mm-sel" style="flex:1"><option value="linear">Linear (reta)</option><option value="smooth" selected>Smooth (suave)</option><option value="bezier">Bezier</option><option value="step">Step (degrau)</option></select></div>
+
+    <!-- MM5 -->
+    <div style="font-size:8px;color:#eab308;letter-spacing:.8px;margin-top:8px;padding-bottom:4px;border-bottom:1px solid var(--brd)">MÉDIA MÓVEL 5</div>
+    <div class="mm-row"><span class="mm-label">Ativar</span><div class="mm-toggle on" id="mm5tog" onclick="mmToggle(5)"></div></div>
+    <div class="mm-row"><span class="mm-label">Período</span><input type="number" class="mm-num" id="mm5per" value="200" min="2" max="500"><span style="font-size:8px;color:var(--txt3);margin-left:4px">períodos</span></div>
+    <div class="mm-row"><span class="mm-label">Cor</span><input type="color" class="mm-color" id="mm5cor" value="#eab308"><span class="mm-label" style="margin-left:10px">Opacidade</span><input type="number" class="mm-op" id="mm5op" value="0.40" min="0.1" max="1" step="0.05"></div>
+    <div class="mm-row">
+      <span class="mm-label">Espessura</span><input type="number" class="mm-num" id="mm5lw" value="0.9" min="0.5" max="5" step="0.5"><span style="font-size:8px;color:var(--txt3);margin-left:4px">px</span>
+      <span class="mm-label" style="margin-left:10px">Traçado</span>
+      <select id="mm5dash" class="mm-sel"><option value="solid">Sólida</option><option value="dash" selected>Tracejada</option><option value="dot">Pontilhada</option></select>
+    </div>
+    <div class="mm-row"><span class="mm-label">Tipo curva</span><select id="mm5curva" class="mm-sel" style="flex:1"><option value="linear" selected>Linear (reta)</option><option value="smooth">Smooth (suave)</option><option value="bezier">Bezier</option><option value="step">Step (degrau)</option></select></div>
+
+    <!-- MM6 -->
+    <div style="font-size:8px;color:#fff;letter-spacing:.8px;margin-top:8px;padding-bottom:4px;border-bottom:1px solid var(--brd)">MÉDIA MÓVEL 6</div>
+    <div class="mm-row"><span class="mm-label">Ativar</span><div class="mm-toggle" id="mm6tog" onclick="mmToggle(6)"></div></div>
+    <div class="mm-row"><span class="mm-label">Período</span><input type="number" class="mm-num" id="mm6per" value="7" min="2" max="500"><span style="font-size:8px;color:var(--txt3);margin-left:4px">períodos</span></div>
+    <div class="mm-row"><span class="mm-label">Cor</span><input type="color" class="mm-color" id="mm6cor" value="#ffffff"><span class="mm-label" style="margin-left:10px">Opacidade</span><input type="number" class="mm-op" id="mm6op" value="0.35" min="0.1" max="1" step="0.05"></div>
+    <div class="mm-row">
+      <span class="mm-label">Espessura</span><input type="number" class="mm-num" id="mm6lw" value="0.8" min="0.5" max="5" step="0.5"><span style="font-size:8px;color:var(--txt3);margin-left:4px">px</span>
+      <span class="mm-label" style="margin-left:10px">Traçado</span>
+      <select id="mm6dash" class="mm-sel"><option value="solid">Sólida</option><option value="dash" selected>Tracejada</option><option value="dot">Pontilhada</option></select>
+    </div>
+    <div class="mm-row"><span class="mm-label">Tipo curva</span><select id="mm6curva" class="mm-sel" style="flex:1"><option value="linear">Linear (reta)</option><option value="smooth" selected>Smooth (suave)</option><option value="bezier">Bezier</option><option value="step">Step (degrau)</option></select></div>
+
+    <!-- MM7 -->
+    <div style="font-size:8px;color:#ec4899;letter-spacing:.8px;margin-top:8px;padding-bottom:4px;border-bottom:1px solid var(--brd)">MÉDIA MÓVEL 7</div>
+    <div class="mm-row"><span class="mm-label">Ativar</span><div class="mm-toggle" id="mm7tog" onclick="mmToggle(7)"></div></div>
+    <div class="mm-row"><span class="mm-label">Período</span><input type="number" class="mm-num" id="mm7per" value="14" min="2" max="500"><span style="font-size:8px;color:var(--txt3);margin-left:4px">períodos</span></div>
+    <div class="mm-row"><span class="mm-label">Cor</span><input type="color" class="mm-color" id="mm7cor" value="#ec4899"><span class="mm-label" style="margin-left:10px">Opacidade</span><input type="number" class="mm-op" id="mm7op" value="0.35" min="0.1" max="1" step="0.05"></div>
+    <div class="mm-row">
+      <span class="mm-label">Espessura</span><input type="number" class="mm-num" id="mm7lw" value="0.8" min="0.5" max="5" step="0.5"><span style="font-size:8px;color:var(--txt3);margin-left:4px">px</span>
+      <span class="mm-label" style="margin-left:10px">Traçado</span>
+      <select id="mm7dash" class="mm-sel"><option value="solid">Sólida</option><option value="dash">Tracejada</option><option value="dot" selected>Pontilhada</option></select>
+    </div>
+    <div class="mm-row"><span class="mm-label">Tipo curva</span><select id="mm7curva" class="mm-sel" style="flex:1"><option value="linear">Linear (reta)</option><option value="smooth">Smooth (suave)</option><option value="bezier" selected>Bezier</option><option value="step">Step (degrau)</option></select></div>
+
+    <!-- MM8 -->
+    <div style="font-size:8px;color:#3b82f6;letter-spacing:.8px;margin-top:8px;padding-bottom:4px;border-bottom:1px solid var(--brd)">MÉDIA MÓVEL 8</div>
+    <div class="mm-row"><span class="mm-label">Ativar</span><div class="mm-toggle" id="mm8tog" onclick="mmToggle(8)"></div></div>
+    <div class="mm-row"><span class="mm-label">Período</span><input type="number" class="mm-num" id="mm8per" value="30" min="2" max="500"><span style="font-size:8px;color:var(--txt3);margin-left:4px">períodos</span></div>
+    <div class="mm-row"><span class="mm-label">Cor</span><input type="color" class="mm-color" id="mm8cor" value="#3b82f6"><span class="mm-label" style="margin-left:10px">Opacidade</span><input type="number" class="mm-op" id="mm8op" value="0.35" min="0.1" max="1" step="0.05"></div>
+    <div class="mm-row">
+      <span class="mm-label">Espessura</span><input type="number" class="mm-num" id="mm8lw" value="0.8" min="0.5" max="5" step="0.5"><span style="font-size:8px;color:var(--txt3);margin-left:4px">px</span>
+      <span class="mm-label" style="margin-left:10px">Traçado</span>
+      <select id="mm8dash" class="mm-sel"><option value="solid">Sólida</option><option value="dash" selected>Tracejada</option><option value="dot">Pontilhada</option></select>
+    </div>
+    <div class="mm-row"><span class="mm-label">Tipo curva</span><select id="mm8curva" class="mm-sel" style="flex:1"><option value="linear" selected>Linear (reta)</option><option value="smooth">Smooth (suave)</option><option value="bezier">Bezier</option><option value="step">Step (degrau)</option></select></div>
+
     <div style="font-size:8px;color:var(--txt3);text-align:right;margin-top:6px">Config salva automaticamente</div>
     <div class="m-btns" style="margin-top:6px">
       <button class="mbtn mb-g" onclick="aplicarCfgMM()">&#10003; Aplicar</button>
@@ -370,30 +455,22 @@ const CFG = {
   showN: 40,
   showMA: true,
   sinalMMOn: true,
-  // MM1 — âmbar, Smooth, Tracejada
-  mm1On:   true,
-  mm1Per:  9,
-  mm1Cor:  '#f59e0b',
-  mm1Op:   0.80,
-  mm1Lw:   1.5,
-  mm1Dash: [4,5],
-  mm1Curva: 'smooth',
-  // MM2 — ciano, Linear, Tracejada
-  mm2On:   true,
-  mm2Per:  21,
-  mm2Cor:  '#06b6d4',
-  mm2Op:   0.55,
-  mm2Lw:   1.2,
-  mm2Dash: [4,5],
-  mm2Curva: 'linear',
-  // MM3 — verde, Bezier, Pontilhada (desligada por padrão)
-  mm3On:   false,
-  mm3Per:  50,
-  mm3Cor:  '#22c55e',
-  mm3Op:   0.50,
-  mm3Lw:   1.0,
-  mm3Dash: [2,4],
-  mm3Curva: 'bezier',
+  // MM1 — âmbar
+  mm1On:   true, mm1Per:  9, mm1Cor: '#f59e0b', mm1Op: 0.80, mm1Lw: 1.5, mm1Dash: [4,5], mm1Curva: 'smooth',
+  // MM2 — ciano
+  mm2On:   true, mm2Per: 21, mm2Cor: '#06b6d4', mm2Op: 0.55, mm2Lw: 1.2, mm2Dash: [4,5], mm2Curva: 'linear',
+  // MM3 — verde (ativada)
+  mm3On:   true, mm3Per: 50, mm3Cor: '#22c55e', mm3Op: 0.50, mm3Lw: 1.0, mm3Dash: [2,4], mm3Curva: 'bezier',
+  // MM4 — vermelha
+  mm4On:   true, mm4Per:100, mm4Cor: '#ef4444', mm4Op: 0.45, mm4Lw: 1.0, mm4Dash: [6,3], mm4Curva: 'smooth',
+  // MM5 — amarela
+  mm5On:   true, mm5Per:200, mm5Cor: '#eab308', mm5Op: 0.40, mm5Lw: 0.9, mm5Dash: [8,4], mm5Curva: 'linear',
+  // MM6 — branca (desligada)
+  mm6On:  false, mm6Per:  7, mm6Cor: '#ffffff', mm6Op: 0.35, mm6Lw: 0.8, mm6Dash: [4,5], mm6Curva: 'smooth',
+  // MM7 — rosa (desligada)
+  mm7On:  false, mm7Per: 14, mm7Cor: '#ec4899', mm7Op: 0.35, mm7Lw: 0.8, mm7Dash: [2,4], mm7Curva: 'bezier',
+  // MM8 — azul (desligada)
+  mm8On:  false, mm8Per: 30, mm8Cor: '#3b82f6', mm8Op: 0.35, mm8Lw: 0.8, mm8Dash: [4,5], mm8Curva: 'linear',
 };
 
 // Zoom / Pan horizontal
@@ -719,7 +796,12 @@ function draw(){
 
     [{on:CFG.mm1On,per:CFG.mm1Per,cor:CFG.mm1Cor,op:CFG.mm1Op,lw:CFG.mm1Lw,dash:CFG.mm1Dash,curva:CFG.mm1Curva},
      {on:CFG.mm2On,per:CFG.mm2Per,cor:CFG.mm2Cor,op:CFG.mm2Op,lw:CFG.mm2Lw,dash:CFG.mm2Dash,curva:CFG.mm2Curva},
-     {on:CFG.mm3On,per:CFG.mm3Per,cor:CFG.mm3Cor,op:CFG.mm3Op,lw:CFG.mm3Lw,dash:CFG.mm3Dash,curva:CFG.mm3Curva}
+     {on:CFG.mm3On,per:CFG.mm3Per,cor:CFG.mm3Cor,op:CFG.mm3Op,lw:CFG.mm3Lw,dash:CFG.mm3Dash,curva:CFG.mm3Curva},
+     {on:CFG.mm4On,per:CFG.mm4Per,cor:CFG.mm4Cor,op:CFG.mm4Op,lw:CFG.mm4Lw,dash:CFG.mm4Dash,curva:CFG.mm4Curva},
+     {on:CFG.mm5On,per:CFG.mm5Per,cor:CFG.mm5Cor,op:CFG.mm5Op,lw:CFG.mm5Lw,dash:CFG.mm5Dash,curva:CFG.mm5Curva},
+     {on:CFG.mm6On,per:CFG.mm6Per,cor:CFG.mm6Cor,op:CFG.mm6Op,lw:CFG.mm6Lw,dash:CFG.mm6Dash,curva:CFG.mm6Curva},
+     {on:CFG.mm7On,per:CFG.mm7Per,cor:CFG.mm7Cor,op:CFG.mm7Op,lw:CFG.mm7Lw,dash:CFG.mm7Dash,curva:CFG.mm7Curva},
+     {on:CFG.mm8On,per:CFG.mm8Per,cor:CFG.mm8Cor,op:CFG.mm8Op,lw:CFG.mm8Lw,dash:CFG.mm8Dash,curva:CFG.mm8Curva}
     ].forEach(mm=>{
       if(!mm.on||pts.length<mm.per) return;
       const k=2/(mm.per+1);
@@ -1041,20 +1123,28 @@ function closeIndicadores(){ document.getElementById('indModal').classList.remov
 function closeThenOpenMM(){ closeIndicadores(); openCfgMM(); }
 
 function resetCfgMM(){
-  CFG.mm1On=true;  CFG.mm1Per=9;  CFG.mm1Cor='#f59e0b'; CFG.mm1Op=0.80; CFG.mm1Lw=1.5; CFG.mm1Dash=[4,5]; CFG.mm1Curva='smooth';
-  CFG.mm2On=true;  CFG.mm2Per=21; CFG.mm2Cor='#06b6d4'; CFG.mm2Op=0.55; CFG.mm2Lw=1.2; CFG.mm2Dash=[4,5]; CFG.mm2Curva='linear';
-  CFG.mm3On=false; CFG.mm3Per=50; CFG.mm3Cor='#22c55e'; CFG.mm3Op=0.50; CFG.mm3Lw=1.0; CFG.mm3Dash=[2,4]; CFG.mm3Curva='bezier';
+  CFG.mm1On=true;  CFG.mm1Per=9;   CFG.mm1Cor='#f59e0b'; CFG.mm1Op=0.80; CFG.mm1Lw=1.5; CFG.mm1Dash=[4,5]; CFG.mm1Curva='smooth';
+  CFG.mm2On=true;  CFG.mm2Per=21;  CFG.mm2Cor='#06b6d4'; CFG.mm2Op=0.55; CFG.mm2Lw=1.2; CFG.mm2Dash=[4,5]; CFG.mm2Curva='linear';
+  CFG.mm3On=true;  CFG.mm3Per=50;  CFG.mm3Cor='#22c55e'; CFG.mm3Op=0.50; CFG.mm3Lw=1.0; CFG.mm3Dash=[2,4]; CFG.mm3Curva='bezier';
+  CFG.mm4On=true;  CFG.mm4Per=100; CFG.mm4Cor='#ef4444'; CFG.mm4Op=0.45; CFG.mm4Lw=1.0; CFG.mm4Dash=[6,3]; CFG.mm4Curva='smooth';
+  CFG.mm5On=true;  CFG.mm5Per=200; CFG.mm5Cor='#eab308'; CFG.mm5Op=0.40; CFG.mm5Lw=0.9; CFG.mm5Dash=[8,4]; CFG.mm5Curva='linear';
+  CFG.mm6On=false; CFG.mm6Per=7;   CFG.mm6Cor='#ffffff'; CFG.mm6Op=0.35; CFG.mm6Lw=0.8; CFG.mm6Dash=[4,5]; CFG.mm6Curva='smooth';
+  CFG.mm7On=false; CFG.mm7Per=14;  CFG.mm7Cor='#ec4899'; CFG.mm7Op=0.35; CFG.mm7Lw=0.8; CFG.mm7Dash=[2,4]; CFG.mm7Curva='bezier';
+  CFG.mm8On=false; CFG.mm8Per=30;  CFG.mm8Cor='#3b82f6'; CFG.mm8Op=0.35; CFG.mm8Lw=0.8; CFG.mm8Dash=[4,5]; CFG.mm8Curva='linear';
   CFG.showMA=true; salvarConfig(); openCfgMM(); draw();
 }
 
 function openCfgMM(){
-  // Sincroniza UI com CFG atual
   const g=(id,val)=>{const e=document.getElementById(id);if(e)e.value=val;};
   const gt=(id,on)=>{const e=document.getElementById(id);if(e)e.classList.toggle('on',on);};
-  const dashStr=d=>Array.isArray(d)?(d[0]===4&&d[1]===5?'dash':d[0]===2?'dot':'solid'):'dash';
-  gt('mm1tog',CFG.mm1On); g('mm1per',CFG.mm1Per); g('mm1cor',CFG.mm1Cor); g('mm1op',CFG.mm1Op); g('mm1lw',CFG.mm1Lw); document.getElementById('mm1dash').value=dashStr(CFG.mm1Dash); document.getElementById('mm1curva').value=CFG.mm1Curva||'smooth';
-  gt('mm2tog',CFG.mm2On); g('mm2per',CFG.mm2Per); g('mm2cor',CFG.mm2Cor); g('mm2op',CFG.mm2Op); g('mm2lw',CFG.mm2Lw); document.getElementById('mm2dash').value=dashStr(CFG.mm2Dash); document.getElementById('mm2curva').value=CFG.mm2Curva||'linear';
-  gt('mm3tog',CFG.mm3On); g('mm3per',CFG.mm3Per); g('mm3cor',CFG.mm3Cor); g('mm3op',CFG.mm3Op); g('mm3lw',CFG.mm3Lw); document.getElementById('mm3dash').value=dashStr(CFG.mm3Dash); document.getElementById('mm3curva').value=CFG.mm3Curva||'bezier';
+  const dashStr=d=>Array.isArray(d)?(d[0]===4&&d[1]===5?'dash':d[0]===2?'dot':d[0]===6?'dash':d[0]===8?'dash':'solid'):'dash';
+  for(let n=1;n<=8;n++){
+    const p='mm'+n;
+    gt(p+'tog',CFG[p+'On']); g(p+'per',CFG[p+'Per']); g(p+'cor',CFG[p+'Cor']); g(p+'op',CFG[p+'Op']);
+    g(p+'lw',CFG[p+'Lw']);
+    const elDash=document.getElementById(p+'dash'); if(elDash) elDash.value=dashStr(CFG[p+'Dash']);
+    const elCurva=document.getElementById(p+'curva'); if(elCurva) elCurva.value=CFG[p+'Curva']||'smooth';
+  }
   document.getElementById('mmModal').classList.add('open');
 }
 function closeCfgMM(){ document.getElementById('mmModal').classList.remove('open'); }
@@ -1072,12 +1162,17 @@ function aplicarCfgMM(){
   const gd=(id)=>dashFromStr(document.getElementById(id)?.value||'dash');
   const gc=(id)=>document.getElementById(id)?.value||'#ffffff';
 
-  CFG.mm1On=gt('mm1tog'); CFG.mm1Per=gv('mm1per',9); CFG.mm1Cor=gc('mm1cor'); CFG.mm1Op=gv('mm1op',.8,true); CFG.mm1Lw=gv('mm1lw',1.5,true); CFG.mm1Dash=gd('mm1dash'); CFG.mm1Curva=document.getElementById('mm1curva')?.value||'smooth';
-  CFG.mm2On=gt('mm2tog'); CFG.mm2Per=gv('mm2per',21); CFG.mm2Cor=gc('mm2cor'); CFG.mm2Op=gv('mm2op',.55,true); CFG.mm2Lw=gv('mm2lw',1.2,true); CFG.mm2Dash=gd('mm2dash'); CFG.mm2Curva=document.getElementById('mm2curva')?.value||'linear';
-  CFG.mm3On=gt('mm3tog'); CFG.mm3Per=gv('mm3per',50); CFG.mm3Cor=gc('mm3cor'); CFG.mm3Op=gv('mm3op',.5,true); CFG.mm3Lw=gv('mm3lw',1.0,true); CFG.mm3Dash=gd('mm3dash'); CFG.mm3Curva=document.getElementById('mm3curva')?.value||'bezier';
+  for(let n=1;n<=8;n++){
+    CFG['mm'+n+'On']=gt('mm'+n+'tog');
+    CFG['mm'+n+'Per']=gv('mm'+n+'per',n===1?9:n===2?21:50);
+    CFG['mm'+n+'Cor']=gc('mm'+n+'cor');
+    CFG['mm'+n+'Op']=gv('mm'+n+'op',.5,true);
+    CFG['mm'+n+'Lw']=gv('mm'+n+'lw',1,true);
+    CFG['mm'+n+'Dash']=gd('mm'+n+'dash');
+    CFG['mm'+n+'Curva']=document.getElementById('mm'+n+'curva')?.value||'smooth';
+  }
 
-  // Atualiza botão MM na topbar
-  const anyOn=CFG.mm1On||CFG.mm2On||CFG.mm3On;
+  const anyOn=CFG.mm1On||CFG.mm2On||CFG.mm3On||CFG.mm4On||CFG.mm5On||CFG.mm6On||CFG.mm7On||CFG.mm8On;
   document.getElementById('maBtn').classList.toggle('on', anyOn);
   CFG.showMA=anyOn;
   salvarConfig();
@@ -1274,22 +1369,17 @@ function salvarConfig(){
   try{
     const dados = {
       cfg: {
-        showN:    CFG.showN,
-        showMA:   CFG.showMA,
-        mm1On:    CFG.mm1On,  mm1Per: CFG.mm1Per, mm1Cor: CFG.mm1Cor, mm1Op: CFG.mm1Op, mm1Lw: CFG.mm1Lw, mm1Dash: CFG.mm1Dash, mm1Curva: CFG.mm1Curva,
-        mm2On:    CFG.mm2On,  mm2Per: CFG.mm2Per, mm2Cor: CFG.mm2Cor, mm2Op: CFG.mm2Op, mm2Lw: CFG.mm2Lw, mm2Dash: CFG.mm2Dash, mm2Curva: CFG.mm2Curva,
-        mm3On:    CFG.mm3On,  mm3Per: CFG.mm3Per, mm3Cor: CFG.mm3Cor, mm3Op: CFG.mm3Op, mm3Lw: CFG.mm3Lw, mm3Dash: CFG.mm3Dash, mm3Curva: CFG.mm3Curva,
-        sinalMMOn: CFG.sinalMMOn,
+        showN: CFG.showN, showMA: CFG.showMA, sinalMMOn: CFG.sinalMMOn,
       },
       rodada: rodadaConfig,
-      servidor: {
-        url:    srv.url,
-        get:    srv.get,
-        post:   srv.post,
-        painel: srv.painel,
-        poll:   srv.poll
-      }
+      servidor: { url: srv.url, get: srv.get, post: srv.post, painel: srv.painel, poll: srv.poll }
     };
+    for(let n=1;n<=8;n++){
+      const p='mm'+n;
+      dados.cfg[p+'On']=CFG[p+'On']; dados.cfg[p+'Per']=CFG[p+'Per']; dados.cfg[p+'Cor']=CFG[p+'Cor'];
+      dados.cfg[p+'Op']=CFG[p+'Op']; dados.cfg[p+'Lw']=CFG[p+'Lw']; dados.cfg[p+'Dash']=CFG[p+'Dash'];
+      dados.cfg[p+'Curva']=CFG[p+'Curva'];
+    }
     localStorage.setItem(STORAGE_KEY, JSON.stringify(dados));
   } catch(e){ console.warn('Erro ao salvar config:', e); }
 }
@@ -1299,38 +1389,20 @@ function carregarConfig(){
     const raw = localStorage.getItem(STORAGE_KEY);
     if(!raw) return;
     const dados = JSON.parse(raw);
-
-    // Restaura CFG
     if(dados.cfg){
       Object.assign(CFG, dados.cfg);
-      // Garante que dash seja array
-      ['mm1Dash','mm2Dash','mm3Dash'].forEach(k=>{
-        if(!Array.isArray(CFG[k])) CFG[k]=[4,5];
-      });
+      // Garante que dash seja array em todas as MMs
+      for(let n=1;n<=8;n++){ const k='mm'+n+'Dash'; if(!Array.isArray(CFG[k])) CFG[k]=[4,5]; }
     }
-
-    // Restaura rodadaConfig
     if(dados.rodada) Object.assign(rodadaConfig, dados.rodada);
-
-    // Restaura servidor
     if(dados.servidor) Object.assign(srv, dados.servidor);
 
-    // Atualiza UI do botão MM
-    const anyOn = CFG.mm1On||CFG.mm2On||CFG.mm3On;
+    const anyOn = CFG.mm1On||CFG.mm2On||CFG.mm3On||CFG.mm4On||CFG.mm5On||CFG.mm6On||CFG.mm7On||CFG.mm8On;
     document.getElementById('maBtn')?.classList.toggle('on', anyOn);
-
-    // Atualiza slider
-    const sl = document.getElementById('xslider');
-    if(sl) sl.value = CFG.showN;
-
-    // Atualiza campos do servidor no modal
+    const sl = document.getElementById('xslider'); if(sl) sl.value = CFG.showN;
     const setVal=(id,v)=>{const e=document.getElementById(id);if(e)e.value=v;};
-    setVal('cfgUrl',    srv.url);
-    setVal('cfgGet',    srv.get);
-    setVal('cfgPost',   srv.post);
-    setVal('cfgPainel', srv.painel);
-    setVal('cfgPoll',   srv.poll);
-
+    setVal('cfgUrl', srv.url); setVal('cfgGet', srv.get); setVal('cfgPost', srv.post);
+    setVal('cfgPainel', srv.painel); setVal('cfgPoll', srv.poll);
   } catch(e){ console.warn('Erro ao carregar config:', e); }
 }
 
