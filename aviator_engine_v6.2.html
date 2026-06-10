@@ -300,7 +300,7 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:var(--fon
 <div class="modal-bg" id="serverModal" onclick="if(event.target===this)closeServer()">
   <div class="modal">
     <div class="m-title">&#9775; Servidor Render <span class="m-close" onclick="closeServer()">&#10005;</span></div>
-    <div class="m-group"><label>URL Base</label><input type="text" id="cfgUrl" value="https://aviator-trader.onrender.com"></div>
+    <div class="m-group"><label>URL Base</label><input type="text" id="cfgUrl" value="https://aviator-trader-quadrado.onrender.com"></div>
     <div class="m-row">
       <div class="m-group"><label>Endpoint velas (GET)</label><input type="text" id="cfgGet" value="/api/velas"></div>
       <div class="m-group"><label>Painel</label><select id="cfgPainel"><option value="1">Aviator 1</option><option value="2">Aviator 2</option></select></div>
@@ -511,7 +511,7 @@ function clearDrawings(){ drawings=[]; selIdx=-1; draw(); }
 // ═══════════════════════════════════════════
 // SERVIDOR
 // ═══════════════════════════════════════════
-const serverCfg={url:'https://aviator-trader.onrender.com',get:'/api/velas',post:'/api/nova-vela',painel:1,poll:1500};
+const serverCfg={url:'https://aviator-trader-quadrado.onrender.com',get:'/api/velas',post:'/api/nova-vela',painel:1,poll:1500};
 
 function openServer(){ document.getElementById('serverModal').classList.add('open'); }
 function closeServer(){ document.getElementById('serverModal').classList.remove('open'); }
