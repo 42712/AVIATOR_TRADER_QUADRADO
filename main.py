@@ -1,10 +1,12 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, FileResponse
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 from typing import Optional
 from collections import deque
 import time
+import os
 
 app = FastAPI(title="Sortenabet Aviator Server")
 
@@ -76,3 +78,12 @@ def status():
         "painel2": len(velas[2]),
         "ts": int(time.time()),
     }
+
+
+@app.get("/painel", response_class=HTMLResponse)
+def painel():
+    path = os.path.join(os.path.dirname(__file__), "aviator_engine_v6_2.html")
+    if not os.path.exists(path):
+        return HTMLResponse("<h2>aviator_engine_v6_2.html não encontrado na raiz do projeto</h2>", status_code=404)
+    with open(path, "r", encoding="utf-8") as f:
+        return HTMLResponse(f.read())
