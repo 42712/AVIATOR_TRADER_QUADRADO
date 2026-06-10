@@ -1,0 +1,1512 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aviator Engine v7</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#06090f;--bg2:#0a0f1a;--bg3:#0e1522;--bg4:#121d2e;
+  --brd:#18273d;--brd2:#203555;
+  --txt:#b8d0ec;--txt2:#4a6e94;--txt3:#1e3a58;
+  --up:#a855f7;--dn:#06b6d4;--pk:#f43f5e;--gn:#22c55e;--am:#f59e0b;
+  --font:'JetBrains Mono',monospace;
+}
+html,body{height:100%;overflow:hidden;background:var(--bg);font-family:var(--font);font-size:11px;color:var(--txt)}
+.root{display:flex;flex-direction:column;height:100vh}
+.main{display:flex;flex:1;overflow:hidden;min-height:0}
+
+/* TOPBAR */
+.topbar{height:38px;background:var(--bg2);border-bottom:1px solid var(--brd);display:flex;align-items:center;flex-shrink:0;user-select:none}
+.tb-logo{padding:0 14px;font-size:13px;font-weight:700;color:#fff;letter-spacing:.5px;border-right:1px solid var(--brd);height:100%;display:flex;align-items:center;gap:8px;white-space:nowrap}
+.tb-dot{width:8px;height:8px;border-radius:50%;background:var(--up);animation:glow 2s infinite}
+@keyframes glow{0%,100%{box-shadow:0 0 4px var(--up)}50%{box-shadow:0 0 14px var(--up)}}
+.tb-mid{flex:1;display:flex;align-items:center;gap:3px;padding:0 10px;overflow-x:auto}
+.tb-right{display:flex;align-items:center;gap:4px;padding:0 10px;border-left:1px solid var(--brd)}
+.btn{padding:2px 9px;border-radius:4px;border:1px solid var(--brd2);background:var(--bg3);color:var(--txt2);font-size:9px;font-family:var(--font);cursor:pointer;height:22px;display:flex;align-items:center;gap:3px;transition:all .15s;white-space:nowrap;flex-shrink:0}
+.btn:hover{border-color:var(--txt2);color:var(--txt)}
+.btn.on{border-color:var(--up);background:rgba(168,85,247,.15);color:var(--up)}
+.btn.g{border-color:#166534;background:rgba(34,197,94,.1);color:var(--gn)}
+.btn.b{border-color:#1e3a5f;background:rgba(96,165,250,.08);color:#60a5fa}
+.btn.r{border-color:#9f1239;background:rgba(244,63,94,.08);color:var(--pk)}
+.ws-pill{display:flex;align-items:center;gap:4px;font-size:9px;padding:0 8px;border-left:1px solid var(--brd)}
+.ws-pill.ok{color:var(--gn)}.ws-pill.err{color:var(--pk)}.ws-pill.am{color:var(--am)}
+.wsd{width:5px;height:5px;border-radius:50%;background:currentColor;animation:blink 1.4s infinite}
+.rod-input{width:100%;padding:6px 9px;background:var(--bg3);border:1px solid var(--brd2);border-radius:4px;color:var(--txt);font-family:var(--font);font-size:10px;outline:none}
+.rod-input:focus{border-color:var(--gn)}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
+@keyframes pulseBtn{0%,100%{box-shadow:0 2px 12px rgba(168,85,247,.3)}50%{box-shadow:0 2px 20px rgba(168,85,247,.7)}}
+
+/* TOOLBOX */
+.toolbox{width:38px;background:var(--bg2);border-right:1px solid var(--brd);display:flex;flex-direction:column;align-items:center;padding:5px 0;gap:2px;flex-shrink:0;user-select:none}
+.tb{width:28px;height:28px;border-radius:4px;border:1px solid var(--brd);background:var(--bg3);color:var(--txt2);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;position:relative;flex-shrink:0}
+.tb:hover{border-color:var(--txt2);color:var(--txt);background:var(--bg4)}
+.tb.active{border-color:var(--up);background:rgba(168,85,247,.2);color:var(--up)}
+.tb svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.tb-sep{width:20px;height:1px;background:var(--brd);margin:1px 0;flex-shrink:0}
+.tblabel{position:absolute;left:34px;top:50%;transform:translateY(-50%);background:var(--bg4);border:1px solid var(--brd2);border-radius:4px;padding:2px 7px;font-size:8px;color:var(--txt);white-space:nowrap;pointer-events:none;opacity:0;transition:opacity .12s;z-index:300}
+.tb:hover .tblabel{opacity:1}
+
+/* CHART */
+.chart-col{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0}
+.canvas-wrap{flex:1;position:relative;overflow:hidden;background:var(--bg);min-height:0;cursor:default}
+#cv{display:block;position:absolute;top:0;left:0}
+#pov{position:absolute;inset:0;z-index:19;display:none;cursor:grabbing}
+
+/* XBAR */
+.xbar{height:26px;background:var(--bg2);border-top:1px solid var(--brd);display:flex;align-items:center;padding:0 8px;gap:8px;font-size:8px;color:var(--txt3);flex-shrink:0;user-select:none}
+.xslider{flex:1;height:4px;-webkit-appearance:none;appearance:none;background:var(--brd2);border-radius:2px;outline:none;cursor:pointer}
+.xslider::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;border-radius:50%;background:var(--up);cursor:pointer}
+.xslider::-moz-range-thumb{width:14px;height:14px;border-radius:50%;background:var(--up);border:none;cursor:pointer}
+
+/* SIDEBAR */
+.data-sb{width:170px;background:var(--bg2);border-left:1px solid var(--brd);display:flex;flex-direction:column;overflow:hidden;flex-shrink:0}
+.sbh{padding:4px 10px;font-size:7px;color:var(--txt3);letter-spacing:.8px;border-bottom:1px solid var(--brd);flex-shrink:0;text-transform:uppercase}
+.kv-block{padding:4px 10px 6px;flex-shrink:0;border-bottom:1px solid var(--brd)}
+.kv{display:flex;justify-content:space-between;padding:2px 0}
+.kk{font-size:8px;color:var(--txt2)}.kvv{font-size:9px;font-weight:500;color:var(--txt)}
+.log-area{flex:1;overflow-y:auto}
+.log-row{display:flex;align-items:center;gap:3px;padding:2px 8px;border-bottom:1px solid #070d15;cursor:default;font-size:9px}
+.log-row:hover{background:var(--bg3)}
+.ldot{width:4px;height:4px;border-radius:50%;flex-shrink:0}
+.lt{color:var(--txt3);min-width:28px;font-size:8px}.lv{font-weight:500}
+.ltag{font-size:7px;padding:1px 3px;border-radius:2px;margin-left:auto;font-weight:500}
+.t-up{background:rgba(168,85,247,.12);color:var(--up)}
+.t-dn{background:rgba(6,182,212,.12);color:var(--dn)}
+.t-pk{background:rgba(244,114,182,.15);color:#f472b6}
+.t-ext{background:rgba(245,158,11,.15);color:var(--am)}
+
+/* TOOLTIP */
+.tooltip{position:absolute;background:#080f1c;border:1px solid var(--brd2);border-radius:5px;padding:6px 10px;pointer-events:none;display:none;z-index:60;min-width:100px}
+.tt-v{font-size:14px;font-weight:700}.tt-s{font-size:8px;color:var(--txt2);margin-top:1px}
+
+/* ALERT */
+.alert{position:absolute;top:10px;left:50%;transform:translateX(-50%);padding:6px 22px;border-radius:20px;font-size:12px;font-weight:700;pointer-events:none;z-index:50;white-space:nowrap;opacity:0;transition:opacity .3s}
+.alert.show{opacity:1}
+.flash{position:absolute;inset:0;border:2px solid var(--gn);opacity:0;pointer-events:none;transition:opacity .12s;z-index:45}
+.flash.on{opacity:1}
+
+/* BOTÃO VOLTAR */
+#btnBack{position:absolute;bottom:36px;left:50%;transform:translateX(-50%);background:rgba(168,85,247,.35);border:1.5px solid var(--up);border-radius:20px;padding:7px 22px;font-size:11px;font-weight:700;color:var(--up);cursor:pointer;display:none;z-index:60;font-family:var(--font);box-shadow:0 2px 12px rgba(168,85,247,.3);animation:pulseBtn 1.5s infinite}
+#btnBack.show{display:block}
+
+/* MODAIS */
+.modal-bg{position:fixed;inset:0;background:rgba(5,8,13,.93);display:none;align-items:center;justify-content:center;z-index:999}
+.modal-bg.open{display:flex}
+.modal{background:var(--bg4);border:1px solid var(--brd2);border-radius:10px;padding:22px 24px;width:400px;display:flex;flex-direction:column;gap:10px;max-height:90vh;overflow-y:auto}
+.m-title{font-size:13px;font-weight:700;color:#fff;display:flex;justify-content:space-between}
+.m-x{cursor:pointer;color:var(--txt2)}
+.m-group{display:flex;flex-direction:column;gap:3px}
+.m-group label{font-size:9px;color:var(--txt2)}
+.m-group input,.m-group select{width:100%;padding:5px 8px;background:var(--bg3);border:1px solid var(--brd2);border-radius:4px;color:var(--txt);font-family:var(--font);font-size:10px;outline:none}
+.m-group input:focus{border-color:var(--up)}
+.m-row{display:flex;gap:8px}.m-row .m-group{flex:1}
+.m-status{background:var(--bg3);border:1px solid var(--brd);border-radius:4px;padding:7px 9px;font-size:9px;color:var(--txt2);line-height:1.6;min-height:30px}
+.mbtn{padding:8px;border-radius:5px;font-size:10px;font-weight:700;cursor:pointer;font-family:var(--font);transition:all .15s;border:1px solid;flex:1}
+.mb-g{background:rgba(34,197,94,.12);border-color:#166534;color:var(--gn)}.mb-g:hover{background:rgba(34,197,94,.22)}
+.mb-b{background:rgba(96,165,250,.08);border-color:#1e3a5f;color:#60a5fa}.mb-b:hover{background:rgba(96,165,250,.18)}
+.mb-r{background:rgba(244,63,94,.08);border-color:#9f1239;color:var(--pk)}.mb-r:hover{background:rgba(244,63,94,.18)}
+.mb-c{background:var(--bg3);border-color:var(--brd);color:var(--txt3)}.mb-c:hover{color:var(--txt2)}
+.m-btns{display:flex;gap:6px}
+
+/* TEXT INPUT DESENHO */
+/* MODAL MM */
+.mm-row{display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid var(--brd);flex-wrap:nowrap}
+.mm-row:last-child{border-bottom:none}
+.mm-label{font-size:9px;color:var(--txt2);width:60px;flex-shrink:0}
+.mm-toggle{width:32px;height:16px;border-radius:8px;background:var(--brd2);cursor:pointer;position:relative;transition:background .2s;flex-shrink:0}
+.mm-toggle.on{background:var(--gn)}
+.mm-toggle::after{content:'';position:absolute;width:12px;height:12px;border-radius:50%;background:#fff;top:2px;left:2px;transition:left .2s}
+.mm-toggle.on::after{left:18px}
+.mm-num{width:48px;padding:3px 6px;background:var(--bg3);border:1px solid var(--brd2);border-radius:3px;color:var(--txt);font-family:var(--font);font-size:9px;outline:none}
+.mm-num:focus{border-color:var(--up)}
+.mm-color{width:28px;height:22px;border:none;border-radius:3px;cursor:pointer;padding:0}
+.mm-op{width:48px;padding:3px 6px;background:var(--bg3);border:1px solid var(--brd2);border-radius:3px;color:var(--txt);font-family:var(--font);font-size:9px;outline:none}
+.mm-sel{padding:3px 5px;background:var(--bg3);border:1px solid var(--brd2);border-radius:3px;color:var(--txt);font-family:var(--font);font-size:9px;outline:none}
+.mm-sel:focus{border-color:var(--up)}
+#rodPopup{position:fixed;z-index:802;display:none;flex-direction:column;gap:8px;
+  background:#0a1320;border:1.5px solid var(--gn);border-radius:8px;padding:12px 16px;
+  min-width:200px;box-shadow:0 6px 24px rgba(0,0,0,.8)}
+#rodPopup.show{display:flex}
+#rodPopup b{color:var(--gn);font-size:10px;font-weight:700}
+#rodPopup small{font-size:9px;color:var(--txt2)}
+#rodPopup input{padding:7px 9px;background:var(--bg3);border:1px solid var(--gn);
+  border-radius:4px;color:#fff;font-family:var(--font);font-size:13px;font-weight:700;outline:none;width:100%}
+#rodPopup em{font-size:8px;color:var(--txt3);font-style:normal}
+#textWrap{position:fixed;display:none;z-index:900}
+#textWrap input{background:#0a1320;border:1px solid var(--up);color:var(--txt);padding:4px 8px;font-family:var(--font);font-size:10px;border-radius:4px;outline:none;width:160px}
+</style>
+</head>
+<body>
+<div class="root">
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="tb-logo"><div class="tb-dot"></div>AVIATOR v7</div>
+  <div class="tb-mid">
+    <!-- ferramentas de desenho -->
+    <button class="btn on" id="tool-cursor" onclick="setTool('cursor')">&#9654;</button>
+    <button class="btn" id="tool-hline"  onclick="setTool('hline')"  title="Linha Horizontal">&#8212;</button>
+    <button class="btn" id="tool-vline"  onclick="setTool('vline')"  title="Linha Vertical">|</button>
+    <button class="btn" id="tool-tline"  onclick="setTool('tline')"  title="Tendência">&#8598;</button>
+    <button class="btn" id="tool-channel" onclick="setTool('channel')" title="Canal">&#8661;</button>
+    <button class="btn" id="tool-rect"   onclick="setTool('rect')"   title="Retângulo">&#9645;</button>
+    <button class="btn" id="tool-fib"    onclick="setTool('fib')"    title="Fibonacci">F</button>
+    <button class="btn" id="tool-arrow"  onclick="setTool('arrow')"  title="Seta">&#10132;</button>
+    <button class="btn" id="tool-text"   onclick="setTool('text')"   title="Texto">T</button>
+    <button class="btn r" onclick="clearDrawings()" title="Apagar">&#10005;</button>
+    <div style="width:1px;height:14px;background:var(--brd);flex-shrink:0"></div>
+    <button class="btn" onclick="zoomIn()">+</button>
+    <button class="btn" onclick="zoomOut()">&#8722;</button>
+    <button class="btn" onclick="resetView()">&#8635;</button>
+    <button class="btn" id="maBtn" onclick="toggleMA()">MM</button>
+    <button class="btn b" onclick="openCfgMM()" title="Configurar Médias Móveis">&#9881; MM</button>
+    <button class="btn" onclick="openIndicadores()" title="Indicadores e Configurações" style="font-size:13px">&#9965;</button>
+  </div>
+  <div class="tb-right">
+    <button class="btn g" id="btnRodada" onclick="toggleModoRodada()">&#9313; RODADA</button>
+    <button class="btn b" onclick="openServer()">&#9775; SERVIDOR</button>
+    <div class="ws-pill err" id="wsStatus"><span class="wsd"></span><span id="wsLabel">SIMULADO</span></div>
+  </div>
+</div>
+
+<div class="main">
+<!-- TOOLBOX LATERAL -->
+<div class="toolbox">
+  <div class="tb active" id="tb-cursor" onclick="setTool('cursor')">
+    <svg viewBox="0 0 24 24"><path d="M5 3l14 9-7 1-4 7z" fill="currentColor" stroke="none"/></svg>
+    <span class="tblabel">Cursor</span>
+  </div>
+  <div class="tb-sep"></div>
+  <div class="tb" id="tb-hline" onclick="setTool('hline')">
+    <svg viewBox="0 0 24 24"><line x1="2" y1="12" x2="22" y2="12"/></svg>
+    <span class="tblabel">Linha Horizontal</span>
+  </div>
+  <div class="tb" id="tb-vline" onclick="setTool('vline')">
+    <svg viewBox="0 0 24 24"><line x1="12" y1="2" x2="12" y2="22"/></svg>
+    <span class="tblabel">Linha Vertical</span>
+  </div>
+  <div class="tb" id="tb-tline" onclick="setTool('tline')">
+    <svg viewBox="0 0 24 24"><line x1="4" y1="20" x2="20" y2="4"/><polyline points="14,4 20,4 20,10"/></svg>
+    <span class="tblabel">Tendência</span>
+  </div>
+  <div class="tb" id="tb-channel" onclick="setTool('channel')">
+    <svg viewBox="0 0 24 24"><line x1="3" y1="7" x2="21" y2="4"/><line x1="3" y1="14" x2="21" y2="11"/></svg>
+    <span class="tblabel">Canal</span>
+  </div>
+  <div class="tb-sep"></div>
+  <div class="tb" id="tb-rect" onclick="setTool('rect')">
+    <svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="1"/></svg>
+    <span class="tblabel">Retângulo</span>
+  </div>
+  <div class="tb" id="tb-fib" onclick="setTool('fib')">
+    <svg viewBox="0 0 24 24"><line x1="3" y1="5" x2="21" y2="5"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="3" y1="15" x2="21" y2="15"/><line x1="3" y1="20" x2="21" y2="20"/><line x1="3" y1="3" x2="3" y2="21"/></svg>
+    <span class="tblabel">Fibonacci</span>
+  </div>
+  <div class="tb-sep"></div>
+  <div class="tb" id="tb-arrow" onclick="setTool('arrow')">
+    <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="13,6 19,12 13,18"/></svg>
+    <span class="tblabel">Seta</span>
+  </div>
+  <div class="tb" id="tb-text" onclick="setTool('text')">
+    <svg viewBox="0 0 24 24"><text x="5" y="17" font-size="14" fill="currentColor" stroke="none">T</text></svg>
+    <span class="tblabel">Texto</span>
+  </div>
+  <div class="tb-sep"></div>
+  <div class="tb" style="color:var(--pk)" onclick="clearDrawings()">
+    <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    <span class="tblabel">Apagar tudo</span>
+  </div>
+</div>
+
+<!-- GRÁFICO -->
+<div class="chart-col">
+  <div class="canvas-wrap" id="cwrap">
+    <canvas id="cv"></canvas>
+    <div id="pov"></div>
+    <div class="flash" id="flash"></div>
+    <div class="alert" id="alertBox"></div>
+    <div class="tooltip" id="ttBox"><div class="tt-v" id="ttV"></div><div class="tt-s" id="ttS"></div></div>
+    <button id="btnBack" onclick="voltarPresente()">&#9654;&#9654; VOLTAR AO PRESENTE</button>
+  </div>
+  <div class="xbar">
+    <span id="xL">—</span><span id="xM">—</span><span id="xR">—</span>
+    <input type="range" class="xslider" id="xslider" min="5" max="300" value="40"
+      title="Arrastar: ajusta quantidade de velas visíveis"
+      oninput="CFG.showN=parseInt(this.value);draw()">
+    <span id="xNow" style="color:var(--up);font-size:13px;font-weight:700;letter-spacing:1px">—</span>
+    <span id="xZoom" style="color:var(--txt3)">40v</span>
+  </div>
+</div>
+
+<!-- SIDEBAR -->
+<div class="data-sb">
+  <div class="sbh">ÚLTIMO VALOR</div>
+  <div class="kv-block">
+    <div class="kv"><span class="kk">Atual</span><span class="kvv" id="sCot" style="color:var(--up)">—</span></div>
+    <div class="kv"><span class="kk">Fonte</span><span class="kvv" id="oSrc" style="color:var(--txt2)">Simulado</span></div>
+    <div class="kv"><span class="kk">Total</span><span class="kvv" id="sTot" style="color:var(--txt2)">0</span></div>
+  </div>
+  <div class="sbh">LOG</div>
+  <div class="log-area" id="logArea"></div>
+</div>
+</div>
+</div>
+
+<!-- MODAL RODADAS -->
+<div class="modal-bg" id="rodModal" onclick="if(event.target===this)closeRodadas()">
+  <div class="modal" style="width:340px">
+    <div class="m-title">&#9313; Numeração de Rodadas <span class="m-x" onclick="closeRodadas()">&#10005;</span></div>
+    <p style="font-size:9px;color:var(--txt2);line-height:1.6">Informe qual vela corresponde a qual número de rodada. O sistema calcula automaticamente todas as demais.</p>
+    <div class="m-group">
+      <label>Número da vela (posição no histórico)</label>
+      <input type="number" class="rod-input" id="rodVela" placeholder="Ex: 10" min="1">
+    </div>
+    <div class="m-group">
+      <label>Número da rodada correspondente</label>
+      <input type="number" class="rod-input" id="rodNro" placeholder="Ex: 1500" min="1">
+    </div>
+    <div id="rodStatus" style="font-size:9px;color:var(--txt2);min-height:16px;padding:2px 0"></div>
+    <div class="m-btns">
+      <button class="mbtn mb-g" onclick="aplicarRodadas()">&#10003; Aplicar</button>
+      <button class="mbtn mb-r" onclick="limparRodadas()">&#10005; Limpar</button>
+      <button class="mbtn mb-c" onclick="closeRodadas()">Fechar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL INDICADORES -->
+<div class="modal-bg" id="indModal" onclick="if(event.target===this)closeIndicadores()">
+  <div class="modal" style="width:380px">
+    <div class="m-title">&#9965; Indicadores <span class="m-x" onclick="closeIndicadores()">&#10005;</span></div>
+
+    <div style="font-size:8px;color:var(--am);letter-spacing:.8px;margin:6px 0 4px">MÉDIAS MÓVEIS</div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px">
+      <div id="ind-mm1" style="flex:1;min-width:100px;background:var(--bg3);border:1px solid var(--brd2);border-radius:6px;padding:8px 10px;cursor:pointer" onclick="closeThenOpenMM()">
+        <div style="font-size:9px;color:var(--am);font-weight:700">MM1 (EMA <span id="ind-mm1per">9</span>)</div>
+        <div style="font-size:8px;color:var(--txt2);margin-top:3px">Smooth · Tracejada</div>
+        <div style="font-size:8px;color:var(--gn);margin-top:2px" id="ind-mm1st">✓ Ativa</div>
+      </div>
+      <div id="ind-mm2" style="flex:1;min-width:100px;background:var(--bg3);border:1px solid var(--brd2);border-radius:6px;padding:8px 10px;cursor:pointer" onclick="closeThenOpenMM()">
+        <div style="font-size:9px;color:var(--dn);font-weight:700">MM2 (EMA <span id="ind-mm2per">21</span>)</div>
+        <div style="font-size:8px;color:var(--txt2);margin-top:3px">Linear · Tracejada</div>
+        <div style="font-size:8px;color:var(--gn);margin-top:2px" id="ind-mm2st">✓ Ativa</div>
+      </div>
+      <div id="ind-mm3" style="flex:1;min-width:100px;background:var(--bg3);border:1px solid var(--brd2);border-radius:6px;padding:8px 10px;cursor:pointer" onclick="closeThenOpenMM()">
+        <div style="font-size:9px;color:var(--gn);font-weight:700">MM3 (EMA <span id="ind-mm3per">50</span>)</div>
+        <div style="font-size:8px;color:var(--txt2);margin-top:3px">Bezier · Pontilhada</div>
+        <div style="font-size:8px;color:var(--pk);margin-top:2px" id="ind-mm3st">✗ Inativa</div>
+      </div>
+    </div>
+
+    <div style="font-size:8px;color:var(--up);letter-spacing:.8px;margin:6px 0 4px">ZONAS DE PREÇO</div>
+    <div style="display:flex;flex-direction:column;gap:4px;margin-bottom:8px">
+      <label style="display:flex;align-items:center;gap:8px;font-size:9px;color:var(--txt2)">
+        <input type="checkbox" id="zona1x" checked onchange="draw()"> Zona 1.00x (BASE)
+      </label>
+      <label style="display:flex;align-items:center;gap:8px;font-size:9px;color:var(--txt2)">
+        <input type="checkbox" id="zona2x" checked onchange="draw()"> Zona 2.00x (ROXO)
+      </label>
+      <label style="display:flex;align-items:center;gap:8px;font-size:9px;color:var(--txt2)">
+        <input type="checkbox" id="zona10x" checked onchange="draw()"> Zona 10.00x (ROSA)
+      </label>
+    </div>
+
+    <div style="font-size:8px;color:var(--pk);letter-spacing:.8px;margin:6px 0 4px">SINAL DE ENTRADA — PADRÃO MM</div>
+    <div style="font-size:9px;color:var(--txt2);line-height:1.7;background:var(--bg3);border-radius:5px;padding:8px 10px;border:1px solid var(--brd)">
+      Detecta quando MM rápida <b style="color:var(--gn)">cruza para cima</b> a MM lenta<br>
+      após uma sequência de queda (fundo).<br>
+      <label style="display:flex;align-items:center;gap:6px;margin-top:6px">
+        <input type="checkbox" id="sinalMMOn" checked onchange="CFG.sinalMMOn=this.checked;salvarConfig()">
+        <span>Ativar alerta de entrada</span>
+      </label>
+    </div>
+
+    <div class="m-btns" style="margin-top:10px">
+      <button class="mbtn mb-g" onclick="closeThenOpenMM()">&#9881; Config MM</button>
+      <button class="mbtn mb-c" onclick="closeIndicadores()">Fechar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL MM CONFIG -->
+<div class="modal-bg" id="mmModal" onclick="if(event.target===this)closeCfgMM()">
+  <div class="modal" style="width:380px">
+    <div class="m-title">&#9881; Configurar Médias Móveis <span class="m-x" onclick="closeCfgMM()">&#10005;</span></div>
+
+    <!-- MM1 -->
+    <div style="font-size:8px;color:var(--am);letter-spacing:.8px;margin-top:6px;padding-bottom:4px;border-bottom:1px solid var(--brd)">MÉDIA MÓVEL 1</div>
+    <div class="mm-row"><span class="mm-label">Ativar</span><div class="mm-toggle on" id="mm1tog" onclick="mmToggle(1)"></div></div>
+    <div class="mm-row"><span class="mm-label">Período</span><input type="number" class="mm-num" id="mm1per" value="9" min="2" max="500"><span style="font-size:8px;color:var(--txt3);margin-left:4px">períodos</span></div>
+    <div class="mm-row"><span class="mm-label">Cor</span><input type="color" class="mm-color" id="mm1cor" value="#f59e0b"><span class="mm-label" style="margin-left:10px">Opacidade</span><input type="number" class="mm-op" id="mm1op" value="0.80" min="0.1" max="1" step="0.05"></div>
+    <div class="mm-row">
+      <span class="mm-label">Espessura</span><input type="number" class="mm-num" id="mm1lw" value="1.5" min="0.5" max="5" step="0.5"><span style="font-size:8px;color:var(--txt3);margin-left:4px">px</span>
+      <span class="mm-label" style="margin-left:10px">Traçado</span>
+      <select id="mm1dash" class="mm-sel"><option value="solid">Sólida</option><option value="dash" selected>Tracejada</option><option value="dot">Pontilhada</option></select>
+    </div>
+    <div class="mm-row"><span class="mm-label">Tipo curva</span><select id="mm1curva" class="mm-sel" style="flex:1"><option value="linear">Linear (reta)</option><option value="smooth" selected>Smooth (suave)</option><option value="bezier">Bezier</option><option value="step">Step (degrau)</option></select></div>
+
+    <!-- MM2 -->
+    <div style="font-size:8px;color:var(--dn);letter-spacing:.8px;margin-top:8px;padding-bottom:4px;border-bottom:1px solid var(--brd)">MÉDIA MÓVEL 2</div>
+    <div class="mm-row"><span class="mm-label">Ativar</span><div class="mm-toggle on" id="mm2tog" onclick="mmToggle(2)"></div></div>
+    <div class="mm-row"><span class="mm-label">Período</span><input type="number" class="mm-num" id="mm2per" value="21" min="2" max="500"><span style="font-size:8px;color:var(--txt3);margin-left:4px">períodos</span></div>
+    <div class="mm-row"><span class="mm-label">Cor</span><input type="color" class="mm-color" id="mm2cor" value="#06b6d4"><span class="mm-label" style="margin-left:10px">Opacidade</span><input type="number" class="mm-op" id="mm2op" value="0.55" min="0.1" max="1" step="0.05"></div>
+    <div class="mm-row">
+      <span class="mm-label">Espessura</span><input type="number" class="mm-num" id="mm2lw" value="1.2" min="0.5" max="5" step="0.5"><span style="font-size:8px;color:var(--txt3);margin-left:4px">px</span>
+      <span class="mm-label" style="margin-left:10px">Traçado</span>
+      <select id="mm2dash" class="mm-sel"><option value="solid">Sólida</option><option value="dash" selected>Tracejada</option><option value="dot">Pontilhada</option></select>
+    </div>
+    <div class="mm-row"><span class="mm-label">Tipo curva</span><select id="mm2curva" class="mm-sel" style="flex:1"><option value="linear" selected>Linear (reta)</option><option value="smooth">Smooth (suave)</option><option value="bezier">Bezier</option><option value="step">Step (degrau)</option></select></div>
+
+    <!-- MM3 -->
+    <div style="font-size:8px;color:var(--gn);letter-spacing:.8px;margin-top:8px;padding-bottom:4px;border-bottom:1px solid var(--brd)">MÉDIA MÓVEL 3 (extra)</div>
+    <div class="mm-row"><span class="mm-label">Ativar</span><div class="mm-toggle" id="mm3tog" onclick="mmToggle(3)"></div></div>
+    <div class="mm-row"><span class="mm-label">Período</span><input type="number" class="mm-num" id="mm3per" value="50" min="2" max="500"><span style="font-size:8px;color:var(--txt3);margin-left:4px">períodos</span></div>
+    <div class="mm-row"><span class="mm-label">Cor</span><input type="color" class="mm-color" id="mm3cor" value="#22c55e"><span class="mm-label" style="margin-left:10px">Opacidade</span><input type="number" class="mm-op" id="mm3op" value="0.50" min="0.1" max="1" step="0.05"></div>
+    <div class="mm-row">
+      <span class="mm-label">Espessura</span><input type="number" class="mm-num" id="mm3lw" value="1.0" min="0.5" max="5" step="0.5"><span style="font-size:8px;color:var(--txt3);margin-left:4px">px</span>
+      <span class="mm-label" style="margin-left:10px">Traçado</span>
+      <select id="mm3dash" class="mm-sel"><option value="solid">Sólida</option><option value="dash">Tracejada</option><option value="dot" selected>Pontilhada</option></select>
+    </div>
+    <div class="mm-row"><span class="mm-label">Tipo curva</span><select id="mm3curva" class="mm-sel" style="flex:1"><option value="linear">Linear (reta)</option><option value="smooth">Smooth (suave)</option><option value="bezier" selected>Bezier</option><option value="step">Step (degrau)</option></select></div>
+
+    <div style="font-size:8px;color:var(--txt3);text-align:right;margin-top:6px">Config salva automaticamente</div>
+    <div class="m-btns" style="margin-top:6px">
+      <button class="mbtn mb-g" onclick="aplicarCfgMM()">&#10003; Aplicar</button>
+      <button class="mbtn mb-r" onclick="resetCfgMM()">&#8635; Reset</button>
+      <button class="mbtn mb-c" onclick="closeCfgMM()">Fechar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL SERVIDOR -->
+<div class="modal-bg" id="serverModal" onclick="if(event.target===this)closeServer()">
+  <div class="modal">
+    <div class="m-title">&#9775; Servidor Render <span class="m-x" onclick="closeServer()">&#10005;</span></div>
+    <div class="m-group"><label>URL Base</label><input type="text" id="cfgUrl" value="https://aviator-trader-quadrado.onrender.com"></div>
+    <div class="m-row">
+      <div class="m-group"><label>Endpoint GET</label><input type="text" id="cfgGet" value="/api/velas"></div>
+      <div class="m-group"><label>Painel</label>
+        <select id="cfgPainel"><option value="1">Aviator 1</option><option value="2">Aviator 2</option></select>
+      </div>
+    </div>
+    <div class="m-row">
+      <div class="m-group"><label>Polling (ms)</label><input type="number" id="cfgPoll" value="1500" min="500"></div>
+      <div class="m-group"><label>Endpoint POST</label><input type="text" id="cfgPost" value="/api/nova-vela"></div>
+    </div>
+    <div class="m-status" id="srvStatus">Status: desconectado</div>
+    <div class="m-btns">
+      <button class="mbtn mb-g" onclick="conectar()">&#10003; Conectar</button>
+      <button class="mbtn mb-b" onclick="testar()">&#9654; Testar</button>
+      <button class="mbtn mb-r" onclick="desconectar()">&#9632; Parar</button>
+      <button class="mbtn mb-c" onclick="closeServer()">Fechar</button>
+    </div>
+  </div>
+</div>
+
+<div id="rodPopup">
+  <b>&#9313; Número da Rodada</b>
+  <small>Vela: <span id="rpV">—</span> &nbsp;·&nbsp; <span id="rpM">—</span></small>
+  <input type="number" id="rpN" placeholder="Nº da rodada..." min="1">
+  <em>Enter confirma &nbsp;·&nbsp; Esc cancela</em>
+</div>
+<div class="modal-bg" id="rodAviso">
+  <div class="modal" style="width:300px">
+    <div class="m-title" style="color:var(--pk)">&#9888; Atenção</div>
+    <p style="font-size:10px;color:var(--txt2);line-height:1.8">Desativar irá <b style="color:var(--pk)">remover todas as rodadas</b> do gráfico. Continuar?</p>
+    <div class="m-btns" style="margin-top:10px">
+      <button class="mbtn mb-r" onclick="confirmarDesativarRodada()">&#10005; Sim, remover</button>
+      <button class="mbtn mb-c" onclick="document.getElementById('rodAviso').classList.remove('open')">Cancelar</button>
+    </div>
+  </div>
+</div>
+<div id="textWrap"><input id="textInput" type="text" placeholder="Texto + Enter..."></div>
+
+<script>
+// ═══════════ ESTADO ═══════════
+const canvas = document.getElementById('cv');
+const ctx    = canvas.getContext('2d');
+const cwrap  = document.getElementById('cwrap');
+
+const MAX_HIST = 20000;
+let pts = [];
+
+const CFG = {
+  showN: 40,
+  showMA: true,
+  sinalMMOn: true,
+  // MM1 — âmbar, Smooth, Tracejada
+  mm1On:   true,
+  mm1Per:  9,
+  mm1Cor:  '#f59e0b',
+  mm1Op:   0.80,
+  mm1Lw:   1.5,
+  mm1Dash: [4,5],
+  mm1Curva: 'smooth',
+  // MM2 — ciano, Linear, Tracejada
+  mm2On:   true,
+  mm2Per:  21,
+  mm2Cor:  '#06b6d4',
+  mm2Op:   0.55,
+  mm2Lw:   1.2,
+  mm2Dash: [4,5],
+  mm2Curva: 'linear',
+  // MM3 — verde, Bezier, Pontilhada (desligada por padrão)
+  mm3On:   false,
+  mm3Per:  50,
+  mm3Cor:  '#22c55e',
+  mm3Op:   0.50,
+  mm3Lw:   1.0,
+  mm3Dash: [2,4],
+  mm3Curva: 'bezier',
+};
+
+// Zoom / Pan horizontal
+let viewOffset = 0;   // velas deslocadas do fim
+let zoomLevel  = 1.0;
+
+// Pan vertical (scroll)
+let vertOffset = 0;
+
+// Escala direita arrastável
+let scaleW = 60;
+let scaleResizing = false, scaleRX = 0, scaleRW = 0;
+
+// Ferramentas
+let drawTool = 'cursor';
+let drawings = [], selIdx = -1;
+let dStart = null, dCurr = null, dActive = false;
+let isPanning = false, panX0 = 0, panOff0 = 0;
+let _mx=0,_my=0;
+
+// Servidor
+const srv = { url:'https://aviator-trader-quadrado.onrender.com', get:'/api/velas', post:'/api/nova-vela', painel:1, poll:1500 };
+let pollingTimer = null, simInt = null, modoFonte = 'simulado';
+let ultimaChave = null;
+
+// Áudio
+let audioCtx = null;
+
+// Numeração de rodadas
+let rodadaConfig = {
+  velaNro:  1,      // índice da vela encontrada (1-based) — calculado automaticamente
+  rodadaNro: 1,     // número da rodada correspondente
+  multRef:   null,  // multiplicador da vela de referência (para encontrá-la)
+  horario:   '',    // horário da vela de referência (HH:MM) — só exibição
+  ativo:     false
+};
+function getRodada(idxVela){
+  if(!rodadaConfig.ativo) return null;
+  const ref = rodadaConfig.velaNro - 1; // 0-based
+  const n = rodadaConfig.rodadaNro + (idxVela - ref);
+  return n > 0 ? n : null; // não mostra rodadas negativas
+}
+
+// ═══════════ SERVIDOR ═══════════
+function openServer(){ document.getElementById('serverModal').classList.add('open'); }
+function closeServer(){ document.getElementById('serverModal').classList.remove('open'); }
+function setSrv(msg,c){ const e=document.getElementById('srvStatus'); e.textContent='Status: '+msg; e.style.color=c||'var(--txt2)'; }
+function setWs(cls,lbl){ document.getElementById('wsStatus').className='ws-pill '+cls; document.getElementById('wsLabel').textContent=lbl; }
+
+function testar(){
+  const url=document.getElementById('cfgUrl').value+document.getElementById('cfgGet').value+'?painel=1&limit=1';
+  setSrv('testando...','var(--am)');
+  fetch(url).then(r=>{if(!r.ok)throw new Error('HTTP '+r.status);return r.json();})
+    .then(d=>setSrv('OK — '+JSON.stringify(d).slice(0,60),'var(--gn)'))
+    .catch(e=>setSrv('erro: '+e.message,'var(--pk)'));
+}
+
+function conectar(){
+  srv.url    = document.getElementById('cfgUrl').value.replace(/\/$/,'');
+  srv.get    = document.getElementById('cfgGet').value;
+  srv.post   = document.getElementById('cfgPost').value;
+  srv.painel = parseInt(document.getElementById('cfgPainel').value)||1;
+  srv.poll   = parseInt(document.getElementById('cfgPoll').value)||1500;
+  desconectar(true);
+  setSrv('conectando...','var(--am)');
+  setWs('am','CONECTANDO');
+  salvarConfig();
+  buscar(true);
+}
+
+function desconectar(silencioso){
+  if(pollingTimer){clearInterval(pollingTimer);pollingTimer=null;}
+  if(!silencioso){
+    modoFonte='simulado';
+    setWs('err','SIMULADO');
+    setSrv('parado','var(--txt2)');
+    document.getElementById('oSrc').textContent='Simulado';
+    iniciarSim();
+  }
+}
+
+function buscar(primeiro){
+  const limit=primeiro?MAX_HIST:5;
+  const url=srv.url+srv.get+'?painel='+srv.painel+'&limit='+limit;
+  fetch(url)
+    .then(r=>{if(!r.ok)throw new Error('HTTP '+r.status);return r.json();})
+    .then(data=>{
+      const lista=Array.isArray(data)?data:(data.velas||data.ultimos||data.data||(data.dado?[data.dado]:[]));
+      if(primeiro){
+        if(simInt){clearInterval(simInt);simInt=null;}
+        modoFonte='extensao';
+        setWs('ok','ONLINE');
+        setSrv('polling '+srv.poll+'ms — '+srv.url,'var(--gn)');
+        document.getElementById('oSrc').textContent='Render';
+        document.getElementById('oSrc').style.color='var(--am)';
+        addLog(0,'EXT');
+        if(lista&&lista.length){
+          pts=[];
+          lista.forEach(p=>{
+            const v=parseFloat(p.multiplicador||p.valor||p.val||0);
+            if(!isNaN(v)&&v>0){
+              // Tenta usar timestamp do servidor; se inválido usa now
+              const ts=p.timestamp||p.ts||p.created_at||p.data||null;
+              const t=ts?new Date(ts):new Date();
+              push(v, isNaN(t.getTime())?new Date():t);
+            }
+          });
+          draw();
+        }
+        pollingTimer=setInterval(()=>buscar(false),srv.poll);
+      } else {
+        if(!lista||!lista.length)return;
+        const u=lista[lista.length-1];
+        const v=parseFloat(u.multiplicador||u.valor||u.val||0);
+        const chave=(u.rodada||u.id||v)+'_'+srv.painel+'_'+(u.ts_recebido||'');
+        if(!isNaN(v)&&v>0&&chave!==ultimaChave){ultimaChave=chave;receberVela(v,u.timestamp||null,'extensao');}
+      }
+    })
+    .catch(e=>{
+      if(primeiro){setSrv('erro: '+e.message,'var(--pk)');setWs('err','ERRO');setTimeout(()=>buscar(true),5000);}
+    });
+}
+
+// ═══════════ VELAS ═══════════
+function push(val,time){
+  // Garante timestamp válido sempre
+  let t = time instanceof Date && !isNaN(time) ? time : new Date();
+  pts.push({val, time:t});
+  if(pts.length>MAX_HIST)pts.shift();
+}
+
+let _drawPending=false;
+function scheduleDraw(){
+  if(_drawPending)return;
+  _drawPending=true;
+  requestAnimationFrame(()=>{_drawPending=false;draw();});
+}
+
+function receberVela(val,timestamp,fonte){
+  const _ts = timestamp ? new Date(timestamp) : new Date();
+  push(val, isNaN(_ts.getTime()) ? new Date() : _ts);
+  document.getElementById('sCot').textContent=val.toFixed(2)+'x';
+  document.getElementById('sCot').style.color=val>=10?'#f472b6':val>=2?'#a855f7':'#06b6d4';
+  document.getElementById('sTot').textContent=pts.length;
+  if(fonte!=='seed') addLog(val,fonte==='extensao'?'EXT':null);
+  scheduleDraw();
+}
+
+// ═══════════ LOG ═══════════
+function addLog(val,tag){
+  const t=new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+  const v=val||0;
+  const col=tag==='EXT'?'var(--am)':v>=10?'#f472b6':v>=2?'var(--up)':'var(--dn)';
+  const cls=tag==='EXT'?'t-ext':v>=10?'t-pk':v>=2?'t-up':'t-dn';
+  const lbl=tag==='EXT'?'EXT':v>=10?'ROSA':v>=2?'ROXO':'CIANO';
+  const area=document.getElementById('logArea');
+  const row=document.createElement('div'); row.className='log-row';
+  row.innerHTML=`<div class="ldot" style="background:${col}"></div><span class="lt">${t}</span><span class="lv" style="color:${col}">${v>0?v.toFixed(2)+'x':'—'}</span><span class="ltag ${cls}">${lbl}</span>`;
+  area.insertBefore(row,area.firstChild);
+  while(area.children.length>60)area.removeChild(area.lastChild);
+}
+
+// ═══════════ ÁUDIO ═══════════
+function getAC(){if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext)();return audioCtx;}
+function beep(notes,type='sine',vol=0.15){
+  try{const ac=getAC();notes.forEach(([f,d,dur])=>{const o=ac.createOscillator(),g=ac.createGain();o.connect(g);g.connect(ac.destination);o.type=type;o.frequency.value=f;const t=ac.currentTime+d;g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(vol,t+.04);g.gain.exponentialRampToValueAtTime(.001,t+dur);o.start(t);o.stop(t+dur);});}catch(_){}
+}
+
+// ═══════════ ALERT ═══════════
+let alertTmr=null;
+function showAlert(msg,color,dur=3500){
+  const el=document.getElementById('alertBox');
+  el.textContent=msg; el.style.cssText=`background:${color}22;border:1px solid ${color};color:${color}`;
+  el.className='alert show'; clearTimeout(alertTmr); alertTmr=setTimeout(()=>el.className='alert',dur);
+}
+function triggerFlash(){const f=document.getElementById('flash');f.className='flash on';setTimeout(()=>f.className='flash',700);}
+
+// ═══════════ ZOOM / PAN ═══════════
+function getVisN(){ return Math.max(5,Math.round(CFG.showN/zoomLevel)); }
+function zoomIn(){ zoomLevel=Math.min(10,zoomLevel*1.25); draw(); }
+function zoomOut(){ zoomLevel=Math.max(0.1,zoomLevel/1.25); draw(); }
+function resetView(){ zoomLevel=1.0; viewOffset=0; vertOffset=0; draw(); }
+function voltarPresente(){ viewOffset=0; document.getElementById('btnBack').classList.remove('show'); draw(); }
+function toggleMA(){ CFG.showMA=!CFG.showMA; document.getElementById('maBtn').classList.toggle('on',CFG.showMA); draw(); }
+
+// ═══════════ ESCALA ═══════════
+function getViewSub(){
+  const n=getVisN();
+  const end=Math.max(n,pts.length-viewOffset);
+  const start=Math.max(0,end-n);
+  return pts.slice(start,end);
+}
+function getViewSubExt(extra){
+  // Sub com pontos extras à frente (para MM look-ahead)
+  const n=getVisN();
+  const end=Math.min(pts.length, Math.max(n,pts.length-viewOffset)+(extra||0));
+  const start=Math.max(0,end-n-(extra||0));
+  return pts.slice(start,end);
+}
+
+function getScale(sub,W,H){
+  scaleW=Math.max(44,scaleW);
+  const vals=sub.map(p=>p.val);
+  // maxV suavizado: picos isolados não comprimem todo o gráfico
+  const sortedV=[...vals].sort((a,b)=>a-b);
+  const p95=sortedV[Math.floor(sortedV.length*0.95)]||sortedV[sortedV.length-1];
+  const absMax=Math.max(...vals);
+  // Se o pico for >3x a mediana, usa p95 como referência mas ainda mostra o pico
+  const maxV=absMax>p95*3 ? Math.max(p95*2.5, absMax*1.05) : absMax*1.12;
+  const minV=0.7;  // mais espaço abaixo do 1x
+  const cW=W-12-scaleW, cH=H-44-20;
+  const n=sub.length;
+  const logMin=Math.log10(minV), logMax=Math.log10(maxV);
+  const vsh=(vertOffset/cH)*(logMax-logMin);
+  return{
+    sx:i=>12+i*((cW-40)/(n-1||1)),  // -40px reserva espaço fixo para última vela
+    sy:v=>44+cH*(1-(Math.log10(Math.max(v,minV))-logMin+vsh)/(logMax-logMin||1)),
+    yToV:y=>Math.pow(10,logMin+(logMax-logMin)*(1-(y-44)/cH))-vsh,
+    minV,maxV,cW,cH
+  };
+}
+
+// ═══════════ DRAW ═══════════
+function col(v){return v>=10?'#f472b6':v>=2?'#a855f7':'#06b6d4';}
+function colAlpha(v,a){
+  if(v>=10)return 'rgba(244,114,182,'+a+')';
+  if(v>=2) return 'rgba(168,85,247,'+a+')';
+  return 'rgba(6,182,212,'+a+')';
+}
+
+function draw(){
+  const W=canvas.width, H=canvas.height;
+  if(!W||!H)return;
+  ctx.clearRect(0,0,W,H);
+  const sub=getViewSub();
+  if(sub.length<2)return;
+  const {sx,sy,yToV,minV,maxV,cW,cH}=getScale(sub,W,H);
+
+  // GRID
+  ctx.font='8px JetBrains Mono,monospace'; ctx.textAlign='left';
+  [1,2,3,5,10,20,50,100,200,500,1000].filter(v=>v>=minV&&v<=maxV*1.05).forEach(v=>{
+    const py=sy(v);
+    ctx.strokeStyle=v>=10?'rgba(244,114,182,.07)':v>=2?'rgba(168,85,247,.06)':'#0c1b2e';
+    ctx.lineWidth=0.5; ctx.setLineDash([]);
+    ctx.beginPath();ctx.moveTo(12,py);ctx.lineTo(W-scaleW,py);ctx.stroke();
+    ctx.fillStyle=v>=10?'#be185d':v>=2?'#7e22ce':'#1e3a58';
+    ctx.fillText(v+'x',W-scaleW+4,py+3);
+  });
+
+  // GRIP DA ESCALA
+  const bx=W-scaleW;
+  ctx.strokeStyle='rgba(32,53,85,0.7)';ctx.lineWidth=2;ctx.setLineDash([]);
+  ctx.beginPath();ctx.moveTo(bx,0);ctx.lineTo(bx,H);ctx.stroke();
+  for(let gy=H/2-15;gy<=H/2+15;gy+=6){ctx.fillStyle='rgba(74,110,148,.5)';ctx.fillRect(bx-1,gy,3,3);}
+
+  // MONTANHA — bezier segmentada por cor
+  const yBase=sy(minV);
+  for(let i=1;i<sub.length;i++){
+    const p0=sub[i-1],p1=sub[i];
+    const x0=sx(i-1),y0=sy(p0.val),x1=sx(i),y1=sy(p1.val);
+    const vm=Math.max(p0.val,p1.val);
+    const cpx1=x0+(x1-x0)*0.42,cpy1=y0,cpx2=x0+(x1-x0)*0.58,cpy2=y1;
+    // área
+    ctx.beginPath();ctx.moveTo(x0,yBase);ctx.lineTo(x0,y0);
+    ctx.bezierCurveTo(cpx1,cpy1,cpx2,cpy2,x1,y1);
+    ctx.lineTo(x1,yBase);ctx.closePath();
+    ctx.fillStyle=colAlpha(vm,.13);ctx.fill();
+    // linha
+    ctx.beginPath();ctx.moveTo(x0,y0);
+    ctx.bezierCurveTo(cpx1,cpy1,cpx2,cpy2,x1,y1);
+    ctx.strokeStyle=col(vm);ctx.lineWidth=2;ctx.stroke();
+  }
+
+  // MÉDIAS MÓVEIS (pré-calculadas sobre todos pts)
+  // MÉDIAS MÓVEIS — 3 MMs configuráveis, pré-calculadas sobre todos pts
+  if(CFG.showMA && pts.length>=3){
+    const allVals=pts.map(p=>p.val);
+    const subStart=Math.max(0,pts.length-viewOffset-sub.length);
+
+    // Converte hex+alpha para rgba
+    const hexToRgb=h=>{const r=parseInt(h.slice(1,3),16),g=parseInt(h.slice(3,5),16),b=parseInt(h.slice(5,7),16);return r+','+g+','+b;};
+
+    // Função de desenho por tipo de curva
+    function drawMmCurve(slice, curva){
+      const n=slice.length;
+      if(n<2) return;
+      ctx.beginPath();
+      if(curva==='linear'){
+        // Linha reta entre pontos
+        slice.forEach((ev,i)=>i===0?ctx.moveTo(sx(i),sy(ev)):ctx.lineTo(sx(i),sy(ev)));
+      } else if(curva==='smooth'){
+        // Bezier suavizado (tension=0.35)
+        ctx.moveTo(sx(0),sy(slice[0]));
+        for(let i=0;i<n-1;i++){
+          const x0=sx(Math.max(0,i-1)), y0=sy(slice[Math.max(0,i-1)]);
+          const x1=sx(i),              y1=sy(slice[i]);
+          const x2=sx(i+1),            y2=sy(slice[i+1]);
+          const x3=sx(Math.min(n-1,i+2)), y3=sy(slice[Math.min(n-1,i+2)]);
+          const t=0.35;
+          const cp1x=x1+(x2-x0)*t, cp1y=y1+(y2-y0)*t;
+          const cp2x=x2-(x3-x1)*t, cp2y=y2-(y3-y1)*t;
+          ctx.bezierCurveTo(cp1x,cp1y,cp2x,cp2y,x2,y2);
+        }
+      } else if(curva==='bezier'){
+        // Bezier simples (curva quadrática suave)
+        ctx.moveTo(sx(0),sy(slice[0]));
+        for(let i=0;i<n-1;i++){
+          const cpx=(sx(i)+sx(i+1))/2;
+          const cpy=(sy(slice[i])+sy(slice[i+1]))/2;
+          ctx.quadraticCurveTo(sx(i),sy(slice[i]),cpx,cpy);
+        }
+        ctx.lineTo(sx(n-1),sy(slice[n-1]));
+      } else if(curva==='step'){
+        // Degrau (step)
+        ctx.moveTo(sx(0),sy(slice[0]));
+        for(let i=1;i<n;i++){
+          ctx.lineTo(sx(i),sy(slice[i-1])); // horizontal
+          ctx.lineTo(sx(i),sy(slice[i]));   // vertical
+        }
+      }
+      ctx.stroke();
+    }
+
+    [{on:CFG.mm1On,per:CFG.mm1Per,cor:CFG.mm1Cor,op:CFG.mm1Op,lw:CFG.mm1Lw,dash:CFG.mm1Dash,curva:CFG.mm1Curva},
+     {on:CFG.mm2On,per:CFG.mm2Per,cor:CFG.mm2Cor,op:CFG.mm2Op,lw:CFG.mm2Lw,dash:CFG.mm2Dash,curva:CFG.mm2Curva},
+     {on:CFG.mm3On,per:CFG.mm3Per,cor:CFG.mm3Cor,op:CFG.mm3Op,lw:CFG.mm3Lw,dash:CFG.mm3Dash,curva:CFG.mm3Curva}
+    ].forEach(mm=>{
+      if(!mm.on||pts.length<mm.per) return;
+      const k=2/(mm.per+1);
+      let e=allVals[0];
+      const emaFull=allVals.map((v,i)=>{if(i>0)e=v*k+e*(1-k);return e;});
+      const slice=emaFull.slice(subStart,Math.min(subStart+sub.length+5,emaFull.length));
+      const corFinal=mm.cor.startsWith('#')?'rgba('+hexToRgb(mm.cor)+','+mm.op+')':mm.cor;
+      ctx.setLineDash(mm.dash);
+      ctx.strokeStyle=corFinal;
+      ctx.lineWidth=mm.lw;
+      drawMmCurve(slice, mm.curva||'linear');
+      ctx.setLineDash([]);
+    });
+
+    // Roda o detector de sinal com os dados da MM
+    if(CFG.mm1On&&CFG.mm2On&&pts.length>=CFG.mm2Per){
+      const k1=2/(CFG.mm1Per+1),k2=2/(CFG.mm2Per+1);
+      let e1=allVals[0],e2=allVals[0];
+      const emaCheck=allVals.map((v,i)=>{if(i>0){e1=v*k1+e1*(1-k1);e2=v*k2+e2*(1-k2);}return{e1,e2};});
+      checkSinalEntrada(emaCheck, subStart);
+    }
+  }
+
+  // LINHAS DE ZONA FIXAS — 1x, 2x, 10x
+  const zonas = [
+    { val:1.0,  cor:'rgba(6,182,212,0.9)',   glow:'rgba(6,182,212,0.12)',   lbl:'1.00x',  lw:2.2, dash:[6,3] },
+    { val:2.0,  cor:'rgba(168,85,247,0.75)', glow:'rgba(168,85,247,0.08)',  lbl:'2.00x — ZONA',  lw:2.0, dash:[6,3] },
+    { val:10.0, cor:'rgba(244,114,182,0.85)',glow:'rgba(244,114,182,0.1)',  lbl:'10.00x — ROSA', lw:2.2, dash:[8,3] },
+  ];
+  const zonaAtiva=(id)=>{const el=document.getElementById(id);return !el||el.checked;};
+  zonas.forEach(z=>{
+    if(z.val===2.0&&!zonaAtiva('zona2x')) return;
+    if(z.val===10.0&&!zonaAtiva('zona10x')) return;
+    if(z.val<minV||z.val>maxV) return;
+    const zy=sy(z.val);
+    ctx.save();
+    // glow de fundo
+    ctx.strokeStyle=z.glow; ctx.lineWidth=10; ctx.setLineDash([]);
+    ctx.beginPath();ctx.moveTo(12,zy);ctx.lineTo(W-scaleW,zy);ctx.stroke();
+    // linha principal
+    ctx.strokeStyle=z.cor; ctx.lineWidth=z.lw; ctx.setLineDash(z.dash);
+    ctx.beginPath();ctx.moveTo(12,zy);ctx.lineTo(W-scaleW,zy);ctx.stroke();
+    ctx.setLineDash([]);
+    // label
+    ctx.fillStyle=z.cor;
+    ctx.font='bold 9px JetBrains Mono,monospace';
+    ctx.textAlign='left';
+    ctx.fillText(z.lbl, 16, zy-5);
+    ctx.restore();
+  });
+
+  // BOLINHAS + NÚMERO DA RODADA
+  // Calcula índice real no array pts para cada ponto do sub
+  const subStart=Math.max(0,pts.length-viewOffset-sub.length);
+
+  sub.forEach((p,i)=>{
+    const x=sx(i),y=sy(p.val),v=p.val;
+    const r=v>=100?9:v>=10?6:v>=2?4.5:3;
+    if(v>=10){ctx.beginPath();ctx.arc(x,y,r+5,0,Math.PI*2);ctx.fillStyle=colAlpha(v,.1);ctx.fill();}
+    ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.fillStyle=col(v);ctx.fill();
+    ctx.strokeStyle=v>=10?'#be185d':v>=2?'#7e22ce':'#0891b2';ctx.lineWidth=.8;ctx.stroke();
+    if(v>=10){ctx.fillStyle=col(v);ctx.font='bold '+(v>=100?8:7)+'px JetBrains Mono,monospace';ctx.textAlign='center';ctx.fillText(v.toFixed(v>=100?0:1)+'x',x,y-r-5);}
+
+    // RODADA — oculta, aparece no hover (30px), ACIMA da bolinha
+    const rodN=getRodada(subStart+i);
+    if(rodN!==null&&rodN>0&&Math.hypot(x-_mx,y-_my)<35){
+      const rodCol='#fff', rodBg='rgba(6,9,15,0.9)', rodBdr=v>=10?'#f472b6':v>=2?'#a855f7':'#06b6d4';
+      ctx.font='bold 12px JetBrains Mono,monospace'; ctx.textAlign='center';
+      const txt='#'+rodN, tw=ctx.measureText(txt).width;
+      const bx=x-tw/2-5, bw=tw+10, bh=18, by=y-r-22;
+      ctx.shadowColor='rgba(0,0,0,.7)'; ctx.shadowBlur=5;
+      ctx.fillStyle=rodBg; ctx.beginPath(); ctx.roundRect(bx,by,bw,bh,4); ctx.fill();
+      ctx.shadowBlur=0;
+      ctx.strokeStyle=rodBdr; ctx.lineWidth=1.2; ctx.beginPath(); ctx.roundRect(bx,by,bw,bh,4); ctx.stroke();
+      ctx.fillStyle=rodCol; ctx.fillText(txt,x,by+13);
+
+      // horário da vela de referência (só naquela vela específica)
+      if(rodadaConfig.horario && (rodadaConfig.velaNro-1) === (subStart+i)){
+        ctx.font='bold 9px JetBrains Mono,monospace';
+        ctx.fillStyle='rgba(255,255,255,0.75)';
+        ctx.fillText(rodadaConfig.horario, x, ty+13);
+      }
+    }
+  });
+
+  // MARCADOR DE SINAL DE ENTRADA
+  sub.forEach((p,i)=>{
+    if(!p.sinalEntrada) return;
+    const x=sx(i), y=sy(p.val);
+    // Círculo pulsante verde
+    [22,14,7].forEach((r,ri)=>{
+      ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);
+      ctx.fillStyle='rgba(34,197,94,'+([ 0.07,0.14,0.9][ri])+')';ctx.fill();
+    });
+    ctx.strokeStyle='#166534';ctx.lineWidth=1;ctx.beginPath();ctx.arc(x,y,7,0,Math.PI*2);ctx.stroke();
+    ctx.fillStyle='#22c55e';ctx.font='bold 8px JetBrains Mono,monospace';ctx.textAlign='center';
+    ctx.fillText('ENTRADA',x,y-28);
+    ctx.fillText('▲',x,y-18);
+  });
+
+  // COTAÇÃO ATUAL
+  const cot=pts[pts.length-1]?.val||0;
+  if(cot>=minV&&cot<=maxV){
+    const cy=sy(cot);
+    ctx.strokeStyle=colAlpha(cot,.4);ctx.lineWidth=0.8;ctx.setLineDash([2,4]);
+    ctx.beginPath();ctx.moveTo(12,cy);ctx.lineTo(W-scaleW,cy);ctx.stroke();ctx.setLineDash([]);
+    ctx.fillStyle='#041e0f';ctx.fillRect(W-scaleW+1,cy-7,scaleW-2,14);
+    ctx.strokeStyle=col(cot);ctx.lineWidth=0.5;ctx.strokeRect(W-scaleW+1,cy-7,scaleW-2,14);
+    ctx.fillStyle=col(cot);ctx.font='bold 9px JetBrains Mono,monospace';ctx.textAlign='center';
+    ctx.fillText(cot.toFixed(2)+'x',W-scaleW+scaleW/2,cy+3);
+  }
+
+  // DESENHOS
+  drawings.forEach((d,di)=>{
+    ctx.setLineDash([]);
+    const sel=di===selIdx;
+    const dc=d.color||'rgba(251,191,36,.85)';
+    const sc=sel?'#fff':dc;
+    ctx.strokeStyle=sc;ctx.lineWidth=sel?2:1.4;
+    if(d.type==='hline'){
+      const hy=d.yVal!==undefined?sy(d.yVal):d.y;
+      ctx.setLineDash([5,4]);ctx.beginPath();ctx.moveTo(12,hy);ctx.lineTo(W-scaleW,hy);ctx.stroke();ctx.setLineDash([]);
+      ctx.fillStyle=sc;ctx.font='7px JetBrains Mono,monospace';ctx.textAlign='left';
+      ctx.fillText((d.yVal||yToV(hy)).toFixed(2)+'x',16,hy-3);
+    } else if(d.type==='vline'){
+      ctx.setLineDash([5,4]);ctx.beginPath();ctx.moveTo(d.x,28);ctx.lineTo(d.x,H-10);ctx.stroke();ctx.setLineDash([]);
+    } else if(d.type==='tline'||d.type==='arrow'){
+      ctx.beginPath();ctx.moveTo(d.x1,d.y1);ctx.lineTo(d.x2,d.y2);ctx.stroke();
+      if(d.type==='arrow'){const a=Math.atan2(d.y2-d.y1,d.x2-d.x1);ctx.beginPath();ctx.moveTo(d.x2,d.y2);ctx.lineTo(d.x2-12*Math.cos(a-.4),d.y2-12*Math.sin(a-.4));ctx.moveTo(d.x2,d.y2);ctx.lineTo(d.x2-12*Math.cos(a+.4),d.y2-12*Math.sin(a+.4));ctx.stroke();}
+      if(sel)[[d.x1,d.y1],[d.x2,d.y2]].forEach(([hx,hy])=>{ctx.beginPath();ctx.arc(hx,hy,4,0,Math.PI*2);ctx.fillStyle='#fbbf24';ctx.fill();});
+    } else if(d.type==='channel'){
+      const gap=d.gap||40;
+      ctx.beginPath();ctx.moveTo(d.x1,d.y1);ctx.lineTo(d.x2,d.y2);ctx.stroke();
+      ctx.strokeStyle=sc+'88';ctx.setLineDash([4,4]);
+      ctx.beginPath();ctx.moveTo(d.x1,d.y1+gap);ctx.lineTo(d.x2,d.y2+gap);ctx.stroke();ctx.setLineDash([]);
+      ctx.fillStyle=sc+'0c';ctx.beginPath();ctx.moveTo(d.x1,d.y1);ctx.lineTo(d.x2,d.y2);ctx.lineTo(d.x2,d.y2+gap);ctx.lineTo(d.x1,d.y1+gap);ctx.closePath();ctx.fill();
+    } else if(d.type==='rect'){
+      ctx.strokeStyle=sel?'var(--up)':'rgba(168,85,247,.7)';
+      ctx.strokeRect(d.x1,d.y1,d.x2-d.x1,d.y2-d.y1);
+      ctx.fillStyle='rgba(168,85,247,.04)';ctx.fillRect(d.x1,d.y1,d.x2-d.x1,d.y2-d.y1);
+    } else if(d.type==='fib'){
+      [0,.236,.382,.5,.618,.786,1].forEach((l,i)=>{
+        const fc=['#22c55e','#a855f7','#06b6d4','#fbbf24','#06b6d4','#a855f7','#22c55e'][i];
+        const fy=d.y1+(d.y2-d.y1)*l;
+        ctx.strokeStyle=fc+'88';ctx.lineWidth=.9;ctx.setLineDash([3,4]);
+        ctx.beginPath();ctx.moveTo(12,fy);ctx.lineTo(W-scaleW,fy);ctx.stroke();ctx.setLineDash([]);
+        ctx.fillStyle=fc;ctx.font='7px JetBrains Mono,monospace';ctx.textAlign='right';
+        ctx.fillText((l*100).toFixed(1)+'%  '+Math.max(0,yToV(fy)).toFixed(2)+'x',W-scaleW-4,fy-2);
+      });
+    } else if(d.type==='text'&&d.txt){
+      ctx.fillStyle=sc;ctx.font='bold 11px JetBrains Mono,monospace';ctx.textAlign='left';ctx.fillText(d.txt,d.x,d.y);
+    }
+  });
+
+  // PREVIEW durante desenho
+  if(dActive&&dStart&&dCurr&&drawTool!=='cursor'){
+    ctx.setLineDash([3,3]);ctx.strokeStyle='rgba(251,191,36,.55)';ctx.lineWidth=1.2;
+    if(drawTool==='hline'){ctx.beginPath();ctx.moveTo(12,dStart.y);ctx.lineTo(W-scaleW,dStart.y);ctx.stroke();}
+    else if(drawTool==='vline'){ctx.beginPath();ctx.moveTo(dStart.x,28);ctx.lineTo(dStart.x,H-10);ctx.stroke();}
+    else if(drawTool==='tline'||drawTool==='arrow'||drawTool==='channel'){ctx.beginPath();ctx.moveTo(dStart.x,dStart.y);ctx.lineTo(dCurr.x,dCurr.y);ctx.stroke();}
+    else if(drawTool==='rect'){ctx.strokeStyle='rgba(168,85,247,.5)';ctx.strokeRect(dStart.x,dStart.y,dCurr.x-dStart.x,dCurr.y-dStart.y);}
+    else if(drawTool==='fib'){ctx.beginPath();ctx.moveTo(dStart.x,dStart.y);ctx.lineTo(dCurr.x,dCurr.y);ctx.stroke();}
+    ctx.setLineDash([]);
+  }
+
+  // X LABELS
+  const s3=[sub[0],sub[Math.floor(sub.length/2)],sub[sub.length-1]].filter(Boolean);
+  ['xL','xM','xR'].forEach((id,i)=>{const p=s3[i];if(p&&p.time&&!isNaN(p.time))document.getElementById(id).textContent=p.time.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});});
+  // xNow atualizado por timer próprio (não bloqueia draw)
+  document.getElementById('xZoom').textContent=sub.length+'v';
+  document.getElementById('xslider').value=CFG.showN;
+}
+
+// ═══════════ MOUSE ═══════════
+function getPos(e){const r=cwrap.getBoundingClientRect();return{x:e.clientX-r.left,y:e.clientY-r.top};}
+
+function onScaleBorder(pos){return Math.abs(pos.x-(canvas.width-scaleW))<7;}
+
+function hitDraw(pos){
+  for(let i=drawings.length-1;i>=0;i--){
+    const d=drawings[i];
+    if(d.type==='hline'){const hy=d.yVal!==undefined?getScale(getViewSub(),canvas.width,canvas.height).sy(d.yVal):d.y;if(Math.abs(pos.y-hy)<10)return i;}
+    else if(d.type==='vline'&&Math.abs(pos.x-d.x)<10)return i;
+    else if(d.type==='tline'||d.type==='arrow'){
+      const dx=d.x2-d.x1,dy=d.y2-d.y1,len=Math.sqrt(dx*dx+dy*dy);
+      const t=Math.max(0,Math.min(1,((pos.x-d.x1)*dx+(pos.y-d.y1)*dy)/(len*len||1)));
+      if(Math.sqrt((pos.x-d.x1-t*dx)**2+(pos.y-d.y1-t*dy)**2)<12)return i;
+    }
+    else if(d.type==='channel'){
+      const dx=d.x2-d.x1,dy=d.y2-d.y1,len=Math.sqrt(dx*dx+dy*dy);
+      const t=Math.max(0,Math.min(1,((pos.x-d.x1)*dx+(pos.y-d.y1)*dy)/(len*len||1)));
+      if(Math.sqrt((pos.x-d.x1-t*dx)**2+(pos.y-d.y1-t*dy)**2)<12)return i;
+    }
+    else if(d.type==='rect'){const x1=Math.min(d.x1,d.x2),x2=Math.max(d.x1,d.x2),y1=Math.min(d.y1,d.y2),y2=Math.max(d.y1,d.y2);if(pos.x>=x1-5&&pos.x<=x2+5&&pos.y>=y1-5&&pos.y<=y2+5)return i;}
+    else if(d.type==='fib'){for(const l of[0,.236,.382,.5,.618,.786,1]){const fy=d.y1+(d.y2-d.y1)*l;if(Math.abs(pos.y-fy)<10)return i;}}
+    else if(d.type==='text'&&d.txt&&pos.x>=d.x-4&&pos.x<=d.x+d.txt.length*7&&pos.y<=d.y+4&&pos.y>=d.y-14)return i;
+  }
+  return -1;
+}
+
+cwrap.addEventListener('mousedown',e=>{
+  const pos=getPos(e);
+  if(onScaleBorder(pos)){scaleResizing=true;scaleRX=pos.x;scaleRW=scaleW;return;}
+  if(modoRodada){
+    const sub=getViewSub(),W=canvas.width,H=canvas.height;
+    if(sub.length>=2){
+      const {sx,sy}=getScale(sub,W,H);
+      const step=(W-12-scaleW)/(sub.length-1||1);
+      const idx=Math.round((pos.x-12)/step);
+      if(idx>=0&&idx<sub.length){
+        const ss=Math.max(0,pts.length-viewOffset-sub.length);
+        const p=sub[idx]; const px=sx(idx),py=sy(p.val);
+        const rect=cwrap.getBoundingClientRect();
+        document.getElementById('rpV').textContent=(ss+idx+1);
+        document.getElementById('rpM').textContent=p.val.toFixed(2)+'x';
+        const inp=document.getElementById('rpN');
+        const cur=getRodada(ss+idx); inp.value=cur&&cur>0?cur:'';
+        const popup=document.getElementById('rodPopup');
+        popup.style.left=Math.min(rect.left+px+12,window.innerWidth-220)+'px';
+        popup.style.top=Math.max(rect.top+py-130,8)+'px';
+        popup.classList.add('show');
+        // guarda índice
+        popup.dataset.idx=ss+idx;
+        setTimeout(()=>inp.select(),40);
+      }
+    }
+    return;
+  }
+  if(drawTool==='cursor'){
+    const hi=hitDraw(pos);
+    if(hi>=0){selIdx=hi;dActive=true;dStart=pos;dCurr=pos;document.getElementById('pov').style.display='block';}
+    else{selIdx=-1;isPanning=true;panX0=pos.x;panOff0=viewOffset;document.getElementById('pov').style.display='block';}
+    draw();return;
+  }
+  if(drawTool==='text'){
+    const wrap=document.getElementById('textWrap'),inp=document.getElementById('textInput');
+    const r=cwrap.getBoundingClientRect();
+    wrap.style.left=(r.left+pos.x)+'px';wrap.style.top=(r.top+pos.y-20)+'px';wrap.style.display='block';
+    inp.value='';inp.focus();
+    inp.onkeydown=ev=>{if(ev.key==='Enter'){drawings.push({type:'text',x:pos.x,y:pos.y,txt:inp.value,color:'#fbbf24'});selIdx=drawings.length-1;wrap.style.display='none';draw();}if(ev.key==='Escape')wrap.style.display='none';};
+    return;
+  }
+  dStart=pos;dActive=true;selIdx=-1;
+});
+
+cwrap.addEventListener('mousemove',e=>{
+  const pos=getPos(e); _mx=pos.x; _my=pos.y;
+  if(rodadaConfig.ativo)draw();
+  if(scaleResizing){scaleW=Math.max(44,Math.min(200,scaleRW+(scaleRX-pos.x)));draw();return;}
+  if(!onScaleBorder(pos)) cwrap.style.cursor='default';
+  else cwrap.style.cursor='col-resize';
+  // TOOLTIP
+  if(drawTool==='cursor'&&!dActive&&!isPanning){
+    const sub=getViewSub();if(sub.length<2){document.getElementById('ttBox').style.display='none';}
+    else{
+      const {sx,sy}=getScale(sub,canvas.width,canvas.height);
+      const step=(canvas.width-12-scaleW)/(sub.length-1||1);
+      const idx=Math.round((pos.x-12)/step);
+      const tt=document.getElementById('ttBox');
+      if(idx>=0&&idx<sub.length&&pos.x<canvas.width-scaleW){
+        const p=sub[idx];const c=col(p.val);
+        document.getElementById('ttV').textContent=p.val.toFixed(2)+'x';
+        document.getElementById('ttV').style.color=c;
+        document.getElementById('ttS').textContent=p.time&&!isNaN(p.time)?p.time.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit',second:'2-digit'}):'';
+        document.getElementById('ttS').style.color=c;
+        tt.style.display='block';tt.style.left=Math.min(pos.x+12,canvas.width-scaleW-15)+'px';tt.style.top=Math.max(5,pos.y-42)+'px';
+      }else tt.style.display='none';
+    }
+  }
+  // PAN
+  if(isPanning&&!dActive){
+    const sub=getViewSub();if(sub.length<2)return;
+    const step=(canvas.width-12-scaleW)/(sub.length-1||1);
+    const shift=Math.round((panX0-pos.x)/step);
+    viewOffset=Math.max(0,Math.min(pts.length-getVisN(),panOff0+shift));
+    document.getElementById('btnBack').classList.toggle('show',viewOffset>2);
+    draw();return;
+  }
+  // ARRASTAR DESENHO
+  if(dActive&&drawTool==='cursor'&&selIdx>=0){
+    const d=drawings[selIdx];if(!d)return;
+    const dx=pos.x-(dCurr?.x||pos.x),dy=pos.y-(dCurr?.y||pos.y);
+    if(d.type==='hline'){
+      d.y+=dy;
+      if(d.yVal!==undefined){const {yToV}=getScale(getViewSub(),canvas.width,canvas.height);d.yVal=yToV(d.y);}
+    }else if(d.type==='vline'){d.x+=dx;}
+    else if(d.type==='tline'||d.type==='arrow'||d.type==='channel'||d.type==='fib'){d.x1+=dx;d.y1+=dy;d.x2+=dx;d.y2+=dy;}
+    else if(d.type==='rect'){d.x1+=dx;d.y1+=dy;d.x2+=dx;d.y2+=dy;}
+    else if(d.type==='text'){d.x+=dx;d.y+=dy;}
+    dCurr=pos;draw();return;
+  }
+  dCurr=pos;if(dActive)draw();
+});
+
+cwrap.addEventListener('mouseup',e=>{
+  if(scaleResizing){scaleResizing=false;cwrap.style.cursor='default';return;}
+  document.getElementById('pov').style.display='none';
+  isPanning=false;
+  if(!dActive)return;
+  const end=getPos(e);
+  if(drawTool!=='cursor'&&drawTool!=='text'){
+    const dx=Math.abs(end.x-(dStart?.x||0)),dy=Math.abs(end.y-(dStart?.y||0));
+    if(dx+dy>5){
+      const {yToV}=getScale(getViewSub(),canvas.width,canvas.height);
+      if(drawTool==='hline') drawings.push({type:'hline',y:dStart.y,yVal:yToV(dStart.y),color:'rgba(251,191,36,.85)'});
+      else if(drawTool==='vline')   drawings.push({type:'vline',x:dStart.x,color:'rgba(251,191,36,.85)'});
+      else if(drawTool==='tline')   drawings.push({type:'tline',x1:dStart.x,y1:dStart.y,x2:end.x,y2:end.y,color:'rgba(251,191,36,.85)'});
+      else if(drawTool==='channel') drawings.push({type:'channel',x1:dStart.x,y1:dStart.y,x2:end.x,y2:end.y,gap:40,color:'rgba(34,197,94,.8)'});
+      else if(drawTool==='rect')    drawings.push({type:'rect',x1:dStart.x,y1:dStart.y,x2:end.x,y2:end.y});
+      else if(drawTool==='fib')     drawings.push({type:'fib',x1:dStart.x,y1:dStart.y,x2:end.x,y2:end.y});
+      else if(drawTool==='arrow')   drawings.push({type:'arrow',x1:dStart.x,y1:dStart.y,x2:end.x,y2:end.y,color:'rgba(248,113,113,.9)'});
+      selIdx=drawings.length-1;
+    }
+  }
+  dActive=false;dStart=null;dCurr=null;draw();
+});
+
+cwrap.addEventListener('mouseleave',()=>{
+  document.getElementById('ttBox').style.display='none';
+  document.getElementById('pov').style.display='none';
+  scaleResizing=false;isPanning=false;
+  if(drawTool!=='cursor'){dActive=false;dStart=null;dCurr=null;}
+});
+
+cwrap.addEventListener('wheel',e=>{
+  e.preventDefault();
+  if(e.shiftKey){vertOffset+=(e.deltaY>0?-10:10);draw();}
+  else{if(e.deltaY<0)zoomIn();else zoomOut();}
+},{passive:false});
+
+document.addEventListener('keydown',e=>{
+  if(document.activeElement.tagName==='INPUT')return;
+  if(e.key==='ArrowLeft'){viewOffset=Math.min(pts.length-getVisN(),viewOffset+3);document.getElementById('btnBack').classList.toggle('show',viewOffset>2);}
+  if(e.key==='ArrowRight'){viewOffset=Math.max(0,viewOffset-3);document.getElementById('btnBack').classList.toggle('show',viewOffset>2);}
+  if(e.key==='+'||e.key==='=')zoomIn();
+  if(e.key==='-')zoomOut();
+  if((e.key==='Delete'||e.key==='Backspace')&&selIdx>=0){drawings.splice(selIdx,1);selIdx=-1;}
+  draw();
+});
+
+// ═══════════ FERRAMENTAS ═══════════
+function setTool(t){
+  drawTool=t;selIdx=-1;
+  document.querySelectorAll('.tb,[id^=tool-]').forEach(el=>{
+    el.classList.toggle('active',el.id==='tb-'+t);
+    el.classList.toggle('on',el.id==='tool-'+t);
+  });
+}
+function clearDrawings(){drawings=[];selIdx=-1;draw();}
+
+// ── CONFIG MM ──────────────────────────
+function openIndicadores(){
+  // Atualiza status das MMs
+  document.getElementById('ind-mm1per').textContent=CFG.mm1Per;
+  document.getElementById('ind-mm2per').textContent=CFG.mm2Per;
+  document.getElementById('ind-mm3per').textContent=CFG.mm3Per;
+  document.getElementById('ind-mm1st').textContent=CFG.mm1On?'✓ Ativa':'✗ Inativa';
+  document.getElementById('ind-mm1st').style.color=CFG.mm1On?'var(--gn)':'var(--pk)';
+  document.getElementById('ind-mm2st').textContent=CFG.mm2On?'✓ Ativa':'✗ Inativa';
+  document.getElementById('ind-mm2st').style.color=CFG.mm2On?'var(--gn)':'var(--pk)';
+  document.getElementById('ind-mm3st').textContent=CFG.mm3On?'✓ Ativa':'✗ Inativa';
+  document.getElementById('ind-mm3st').style.color=CFG.mm3On?'var(--gn)':'var(--pk)';
+  const sm=document.getElementById('sinalMMOn');
+  if(sm) sm.checked=CFG.sinalMMOn!==false;
+  document.getElementById('indModal').classList.add('open');
+}
+function closeIndicadores(){ document.getElementById('indModal').classList.remove('open'); }
+function closeThenOpenMM(){ closeIndicadores(); openCfgMM(); }
+
+function resetCfgMM(){
+  CFG.mm1On=true;  CFG.mm1Per=9;  CFG.mm1Cor='#f59e0b'; CFG.mm1Op=0.80; CFG.mm1Lw=1.5; CFG.mm1Dash=[4,5]; CFG.mm1Curva='smooth';
+  CFG.mm2On=true;  CFG.mm2Per=21; CFG.mm2Cor='#06b6d4'; CFG.mm2Op=0.55; CFG.mm2Lw=1.2; CFG.mm2Dash=[4,5]; CFG.mm2Curva='linear';
+  CFG.mm3On=false; CFG.mm3Per=50; CFG.mm3Cor='#22c55e'; CFG.mm3Op=0.50; CFG.mm3Lw=1.0; CFG.mm3Dash=[2,4]; CFG.mm3Curva='bezier';
+  CFG.showMA=true; salvarConfig(); openCfgMM(); draw();
+}
+
+function openCfgMM(){
+  // Sincroniza UI com CFG atual
+  const g=(id,val)=>{const e=document.getElementById(id);if(e)e.value=val;};
+  const gt=(id,on)=>{const e=document.getElementById(id);if(e)e.classList.toggle('on',on);};
+  const dashStr=d=>Array.isArray(d)?(d[0]===4&&d[1]===5?'dash':d[0]===2?'dot':'solid'):'dash';
+  gt('mm1tog',CFG.mm1On); g('mm1per',CFG.mm1Per); g('mm1cor',CFG.mm1Cor); g('mm1op',CFG.mm1Op); g('mm1lw',CFG.mm1Lw); document.getElementById('mm1dash').value=dashStr(CFG.mm1Dash); document.getElementById('mm1curva').value=CFG.mm1Curva||'smooth';
+  gt('mm2tog',CFG.mm2On); g('mm2per',CFG.mm2Per); g('mm2cor',CFG.mm2Cor); g('mm2op',CFG.mm2Op); g('mm2lw',CFG.mm2Lw); document.getElementById('mm2dash').value=dashStr(CFG.mm2Dash); document.getElementById('mm2curva').value=CFG.mm2Curva||'linear';
+  gt('mm3tog',CFG.mm3On); g('mm3per',CFG.mm3Per); g('mm3cor',CFG.mm3Cor); g('mm3op',CFG.mm3Op); g('mm3lw',CFG.mm3Lw); document.getElementById('mm3dash').value=dashStr(CFG.mm3Dash); document.getElementById('mm3curva').value=CFG.mm3Curva||'bezier';
+  document.getElementById('mmModal').classList.add('open');
+}
+function closeCfgMM(){ document.getElementById('mmModal').classList.remove('open'); }
+
+function mmToggle(n){
+  const el=document.getElementById('mm'+n+'tog');
+  el.classList.toggle('on');
+}
+
+function dashFromStr(s){ return s==='solid'?[0,0]:s==='dot'?[2,4]:[4,5]; }
+
+function aplicarCfgMM(){
+  const gv=(id,def,isFloat)=>{const v=document.getElementById(id)?.value;return v?(isFloat?parseFloat(v):parseInt(v)):def;};
+  const gt=(id)=>document.getElementById(id)?.classList.contains('on')??false;
+  const gd=(id)=>dashFromStr(document.getElementById(id)?.value||'dash');
+  const gc=(id)=>document.getElementById(id)?.value||'#ffffff';
+
+  CFG.mm1On=gt('mm1tog'); CFG.mm1Per=gv('mm1per',9); CFG.mm1Cor=gc('mm1cor'); CFG.mm1Op=gv('mm1op',.8,true); CFG.mm1Lw=gv('mm1lw',1.5,true); CFG.mm1Dash=gd('mm1dash'); CFG.mm1Curva=document.getElementById('mm1curva')?.value||'smooth';
+  CFG.mm2On=gt('mm2tog'); CFG.mm2Per=gv('mm2per',21); CFG.mm2Cor=gc('mm2cor'); CFG.mm2Op=gv('mm2op',.55,true); CFG.mm2Lw=gv('mm2lw',1.2,true); CFG.mm2Dash=gd('mm2dash'); CFG.mm2Curva=document.getElementById('mm2curva')?.value||'linear';
+  CFG.mm3On=gt('mm3tog'); CFG.mm3Per=gv('mm3per',50); CFG.mm3Cor=gc('mm3cor'); CFG.mm3Op=gv('mm3op',.5,true); CFG.mm3Lw=gv('mm3lw',1.0,true); CFG.mm3Dash=gd('mm3dash'); CFG.mm3Curva=document.getElementById('mm3curva')?.value||'bezier';
+
+  // Atualiza botão MM na topbar
+  const anyOn=CFG.mm1On||CFG.mm2On||CFG.mm3On;
+  document.getElementById('maBtn').classList.toggle('on', anyOn);
+  CFG.showMA=anyOn;
+  salvarConfig();
+  closeCfgMM();
+  draw();
+}
+
+// Aplicar rodadas direto da topbar
+// ═══════════ INDICADOR DE ENTRADA MM ═══════════
+let fundoDetectado=false, fundoMin=999;
+
+function checkSinalEntrada(emaArr){
+  if(CFG.sinalMMOn===false||emaArr.length<4) return;
+  const n=emaArr.length;
+  const a0=emaArr[n-1], a1=emaArr[n-2], a2=emaArr[n-3];
+  const acima0=a0.e1>a0.e2, acima1=a1.e1>a1.e2, acima2=a2.e1>a2.e2;
+
+  // Queda: MM1 cruzou para baixo
+  if(acima2&&acima1&&!acima0){
+    fundoDetectado=true; fundoMin=999;
+  }
+  // Atualiza mínimo durante queda
+  if(fundoDetectado&&pts.length>0){
+    fundoMin=Math.min(fundoMin,pts[pts.length-1].val);
+  }
+  // SINAL: MM1 cruzou de volta para cima após queda real
+  if(!acima2&&!acima1&&acima0&&fundoDetectado){
+    fundoDetectado=false;
+    if(pts.length>0) pts[pts.length-1].sinalEntrada=true;
+    showAlert('🚀 SINAL MM — ENTRADA NA PRÓXIMA VELA!','#22c55e',10000);
+    triggerFlash();
+  }
+}
+
+let modoRodada=false;
+
+function toggleModoRodada(){
+  if(modoRodada){
+    document.getElementById('rodAviso').classList.add('open');
+  } else {
+    modoRodada=true;
+    const b=document.getElementById('btnRodada');
+    b.classList.add('on'); b.textContent='⑬ RODADA ON';
+    // Abre popup automaticamente na última vela
+    if(pts.length>0){
+      const sub=getViewSub();
+      const W=canvas.width, H=canvas.height;
+      const {sx,sy}=getScale(sub,W,H);
+      const lastI=sub.length-1;
+      const p=sub[lastI];
+      const ss=Math.max(0,pts.length-viewOffset-sub.length);
+      const rect=cwrap.getBoundingClientRect();
+      document.getElementById('rpV').textContent=(ss+lastI+1);
+      document.getElementById('rpM').textContent=p.val.toFixed(2)+'x';
+      const inp=document.getElementById('rpN');
+      const cur=getRodada(ss+lastI); inp.value=cur&&cur>0?cur:'';
+      const popup=document.getElementById('rodPopup');
+      popup.style.left=Math.min(rect.left+sx(lastI)+12, window.innerWidth-220)+'px';
+      popup.style.top=Math.max(rect.top+sy(p.val)-130, 8)+'px';
+      popup.classList.add('show');
+      popup.dataset.idx=ss+lastI;
+      setTimeout(()=>inp.select(),60);
+    } else {
+      showAlert('Clique em uma vela para definir a rodada','#22c55e',4000);
+    }
+  }
+}
+function confirmarDesativarRodada(){
+  modoRodada=false; rodadaConfig.ativo=false;
+  document.getElementById('rodPopup').classList.remove('show');
+  document.getElementById('rodAviso').classList.remove('open');
+  const b=document.getElementById('btnRodada');
+  b.classList.remove('on'); b.textContent='⑬ RODADA';
+  salvarConfig(); draw();
+  showAlert('Rodadas removidas','#f43f5e',3000);
+}
+
+// Enter/Esc no popup
+document.addEventListener('keydown',ev=>{
+  const p=document.getElementById('rodPopup');
+  if(!p.classList.contains('show'))return;
+  if(ev.key==='Escape'){p.classList.remove('show');ev.stopPropagation();return;}
+  if(ev.key==='Enter'){
+    const n=parseInt(document.getElementById('rpN').value||'');
+    if(isNaN(n)||n<1){showAlert('Digite um número válido','#f43f5e',2000);return;}
+    const idx=parseInt(p.dataset.idx||'0');
+    rodadaConfig.velaNro=idx+1; rodadaConfig.rodadaNro=n; rodadaConfig.ativo=true;
+    salvarConfig(); p.classList.remove('show'); draw();
+    showAlert('✓ Rodada '+n+' = vela '+(idx+1),'#22c55e',3000);
+    ev.stopPropagation();
+  }
+},{capture:true});
+document.addEventListener('mousedown',ev=>{
+  const p=document.getElementById('rodPopup');
+  if(p.classList.contains('show')&&!p.contains(ev.target))p.classList.remove('show');
+});
+
+function aplicarRodadasTop(){
+  const multInput = 0;
+  const horaInput = '';
+  const rodada    = 0;
+
+  if(isNaN(multInput)||multInput<=0){
+    showAlert('Informe o multiplicador da vela (ex: 2.80)','#f43f5e',3000); return;
+  }
+  if(isNaN(rodada)||rodada<1){
+    showAlert('Informe o número da rodada','#f43f5e',3000); return;
+  }
+
+  // Encontra a vela pelo multiplicador — busca a mais próxima do valor informado
+  // Se informou horário, prioriza a que também bate o horário
+  let melhorIdx = -1;
+  let melhorDiff = Infinity;
+
+  pts.forEach((p, i) => {
+    const diff = Math.abs(p.val - multInput);
+    // Se tem horário, verifica se o horário bate
+    let horaOk = true;
+    if(horaInput && horaInput.includes(':')){
+      const hm = p.time.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+      horaOk = hm === horaInput;
+    }
+    if(horaOk && diff < melhorDiff){
+      melhorDiff = diff;
+      melhorIdx  = i;
+    }
+  });
+
+  // Se não achou com horário, tenta só pelo mult
+  if(melhorIdx < 0){
+    pts.forEach((p, i) => {
+      const diff = Math.abs(p.val - multInput);
+      if(diff < melhorDiff){ melhorDiff=diff; melhorIdx=i; }
+    });
+  }
+
+  if(melhorIdx < 0){
+    showAlert('Nenhuma vela encontrada','#f43f5e',2500); return;
+  }
+
+  const velaEncontrada = melhorIdx + 1; // 1-based
+  rodadaConfig.velaNro  = velaEncontrada;
+  rodadaConfig.rodadaNro= rodada;
+  rodadaConfig.multRef  = multInput;
+  rodadaConfig.horario  = horaInput;
+  rodadaConfig.ativo    = true;
+  salvarConfig();
+  draw();
+
+  const horaStr = horaInput ? ' às '+horaInput : '';
+  showAlert('✓ Vela #'+velaEncontrada+' ('+pts[melhorIdx].val.toFixed(2)+'x'+horaStr+') = rodada '+rodada,'#22c55e',4000);
+}
+
+function openRodadas(){
+  // Preenche com valores atuais se já configurado
+  if(rodadaConfig.ativo){
+    document.getElementById('rodVela').value=rodadaConfig.velaNro;
+    document.getElementById('rodNro').value=rodadaConfig.rodadaNro;
+  }
+  document.getElementById('rodModal').classList.add('open');
+}
+function closeRodadas(){ document.getElementById('rodModal').classList.remove('open'); }
+function limparRodadas(){
+  rodadaConfig.ativo=false;
+  document.getElementById('rodVela').value='';
+  document.getElementById('rodNro').value='';
+  document.getElementById('rodStatus').textContent='Numeração removida.';
+  document.getElementById('rodStatus').style.color='var(--txt2)';
+  salvarConfig(); closeRodadas(); draw();
+}
+
+function aplicarRodadas(){
+  const vela  = parseInt(document.getElementById('rodVela').value);
+  const rodada= parseInt(document.getElementById('rodNro').value);
+  if(isNaN(vela)||isNaN(rodada)||vela<1||rodada<1){
+    showAlert('Preencha o nº da vela e o nº da rodada','#f43f5e',3000);
+    return;
+  }
+  rodadaConfig.velaNro  = vela;
+  rodadaConfig.rodadaNro= rodada;
+  rodadaConfig.ativo    = true;
+  const st=document.getElementById('rodStatus');
+  if(st){ st.textContent='✓ Vela '+vela+' = rodada '+rodada+' ('+pts.length+' velas configuradas)'; st.style.color='var(--gn)'; }
+  salvarConfig();
+  closeRodadas();
+  draw();
+  showAlert('Rodadas: vela '+vela+' = rodada '+rodada,'#22c55e',3000);
+}
+
+// ═══════════ PERSISTÊNCIA — localStorage ═══════════
+const STORAGE_KEY = 'aviator_v7_cfg';
+
+function salvarConfig(){
+  try{
+    const dados = {
+      cfg: {
+        showN:    CFG.showN,
+        showMA:   CFG.showMA,
+        mm1On:    CFG.mm1On,  mm1Per: CFG.mm1Per, mm1Cor: CFG.mm1Cor, mm1Op: CFG.mm1Op, mm1Lw: CFG.mm1Lw, mm1Dash: CFG.mm1Dash, mm1Curva: CFG.mm1Curva,
+        mm2On:    CFG.mm2On,  mm2Per: CFG.mm2Per, mm2Cor: CFG.mm2Cor, mm2Op: CFG.mm2Op, mm2Lw: CFG.mm2Lw, mm2Dash: CFG.mm2Dash, mm2Curva: CFG.mm2Curva,
+        mm3On:    CFG.mm3On,  mm3Per: CFG.mm3Per, mm3Cor: CFG.mm3Cor, mm3Op: CFG.mm3Op, mm3Lw: CFG.mm3Lw, mm3Dash: CFG.mm3Dash, mm3Curva: CFG.mm3Curva,
+        sinalMMOn: CFG.sinalMMOn,
+      },
+      rodada: rodadaConfig,
+      servidor: {
+        url:    srv.url,
+        get:    srv.get,
+        post:   srv.post,
+        painel: srv.painel,
+        poll:   srv.poll
+      }
+    };
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(dados));
+  } catch(e){ console.warn('Erro ao salvar config:', e); }
+}
+
+function carregarConfig(){
+  try{
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if(!raw) return;
+    const dados = JSON.parse(raw);
+
+    // Restaura CFG
+    if(dados.cfg){
+      Object.assign(CFG, dados.cfg);
+      // Garante que dash seja array
+      ['mm1Dash','mm2Dash','mm3Dash'].forEach(k=>{
+        if(!Array.isArray(CFG[k])) CFG[k]=[4,5];
+      });
+    }
+
+    // Restaura rodadaConfig
+    if(dados.rodada) Object.assign(rodadaConfig, dados.rodada);
+
+    // Restaura servidor
+    if(dados.servidor) Object.assign(srv, dados.servidor);
+
+    // Atualiza UI do botão MM
+    const anyOn = CFG.mm1On||CFG.mm2On||CFG.mm3On;
+    document.getElementById('maBtn')?.classList.toggle('on', anyOn);
+
+    // Atualiza slider
+    const sl = document.getElementById('xslider');
+    if(sl) sl.value = CFG.showN;
+
+    // Atualiza campos do servidor no modal
+    const setVal=(id,v)=>{const e=document.getElementById(id);if(e)e.value=v;};
+    setVal('cfgUrl',    srv.url);
+    setVal('cfgGet',    srv.get);
+    setVal('cfgPost',   srv.post);
+    setVal('cfgPainel', srv.painel);
+    setVal('cfgPoll',   srv.poll);
+
+  } catch(e){ console.warn('Erro ao carregar config:', e); }
+}
+
+// ═══════════ SIMULAÇÃO ═══════════
+function iniciarSim(){
+  if(simInt)return;
+  simInt=setInterval(()=>{
+    if(modoFonte!=='simulado')return;
+    const r=Math.random();let v;
+    if(r<.52)v=+(Math.random()*.9+1.01).toFixed(2);
+    else if(r<.78)v=+(Math.random()*3+2).toFixed(2);
+    else if(r<.93)v=+(Math.random()*10+5).toFixed(2);
+    else v=+(Math.random()*50+10).toFixed(2);
+    receberVela(v,null,'simulado');
+  },3000);
+}
+
+// Seeds
+[1.01,1.3,1.7,2.2,3.1,4.5,6.2,8.8,11.5,14.2,16.9,18.75,15.8,12.4,9.3,6.8,4.9,3.2,2.1,1.5,1.2,1.8,2.6,3.9,5.7,8.1,11.0,14.5,17.2,20.1,23.4,19.0,15.2,11.8,8.4,5.9,3.7,2.3,1.6,2.8,4.2,6.5,9.1,12.3,1.1,1.4,2.0,3.5,5.2,7.8].forEach(v=>receberVela(v,null,'seed'));
+iniciarSim();
+
+// Auto-conectar silencioso
+// ═══ RELÓGIO INDEPENDENTE ═══
+setInterval(()=>{
+  const el=document.getElementById('xNow');
+  if(el) el.textContent=new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+},500);
+
+setTimeout(()=>{
+  fetch('https://aviator-trader-quadrado.onrender.com/api/status')
+    .then(r=>{if(r.ok)buscar(true);})
+    .catch(()=>{});
+},2000);
+
+// ═══════════ RESIZE ═══════════
+function resize(){
+  const dpr=window.devicePixelRatio||1;
+  const w=cwrap.clientWidth, h=cwrap.clientHeight;
+  canvas.width=Math.round(w*dpr);
+  canvas.height=Math.round(h*dpr);
+  canvas.style.width=w+'px';
+  canvas.style.height=h+'px';
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  draw();
+}
+new ResizeObserver(resize).observe(cwrap);
+setTimeout(()=>{
+  carregarConfig(); // restaura tudo antes de desenhar
+  resize();
+  // Enter nos campos de rodada
+  const rv=document.getElementById('rodVela'),rn=document.getElementById('rodNro');
+  if(rv) rv.addEventListener('keydown',e=>{if(e.key==='Enter')aplicarRodadas();});
+  if(rn) rn.addEventListener('keydown',e=>{if(e.key==='Enter')aplicarRodadas();});
+  // Enter nos campos da topbar
+  // Restaura botão rodada se estava ativo
+  if(rodadaConfig.ativo&&modoRodada){
+    const b=document.getElementById('btnRodada');
+    if(b){b.classList.add('on');b.textContent='⑬ RODADA ON';}
+  }
+},80);
+</script>
+</body>
+</html>

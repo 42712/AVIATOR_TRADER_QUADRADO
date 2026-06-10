@@ -31,7 +31,7 @@ class Vela(BaseModel):
 
 @app.get("/", response_class=HTMLResponse)
 def root():
-    html_path = os.path.join(os.path.dirname(__file__), "aviator_engine_v6.2.html")
+    html_path = os.path.join(os.path.dirname(__file__), "aviator_engine_v7.html")
     if os.path.exists(html_path):
         with open(html_path, "r", encoding="utf-8") as f:
             return HTMLResponse(content=f.read())
