@@ -146,17 +146,6 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:var(--fon
 <div class="topbar">
   <div class="tb-logo"><div class="tb-dot"></div>AVIATOR v7</div>
   <div class="tb-mid">
-    <!-- ferramentas de desenho -->
-    <button class="btn on" id="tool-cursor" onclick="setTool('cursor')">&#9654;</button>
-    <button class="btn" id="tool-hline"  onclick="setTool('hline')"  title="Linha Horizontal">&#8212;</button>
-    <button class="btn" id="tool-vline"  onclick="setTool('vline')"  title="Linha Vertical">|</button>
-    <button class="btn" id="tool-tline"  onclick="setTool('tline')"  title="Tendência">&#8598;</button>
-    <button class="btn" id="tool-channel" onclick="setTool('channel')" title="Canal">&#8661;</button>
-    <button class="btn" id="tool-rect"   onclick="setTool('rect')"   title="Retângulo">&#9645;</button>
-    <button class="btn" id="tool-fib"    onclick="setTool('fib')"    title="Fibonacci">F</button>
-    <button class="btn" id="tool-arrow"  onclick="setTool('arrow')"  title="Seta">&#10132;</button>
-    <button class="btn" id="tool-text"   onclick="setTool('text')"   title="Texto">T</button>
-    <button class="btn r" onclick="clearDrawings()" title="Apagar">&#10005;</button>
     <div style="width:1px;height:14px;background:var(--brd);flex-shrink:0"></div>
     <button class="btn" onclick="zoomIn()">+</button>
     <button class="btn" onclick="zoomOut()">&#8722;</button>
@@ -173,54 +162,6 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:var(--fon
 </div>
 
 <div class="main">
-<!-- TOOLBOX LATERAL -->
-<div class="toolbox">
-  <div class="tb active" id="tb-cursor" onclick="setTool('cursor')">
-    <svg viewBox="0 0 24 24"><path d="M5 3l14 9-7 1-4 7z" fill="currentColor" stroke="none"/></svg>
-    <span class="tblabel">Cursor</span>
-  </div>
-  <div class="tb-sep"></div>
-  <div class="tb" id="tb-hline" onclick="setTool('hline')">
-    <svg viewBox="0 0 24 24"><line x1="2" y1="12" x2="22" y2="12"/></svg>
-    <span class="tblabel">Linha Horizontal</span>
-  </div>
-  <div class="tb" id="tb-vline" onclick="setTool('vline')">
-    <svg viewBox="0 0 24 24"><line x1="12" y1="2" x2="12" y2="22"/></svg>
-    <span class="tblabel">Linha Vertical</span>
-  </div>
-  <div class="tb" id="tb-tline" onclick="setTool('tline')">
-    <svg viewBox="0 0 24 24"><line x1="4" y1="20" x2="20" y2="4"/><polyline points="14,4 20,4 20,10"/></svg>
-    <span class="tblabel">Tendência</span>
-  </div>
-  <div class="tb" id="tb-channel" onclick="setTool('channel')">
-    <svg viewBox="0 0 24 24"><line x1="3" y1="7" x2="21" y2="4"/><line x1="3" y1="14" x2="21" y2="11"/></svg>
-    <span class="tblabel">Canal</span>
-  </div>
-  <div class="tb-sep"></div>
-  <div class="tb" id="tb-rect" onclick="setTool('rect')">
-    <svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="1"/></svg>
-    <span class="tblabel">Retângulo</span>
-  </div>
-  <div class="tb" id="tb-fib" onclick="setTool('fib')">
-    <svg viewBox="0 0 24 24"><line x1="3" y1="5" x2="21" y2="5"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="3" y1="15" x2="21" y2="15"/><line x1="3" y1="20" x2="21" y2="20"/><line x1="3" y1="3" x2="3" y2="21"/></svg>
-    <span class="tblabel">Fibonacci</span>
-  </div>
-  <div class="tb-sep"></div>
-  <div class="tb" id="tb-arrow" onclick="setTool('arrow')">
-    <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="13,6 19,12 13,18"/></svg>
-    <span class="tblabel">Seta</span>
-  </div>
-  <div class="tb" id="tb-text" onclick="setTool('text')">
-    <svg viewBox="0 0 24 24"><text x="5" y="17" font-size="14" fill="currentColor" stroke="none">T</text></svg>
-    <span class="tblabel">Texto</span>
-  </div>
-  <div class="tb-sep"></div>
-  <div class="tb" style="color:var(--pk)" onclick="clearDrawings()">
-    <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-    <span class="tblabel">Apagar tudo</span>
-  </div>
-</div>
-
 <!-- GRÁFICO -->
 <div class="chart-col">
   <div class="canvas-wrap" id="cwrap">
@@ -301,17 +242,9 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:var(--fon
       </div>
     </div>
 
-    <div style="font-size:8px;color:var(--up);letter-spacing:.8px;margin:6px 0 4px">ZONAS DE PREÇO</div>
-    <div style="display:flex;flex-direction:column;gap:4px;margin-bottom:8px">
-      <label style="display:flex;align-items:center;gap:8px;font-size:9px;color:var(--txt2)">
-        <input type="checkbox" id="zona1x" checked onchange="draw()"> Zona 1.00x (BASE)
-      </label>
-      <label style="display:flex;align-items:center;gap:8px;font-size:9px;color:var(--txt2)">
-        <input type="checkbox" id="zona2x" checked onchange="draw()"> Zona 2.00x (ROXO)
-      </label>
-      <label style="display:flex;align-items:center;gap:8px;font-size:9px;color:var(--txt2)">
-        <input type="checkbox" id="zona10x" checked onchange="draw()"> Zona 10.00x (ROSA)
-      </label>
+    <div style="font-size:8px;color:var(--up);letter-spacing:.8px;margin:6px 0 4px">ZONAS DE PREÇO — FIXAS</div>
+    <div style="font-size:9px;color:var(--txt2);line-height:1.7;background:var(--bg3);border-radius:5px;padding:8px 10px;border:1px solid var(--brd)">
+      As zonas <b style="color:#06b6d4">1.00x</b>, <b style="color:#a855f7">2.00x</b> e <b style="color:#f472b6">10.00x</b> estão sempre ativas no gráfico.
     </div>
 
     <div style="font-size:8px;color:var(--pk);letter-spacing:.8px;margin:6px 0 4px">SINAL DE ENTRADA — PADRÃO MM</div>
@@ -810,16 +743,13 @@ function draw(){
     }
   }
 
-  // LINHAS DE ZONA FIXAS — 1x, 2x, 10x
+  // LINHAS DE ZONA FIXAS — 1x, 2x, 10x (SEMPRE ATIVAS)
   const zonas = [
     { val:1.0,  cor:'rgba(6,182,212,0.9)',   glow:'rgba(6,182,212,0.12)',   lbl:'1.00x',  lw:2.2, dash:[6,3] },
     { val:2.0,  cor:'rgba(168,85,247,0.75)', glow:'rgba(168,85,247,0.08)',  lbl:'2.00x — ZONA',  lw:2.0, dash:[6,3] },
     { val:10.0, cor:'rgba(244,114,182,0.85)',glow:'rgba(244,114,182,0.1)',  lbl:'10.00x — ROSA', lw:2.2, dash:[8,3] },
   ];
-  const zonaAtiva=(id)=>{const el=document.getElementById(id);return !el||el.checked;};
   zonas.forEach(z=>{
-    if(z.val===2.0&&!zonaAtiva('zona2x')) return;
-    if(z.val===10.0&&!zonaAtiva('zona10x')) return;
     if(z.val<minV||z.val>maxV) return;
     const zy=sy(z.val);
     ctx.save();
@@ -1015,21 +945,8 @@ cwrap.addEventListener('mousedown',e=>{
     }
     return;
   }
-  if(drawTool==='cursor'){
-    const hi=hitDraw(pos);
-    if(hi>=0){selIdx=hi;dActive=true;dStart=pos;dCurr=pos;document.getElementById('pov').style.display='block';}
-    else{selIdx=-1;isPanning=true;panX0=pos.x;panOff0=viewOffset;document.getElementById('pov').style.display='block';}
-    draw();return;
-  }
-  if(drawTool==='text'){
-    const wrap=document.getElementById('textWrap'),inp=document.getElementById('textInput');
-    const r=cwrap.getBoundingClientRect();
-    wrap.style.left=(r.left+pos.x)+'px';wrap.style.top=(r.top+pos.y-20)+'px';wrap.style.display='block';
-    inp.value='';inp.focus();
-    inp.onkeydown=ev=>{if(ev.key==='Enter'){drawings.push({type:'text',x:pos.x,y:pos.y,txt:inp.value,color:'#fbbf24'});selIdx=drawings.length-1;wrap.style.display='none';draw();}if(ev.key==='Escape')wrap.style.display='none';};
-    return;
-  }
-  dStart=pos;dActive=true;selIdx=-1;
+  selIdx=-1;isPanning=true;panX0=pos.x;panOff0=viewOffset;document.getElementById('pov').style.display='block';
+  draw();return;
 });
 
 cwrap.addEventListener('mousemove',e=>{
@@ -1065,50 +982,18 @@ cwrap.addEventListener('mousemove',e=>{
     document.getElementById('btnBack').classList.toggle('show',viewOffset>2);
     draw();return;
   }
-  // ARRASTAR DESENHO
-  if(dActive&&drawTool==='cursor'&&selIdx>=0){
-    const d=drawings[selIdx];if(!d)return;
-    const dx=pos.x-(dCurr?.x||pos.x),dy=pos.y-(dCurr?.y||pos.y);
-    if(d.type==='hline'){
-      d.y+=dy;
-      if(d.yVal!==undefined){const {yToV}=getScale(getViewSub(),canvas.width,canvas.height);d.yVal=yToV(d.y);}
-    }else if(d.type==='vline'){d.x+=dx;}
-    else if(d.type==='tline'||d.type==='arrow'||d.type==='channel'||d.type==='fib'){d.x1+=dx;d.y1+=dy;d.x2+=dx;d.y2+=dy;}
-    else if(d.type==='rect'){d.x1+=dx;d.y1+=dy;d.x2+=dx;d.y2+=dy;}
-    else if(d.type==='text'){d.x+=dx;d.y+=dy;}
-    dCurr=pos;draw();return;
-  }
-  dCurr=pos;if(dActive)draw();
 });
 
 cwrap.addEventListener('mouseup',e=>{
   if(scaleResizing){scaleResizing=false;cwrap.style.cursor='default';return;}
   document.getElementById('pov').style.display='none';
   isPanning=false;
-  if(!dActive)return;
-  const end=getPos(e);
-  if(drawTool!=='cursor'&&drawTool!=='text'){
-    const dx=Math.abs(end.x-(dStart?.x||0)),dy=Math.abs(end.y-(dStart?.y||0));
-    if(dx+dy>5){
-      const {yToV}=getScale(getViewSub(),canvas.width,canvas.height);
-      if(drawTool==='hline') drawings.push({type:'hline',y:dStart.y,yVal:yToV(dStart.y),color:'rgba(251,191,36,.85)'});
-      else if(drawTool==='vline')   drawings.push({type:'vline',x:dStart.x,color:'rgba(251,191,36,.85)'});
-      else if(drawTool==='tline')   drawings.push({type:'tline',x1:dStart.x,y1:dStart.y,x2:end.x,y2:end.y,color:'rgba(251,191,36,.85)'});
-      else if(drawTool==='channel') drawings.push({type:'channel',x1:dStart.x,y1:dStart.y,x2:end.x,y2:end.y,gap:40,color:'rgba(34,197,94,.8)'});
-      else if(drawTool==='rect')    drawings.push({type:'rect',x1:dStart.x,y1:dStart.y,x2:end.x,y2:end.y});
-      else if(drawTool==='fib')     drawings.push({type:'fib',x1:dStart.x,y1:dStart.y,x2:end.x,y2:end.y});
-      else if(drawTool==='arrow')   drawings.push({type:'arrow',x1:dStart.x,y1:dStart.y,x2:end.x,y2:end.y,color:'rgba(248,113,113,.9)'});
-      selIdx=drawings.length-1;
-    }
-  }
-  dActive=false;dStart=null;dCurr=null;draw();
 });
 
 cwrap.addEventListener('mouseleave',()=>{
   document.getElementById('ttBox').style.display='none';
   document.getElementById('pov').style.display='none';
   scaleResizing=false;isPanning=false;
-  if(drawTool!=='cursor'){dActive=false;dStart=null;dCurr=null;}
 });
 
 cwrap.addEventListener('wheel',e=>{
@@ -1123,7 +1008,6 @@ document.addEventListener('keydown',e=>{
   if(e.key==='ArrowRight'){viewOffset=Math.max(0,viewOffset-3);document.getElementById('btnBack').classList.toggle('show',viewOffset>2);}
   if(e.key==='+'||e.key==='=')zoomIn();
   if(e.key==='-')zoomOut();
-  if((e.key==='Delete'||e.key==='Backspace')&&selIdx>=0){drawings.splice(selIdx,1);selIdx=-1;}
   draw();
 });
 
