@@ -403,7 +403,7 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:var(--fon
 <div class="modal-bg" id="serverModal" onclick="if(event.target===this)closeServer()">
   <div class="modal">
     <div class="m-title">&#9775; Servidor Render <span class="m-x" onclick="closeServer()">&#10005;</span></div>
-    <div class="m-group"><label>URL Base</label><input type="text" id="cfgUrl" value="https://aviator-trader-quadrado.onrender.com"></div>
+    <div class="m-group"><label>URL Base</label><input type="text" id="cfgUrl" value="https://painel-aviator.onrender.com"></div>
     <div class="m-row">
       <div class="m-group"><label>Endpoint GET</label><input type="text" id="cfgGet" value="/api/velas"></div>
       <div class="m-group"><label>Painel</label>
@@ -492,7 +492,7 @@ let isPanning = false, panX0 = 0, panOff0 = 0;
 let _mx=0,_my=0;
 
 // Servidor
-const srv = { url:'https://aviator-trader-quadrado.onrender.com', get:'/api/velas', post:'/api/nova-vela', painel:1, poll:1500 };
+const srv = { url:'https://painel-aviator.onrender.com', get:'/api/velas', post:'/api/nova-vela', painel:1, poll:1500 };
 let pollingTimer = null, simInt = null, modoFonte = 'simulado';
 let ultimaChave = null;
 let ultimaVelaTs = 0;  // ts_recebido da última vela processada
