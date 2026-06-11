@@ -492,10 +492,11 @@ let isPanning = false, panX0 = 0, panOff0 = 0;
 let _mx=0,_my=0;
 
 // Servidor
-const srv = { url:'https://painel-aviator.onrender.com', get:'/api/velas', post:'/api/nova-vela', painel:1, poll:1500 };
+const srv = { url:'https://painel-aviator.onrender.com', get:'/api/velas', post:'/api/nova-vela', painel:1, poll:1200 };
 let pollingTimer = null, simInt = null, modoFonte = 'simulado';
 let ultimaChave = null;
-let ultimaVelaTs = 0;  // ts_recebido da última vela processada
+let ultimaVelaTs = 0;       // ts_recebido da última vela processada
+const processadas = new Set(); // deduplicação robusta de velas
 
 // Áudio
 let audioCtx = null;
@@ -563,6 +564,7 @@ function buscar(primeiro){
       const lista=Array.isArray(data)?data:(data.velas||data.ultimos||data.data||(data.dado?[data.dado]:[]));
       if(primeiro){
         if(simInt){clearInterval(simInt);simInt=null;}
+        processadas.clear(); ultimaVelaTs=0; // limpa cache ao reconectar
         modoFonte='extensao';
         setWs('ok','ONLINE');
         setSrv('polling '+srv.poll+'ms — '+srv.url,'var(--gn)');
@@ -586,21 +588,20 @@ function buscar(primeiro){
         pollingTimer=setInterval(()=>buscar(false),srv.poll);
       } else {
         if(!lista||!lista.length)return;
-        // Processa TODAS as velas novas desde a última recebida
-        let novas=0;
+        // Processa velas novas — deduplicação por chave única
         lista.forEach(u=>{
           const ts=u.ts_recebido||0;
-          if(ts<=ultimaVelaTs) return;  // já processada
           const v=parseFloat(u.multiplicador||u.valor||u.val||0);
-          const chave=(u.rodada||u.id||v)+'_'+srv.painel+'_'+ts;
-          if(!isNaN(v)&&v>0&&chave!==ultimaChave){
-            ultimaChave=chave;
-            if(ts>ultimaVelaTs) ultimaVelaTs=ts;
-            receberVela(v,u.timestamp||null,'extensao');
-            novas++;
-          }
+          if(isNaN(v)||v<=0) return;
+          // Chave única por rodada+painel+ts
+          const chave=(u.rodada||u.id||String(v))+'_'+(u.painel||srv.painel)+'_'+ts;
+          if(processadas.has(chave)) return;
+          processadas.add(chave);
+          // Limpa cache se crescer demais
+          if(processadas.size>2000) processadas.clear();
+          if(ts>ultimaVelaTs) ultimaVelaTs=ts;
+          receberVela(v, u.timestamp||null, 'extensao');
         });
-        if(novas>1) console.log(`[poll] ${novas} velas novas recebidas`);
       }
     })
     .catch(e=>{
@@ -1450,24 +1451,44 @@ setInterval(()=>{
 },500);
 
 // Auto-ping ao abrir — acorda Render e conecta automaticamente
-(function pingEConectar(){
+// Auto-conecta ao abrir — acorda o Render e inicia polling
+(function pingEConectar(tentativa){
+  tentativa = tentativa||1;
   const url = srv.url + '/api/status';
-  setSrv('acordando servidor...','var(--am)');
-  fetch(url, {signal: AbortSignal.timeout(8000)})
-    .then(r=>{
-      if(r.ok){
-        setSrv('online — conectando...','var(--gn)');
+  setSrv('conectando... (tentativa '+tentativa+')','var(--am)');
+  setWs('am','CONECTANDO');
+
+  // Timeout manual — AbortSignal.timeout não é suportado em todos browsers
+  let done = false;
+  const tmr = setTimeout(()=>{
+    if(done) return;
+    done = true;
+    setSrv('sem resposta — tentando novamente...','var(--am)');
+    setTimeout(()=>pingEConectar(tentativa+1), 5000);
+  }, 8000);
+
+  fetch(url)
+    .then(r => r.json())
+    .then(data => {
+      if(done) return;
+      done = true;
+      clearTimeout(tmr);
+      if(data.online || data.ok || data.ts){
+        setSrv('online — carregando velas...','var(--gn)');
+        setWs('ok','ONLINE');
         buscar(true);
       } else {
-        setSrv('servidor retornou '+r.status,'var(--pk)');
-        setTimeout(pingEConectar, 8000);
+        setTimeout(()=>pingEConectar(tentativa+1), 5000);
       }
     })
     .catch(()=>{
-      setSrv('aguardando servidor acordar...','var(--am)');
-      setTimeout(pingEConectar, 6000);  // tenta de novo
+      if(done) return;
+      done = true;
+      clearTimeout(tmr);
+      setSrv('servidor offline — tentando em 6s... ('+tentativa+'ª)','var(--am)');
+      setTimeout(()=>pingEConectar(tentativa+1), 6000);
     });
-})();
+})(1);
 
 // ═══════════ RESIZE ═══════════
 function resize(){
