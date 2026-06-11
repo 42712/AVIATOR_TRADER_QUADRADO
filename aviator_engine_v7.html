@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Aviator Engine v7 - Sincronizado</title>
+<title>Aviator Engine v7 - LIVE</title>
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
@@ -26,11 +26,9 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:var(--fon
 .tb-right{display:flex;align-items:center;gap:4px;padding:0 10px;border-left:1px solid var(--brd)}
 .btn{padding:2px 9px;border-radius:4px;border:1px solid var(--brd2);background:var(--bg3);color:var(--txt2);font-size:9px;font-family:var(--font);cursor:pointer;height:22px;display:flex;align-items:center;gap:3px;transition:all .15s}
 .btn:hover{border-color:var(--txt2);color:var(--txt)}
-.btn.on{border-color:var(--up);background:rgba(168,85,247,.15);color:var(--up)}
 .btn.g{border-color:#166534;background:rgba(34,197,94,.1);color:var(--gn)}
-.btn.b{border-color:#1e3a5f;background:rgba(96,165,250,.08);color:#60a5fa}
 .ws-pill{display:flex;align-items:center;gap:4px;font-size:9px;padding:0 8px;border-left:1px solid var(--brd)}
-.ws-pill.ok{color:var(--gn)}.ws-pill.err{color:var(--pk)}.ws-pill.am{color:var(--am)}
+.ws-pill.ok{color:var(--gn)}.ws-pill.err{color:var(--pk)}
 .wsd{width:5px;height:5px;border-radius:50%;background:currentColor;animation:blink 1.4s infinite}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
 
@@ -48,14 +46,11 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:var(--fon
 .kv{display:flex;justify-content:space-between;padding:2px 0}
 .kk{font-size:8px;color:var(--txt2)}.kvv{font-size:9px;font-weight:500;color:var(--txt)}
 .log-area{flex:1;overflow-y:auto}
-.log-row{display:flex;align-items:center;gap:3px;padding:2px 8px;border-bottom:1px solid #070d15;font-size:9px}
+.log-row{display:flex;align-items:center;gap:3px;padding:2px 8px;border-bottom:1px solid #070d15;font-size:9px;cursor:pointer}
 .log-row:hover{background:var(--bg3)}
 .ldot{width:4px;height:4px;border-radius:50%;flex-shrink:0}
 .lt{color:var(--txt3);min-width:28px;font-size:8px}.lv{font-weight:500}
-.ltag{font-size:7px;padding:1px 3px;border-radius:2px;margin-left:auto}
-.t-up{background:rgba(168,85,247,.12);color:var(--up)}
-.t-dn{background:rgba(6,182,212,.12);color:var(--dn)}
-.t-pk{background:rgba(244,114,182,.15);color:#f472b6}
+.ltag{font-size:7px;padding:1px 3px;border-radius:2px;margin-left:auto;background:rgba(34,197,94,.15);color:var(--gn)}
 
 .tooltip{position:absolute;background:#080f1c;border:1px solid var(--brd2);border-radius:5px;padding:6px 10px;display:none;z-index:60;min-width:100px}
 .tt-v{font-size:14px;font-weight:700}.tt-s{font-size:8px;color:var(--txt2)}
@@ -65,37 +60,21 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:var(--fon
 .flash.on{opacity:1}
 #btnBack{position:absolute;bottom:36px;left:50%;transform:translateX(-50%);background:rgba(34,197,94,.35);border:1.5px solid var(--gn);border-radius:20px;padding:7px 22px;font-size:11px;font-weight:700;color:var(--gn);cursor:pointer;display:none;z-index:60}
 #btnBack.show{display:block}
-
-.modal-bg{position:fixed;inset:0;background:rgba(5,8,13,.93);display:none;align-items:center;justify-content:center;z-index:999}
-.modal-bg.open{display:flex}
-.modal{background:var(--bg4);border:1px solid var(--brd2);border-radius:10px;padding:22px 24px;width:400px;display:flex;flex-direction:column;gap:10px}
-.m-title{font-size:13px;font-weight:700;color:#fff;display:flex;justify-content:space-between}
-.m-x{cursor:pointer;color:var(--txt2)}
-.m-group{display:flex;flex-direction:column;gap:3px}
-.m-group label{font-size:9px;color:var(--txt2)}
-.m-group input{padding:5px 8px;background:var(--bg3);border:1px solid var(--brd2);border-radius:4px;color:var(--txt);font-family:var(--font);font-size:10px;outline:none}
-.m-status{background:var(--bg3);border:1px solid var(--brd);border-radius:4px;padding:7px 9px;font-size:9px;color:var(--txt2)}
-.mbtn{padding:8px;border-radius:5px;font-size:10px;font-weight:700;cursor:pointer;font-family:var(--font);transition:all .15s;border:1px solid;flex:1}
-.mb-g{background:rgba(34,197,94,.12);border-color:#166534;color:var(--gn)}.mb-g:hover{background:rgba(34,197,94,.22)}
-.mb-b{background:rgba(96,165,250,.08);border-color:#1e3a5f;color:#60a5fa}.mb-b:hover{background:rgba(96,165,250,.18)}
-.mb-r{background:rgba(244,63,94,.08);border-color:#9f1239;color:var(--pk)}.mb-r:hover{background:rgba(244,63,94,.18)}
-.mb-c{background:var(--bg3);border-color:var(--brd);color:var(--txt3)}.mb-c:hover{color:var(--txt2)}
-.m-btns{display:flex;gap:6px}
 </style>
 </head>
 <body>
 <div class="root">
 
 <div class="topbar">
-  <div class="tb-logo"><div class="tb-dot"></div>AVIATOR v7</div>
+  <div class="tb-logo"><div class="tb-dot"></div>AVIATOR v7 - LIVE</div>
   <div class="tb-mid">
     <button class="btn" onclick="zoomIn()">+</button>
     <button class="btn" onclick="zoomOut()">&#8722;</button>
     <button class="btn" onclick="resetView()">&#8635;</button>
-    <div class="ws-pill ok" id="wsStatus"><span class="wsd"></span><span id="wsLabel">CONECTADO</span></div>
+    <div class="ws-pill ok" id="wsStatus"><span class="wsd"></span><span id="wsLabel">ONLINE</span></div>
   </div>
   <div class="tb-right">
-    <button class="btn g" id="syncBtn" onclick="syncNow()">&#8635; SINCRONIZAR</button>
+    <button class="btn g" onclick="syncNow()">&#8635; SINCRONIZAR</button>
   </div>
 </div>
 
@@ -111,7 +90,7 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:var(--fon
   </div>
   <div class="xbar">
     <span id="xL">—</span><span id="xM">—</span><span id="xR">—</span>
-    <input type="range" class="xslider" id="xslider" min="5" max="300" value="50" oninput="CFG.showN=parseInt(this.value);draw()">
+    <input type="range" class="xslider" id="xslider" min="5" max="200" value="50" oninput="CFG.showN=parseInt(this.value);draw()">
     <span id="xNow" style="color:var(--gn);font-size:13px;font-weight:700">—</span>
     <span id="xZoom" style="color:var(--txt3)">50v</span>
   </div>
@@ -121,11 +100,11 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:var(--fon
   <div class="sbh">ÚLTIMO VALOR</div>
   <div class="kv-block">
     <div class="kv"><span class="kk">Atual</span><span class="kvv" id="sCot" style="color:var(--gn)">—</span></div>
-    <div class="kv"><span class="kk">Fonte</span><span class="kvv" id="oSrc">Render</span></div>
+    <div class="kv"><span class="kk">Servidor</span><span class="kvv" id="oSrc">Render ✅</span></div>
     <div class="kv"><span class="kk">Total velas</span><span class="kvv" id="sTot">0</span></div>
     <div class="kv"><span class="kk">Painel</span><span class="kvv" id="painelInfo">1</span></div>
   </div>
-  <div class="sbh">LOG</div>
+  <div class="sbh">LOG RECENTE</div>
   <div class="log-area" id="logArea"></div>
 </div>
 </div>
@@ -133,10 +112,10 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:var(--fon
 
 <script>
 // ═══════════════════════════════════════════════════════════════════
-// SERVIDOR FIXO - SEU RENDER
+// CONFIGURAÇÃO - SEU SERVIDOR
 // ═══════════════════════════════════════════════════════════════════
 const SERVIDOR_URL = "https://aviator-trader-quadrado.onrender.com";
-const PAINEL = 1;  // Painel 1
+const PAINEL = 1;
 
 const canvas = document.getElementById('cv');
 const ctx = canvas.getContext('2d');
@@ -157,44 +136,45 @@ let panX0 = 0, panOff0 = 0;
 let _mx = 0, _my = 0;
 
 // ═══════════════════════════════════════════════════════════════════
-// FUNÇÕES DE DADOS
+// FUNÇÕES
 // ═══════════════════════════════════════════════════════════════════
-function addLog(val, fonte, rodada) {
+function addLog(vela) {
   const t = new Date().toLocaleTimeString('pt-BR', {hour:'2-digit',minute:'2-digit',second:'2-digit'});
-  const v = parseFloat(val);
-  const col = v >= 10 ? '#f472b6' : v >= 2 ? '#a855f7' : '#06b6d4';
+  const v = parseFloat(vela.multiplicador);
+  const rodada = vela.rodada || '';
+  const cor = v >= 10 ? '#f472b6' : v >= 2 ? '#a855f7' : '#06b6d4';
   const area = document.getElementById('logArea');
   const row = document.createElement('div');
   row.className = 'log-row';
-  let extra = rodada ? ` #${rodada}` : '';
-  row.innerHTML = `<div class="ldot" style="background:${col}"></div>
+  row.innerHTML = `<div class="ldot" style="background:${cor}"></div>
                    <span class="lt">${t}</span>
-                   <span class="lv" style="color:${col}">${v.toFixed(2)}x</span>
-                   <span class="ltag">${fonte}${extra}</span>`;
+                   <span class="lv" style="color:${cor}">${v.toFixed(2)}x</span>
+                   <span class="ltag">${rodada ? '#'+rodada : '—'}</span>`;
   area.insertBefore(row, area.firstChild);
-  while(area.children.length > 80) area.removeChild(area.lastChild);
+  while(area.children.length > 50) area.removeChild(area.lastChild);
 }
 
-function adicionarVela(multiplicador, timestamp, rodada) {
-  const val = parseFloat(multiplicador);
-  if (isNaN(val) || val <= 0) return;
-  
-  let data = timestamp ? new Date(timestamp) : new Date();
-  if (isNaN(data.getTime())) data = new Date();
-  
-  pts.push({ val, time: data, rodada: rodada || null });
-  if (pts.length > 5000) pts.shift();
-  
-  document.getElementById('sCot').textContent = val.toFixed(2) + 'x';
+function atualizarUI() {
+  if (pts.length === 0) return;
+  const ultima = pts[pts.length - 1];
+  document.getElementById('sCot').textContent = ultima.val.toFixed(2) + 'x';
   document.getElementById('sTot').textContent = pts.length;
-  document.getElementById('sCot').style.color = val >= 10 ? '#f472b6' : val >= 2 ? '#a855f7' : '#06b6d4';
-  
-  addLog(val, 'RENDER', rodada);
-  scheduleDraw();
+  const cor = ultima.val >= 10 ? '#f472b6' : ultima.val >= 2 ? '#a855f7' : '#06b6d4';
+  document.getElementById('sCot').style.color = cor;
 }
 
-function scheduleDraw() {
-  requestAnimationFrame(() => draw());
+function showAlert(msg, color, dur = 3000) {
+  const el = document.getElementById('alertBox');
+  el.textContent = msg;
+  el.style.cssText = `background:${color}22;border:1px solid ${color};color:${color}`;
+  el.className = 'alert show';
+  setTimeout(() => el.className = 'alert', dur);
+}
+
+function triggerFlash() {
+  const f = document.getElementById('flash');
+  f.className = 'flash on';
+  setTimeout(() => f.className = 'flash', 500);
 }
 
 // ═══════════════════════════════════════════════════════════════════
@@ -202,24 +182,27 @@ function scheduleDraw() {
 // ═══════════════════════════════════════════════════════════════════
 async function buscarVelasCompletas() {
   try {
-    showAlert('Sincronizando com servidor...', '#60a5fa', 1500);
     const url = `${SERVIDOR_URL}/api/velas?painel=${PAINEL}&limit=500`;
     const res = await fetch(url);
     const data = await res.json();
     
-    if (data.velas && Array.isArray(data.velas) && data.velas.length > 0) {
-      pts = [];
+    if (data.velas && Array.isArray(data.velas)) {
+      const novasVelas = [];
       ultimoTimestamp = 0;
       
       for (const vela of data.velas) {
+        // Ignora o teste de conexão
+        if (vela.rodada === 'TESTE_CONEXAO') continue;
+        
         const mult = parseFloat(vela.multiplicador);
         if (!isNaN(mult) && mult > 0) {
           let ts = vela.timestamp ? new Date(vela.timestamp) : new Date();
           if (isNaN(ts.getTime())) ts = new Date();
-          pts.push({
+          novasVelas.push({
             val: mult,
             time: ts,
-            rodada: vela.rodada || null
+            rodada: vela.rodada,
+            ts_recebido: vela.ts_recebido
           });
           if (vela.ts_recebido && vela.ts_recebido > ultimoTimestamp) {
             ultimoTimestamp = vela.ts_recebido;
@@ -227,30 +210,42 @@ async function buscarVelasCompletas() {
         }
       }
       
-      pts.sort((a,b) => a.time - b.time);
+      novasVelas.sort((a,b) => a.time - b.time);
       
-      document.getElementById('sTot').textContent = pts.length;
-      if (pts.length > 0) {
-        document.getElementById('sCot').textContent = pts[pts.length-1].val.toFixed(2) + 'x';
+      // Verifica se tem velas novas
+      if (novasVelas.length !== pts.length) {
+        pts = novasVelas;
+        atualizarUI();
+        scheduleDraw();
+        
+        // Adiciona últimas 5 ao log
+        const ultimas5 = pts.slice(-5).reverse();
+        document.getElementById('logArea').innerHTML = '';
+        ultimas5.forEach(v => {
+          const row = document.createElement('div');
+          row.className = 'log-row';
+          const t = v.time.toLocaleTimeString('pt-BR', {hour:'2-digit',minute:'2-digit',second:'2-digit'});
+          const cor = v.val >= 10 ? '#f472b6' : v.val >= 2 ? '#a855f7' : '#06b6d4';
+          row.innerHTML = `<div class="ldot" style="background:${cor}"></div>
+                           <span class="lt">${t}</span>
+                           <span class="lv" style="color:${cor}">${v.val.toFixed(2)}x</span>
+                           <span class="ltag">${v.rodada ? '#'+v.rodada.substring(0,12) : '—'}</span>`;
+          document.getElementById('logArea').appendChild(row);
+        });
+        
+        if (pts.length > 0) {
+          showAlert(`✅ ${pts.length} velas carregadas`, '#22c55e', 1500);
+        }
       }
-      document.getElementById('oSrc').textContent = 'Render (online)';
-      document.getElementById('painelInfo').textContent = PAINEL;
-      
-      scheduleDraw();
-      showAlert(`✅ ${pts.length} velas carregadas do painel ${PAINEL}`, '#22c55e', 2500);
-    } else {
-      showAlert('Nenhuma vela encontrada no servidor. A extensão está enviando?', '#f59e0b', 4000);
     }
   } catch (err) {
-    console.error('Erro ao buscar velas:', err);
-    showAlert('❌ Erro ao conectar com o servidor', '#f43f5e', 3000);
-    document.getElementById('oSrc').textContent = 'Erro de conexão';
+    console.error('Erro:', err);
   }
 }
 
 async function buscarNovasVelas() {
   try {
-    let url = `${SERVIDOR_URL}/api/velas?painel=${PAINEL}&limit=50`;
+    let url = `${SERVIDOR_URL}/api/velas?painel=${PAINEL}&limit=20`;
     if (ultimoTimestamp > 0) {
       url += `&desde=${ultimoTimestamp}`;
     }
@@ -260,16 +255,18 @@ async function buscarNovasVelas() {
     if (data.velas && Array.isArray(data.velas) && data.velas.length > 0) {
       let novas = 0;
       for (const vela of data.velas) {
+        if (vela.rodada === 'TESTE_CONEXAO') continue;
+        
         const mult = parseFloat(vela.multiplicador);
         if (!isNaN(mult) && mult > 0) {
-          const jaExiste = pts.some(p => p.rodada === vela.rodada && Math.abs(p.val - mult) < 0.01);
-          if (!jaExiste) {
+          const jaExiste = pts.some(p => p.rodada === vela.rodada);
+          if (!jaExiste && vela.rodada !== 'TESTE_CONEXAO') {
             let ts = vela.timestamp ? new Date(vela.timestamp) : new Date();
             if (isNaN(ts.getTime())) ts = new Date();
             pts.push({
               val: mult,
               time: ts,
-              rodada: vela.rodada || null
+              rodada: vela.rodada
             });
             novas++;
           }
@@ -278,14 +275,34 @@ async function buscarNovasVelas() {
           }
         }
       }
+      
       if (novas > 0) {
         pts.sort((a,b) => a.time - b.time);
-        document.getElementById('sTot').textContent = pts.length;
-        if (pts.length > 0) {
-          document.getElementById('sCot').textContent = pts[pts.length-1].val.toFixed(2) + 'x';
-        }
+        if (pts.length > 1000) pts = pts.slice(-1000);
+        atualizarUI();
         scheduleDraw();
-        showAlert(`📈 +${novas} nova(s) vela(s) recebida(s)!`, '#22c55e', 1500);
+        
+        // Adiciona as novas ao topo do log
+        const novasVelas = pts.slice(-novas).reverse();
+        for (const v of novasVelas) {
+          const row = document.createElement('div');
+          row.className = 'log-row';
+          const t = v.time.toLocaleTimeString('pt-BR', {hour:'2-digit',minute:'2-digit',second:'2-digit'});
+          const cor = v.val >= 10 ? '#f472b6' : v.val >= 2 ? '#a855f7' : '#06b6d4';
+          row.innerHTML = `<div class="ldot" style="background:${cor}"></div>
+                           <span class="lt">${t}</span>
+                           <span class="lv" style="color:${cor}">${v.val.toFixed(2)}x</span>
+                           <span class="ltag">${v.rodada ? '#'+v.rodada.substring(0,12) : '—'}</span>`;
+          const logArea = document.getElementById('logArea');
+          logArea.insertBefore(row, logArea.firstChild);
+        }
+        
+        while(document.getElementById('logArea').children.length > 30) {
+          document.getElementById('logArea').removeChild(document.getElementById('logArea').lastChild);
+        }
+        
+        showAlert(`📈 +${novas} nova(s) vela(s)!`, '#22c55e', 1500);
+        triggerFlash();
       }
     }
   } catch (err) {
@@ -294,13 +311,12 @@ async function buscarNovasVelas() {
 }
 
 async function syncNow() {
+  showAlert('🔄 Sincronizando...', '#60a5fa', 1000);
   await buscarVelasCompletas();
 }
 
-// Iniciar polling automático
-function iniciarPolling() {
-  if (pollingInterval) clearInterval(pollingInterval);
-  pollingInterval = setInterval(() => buscarNovasVelas(), 2000);
+function scheduleDraw() {
+  requestAnimationFrame(() => draw());
 }
 
 // ═══════════════════════════════════════════════════════════════════
@@ -320,7 +336,7 @@ function getViewSub() {
 function getScale(sub, W, H) {
   scaleW = Math.max(44, scaleW);
   const vals = sub.map(p => p.val);
-  if (vals.length === 0) return { sx: () => 0, sy: () => 0, yToV: () => 0, minV: 0, maxV: 1, cW: 0, cH: 0 };
+  if (vals.length === 0) return { sx: () => 0, sy: () => 0, minV: 0, maxV: 1 };
   const minV = Math.max(0.85, Math.min(...vals) * 0.95);
   const maxV = Math.max(...vals) * 1.08;
   const cW = W - 12 - scaleW;
@@ -332,8 +348,7 @@ function getScale(sub, W, H) {
   return {
     sx: i => 12 + i * ((cW - 40) / (n - 1 || 1)),
     sy: v => 44 + cH * (1 - (Math.log10(Math.max(v, minV)) - logMin + vsh) / (logMax - logMin || 1)),
-    yToV: y => Math.pow(10, logMin + (logMax - logMin) * (1 - (y - 44) / cH)) - vsh,
-    minV, maxV, cW, cH
+    minV, maxV
   };
 }
 
@@ -353,7 +368,7 @@ function draw() {
   
   // Grid
   ctx.font = '8px JetBrains Mono, monospace';
-  [1, 2, 3, 5, 10, 20, 50, 100].filter(v => v >= minV && v <= maxV * 1.05).forEach(v => {
+  [1, 2, 3, 5, 10, 20, 50].filter(v => v >= minV && v <= maxV * 1.05).forEach(v => {
     const py = sy(v);
     ctx.strokeStyle = v >= 10 ? 'rgba(244,114,182,0.07)' : v >= 2 ? 'rgba(168,85,247,0.06)' : '#0c1b2e';
     ctx.lineWidth = 0.5;
@@ -364,6 +379,26 @@ function draw() {
     ctx.fillStyle = v >= 10 ? '#be185d' : v >= 2 ? '#7e22ce' : '#1e3a58';
     ctx.fillText(v + 'x', W - scaleW + 4, py + 3);
   });
+  
+  // Linhas de zona
+  const zonas = [
+    { val: 1.0, cor: 'rgba(6,182,212,0.6)', dash: [6, 3] },
+    { val: 2.0, cor: 'rgba(168,85,247,0.5)', dash: [6, 3] },
+    { val: 10.0, cor: 'rgba(244,114,182,0.6)', dash: [8, 3] }
+  ];
+  zonas.forEach(z => {
+    if (z.val >= minV && z.val <= maxV) {
+      const py = sy(z.val);
+      ctx.strokeStyle = z.cor;
+      ctx.lineWidth = 1.5;
+      ctx.setLineDash(z.dash);
+      ctx.beginPath();
+      ctx.moveTo(12, py);
+      ctx.lineTo(W - scaleW, py);
+      ctx.stroke();
+    }
+  });
+  ctx.setLineDash([]);
   
   // Área e linha
   const yBase = sy(minV);
@@ -406,13 +441,11 @@ function draw() {
   });
   
   // Labels X
-  const s3 = [sub[0], sub[Math.floor(sub.length / 2)], sub[sub.length - 1]];
-  ['xL', 'xM', 'xR'].forEach((id, i) => {
-    const p = s3[i];
-    if (p && p.time) {
-      document.getElementById(id).textContent = p.time.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
-    }
-  });
+  if (sub.length > 0) {
+    document.getElementById('xL').textContent = sub[0].time.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+    document.getElementById('xM').textContent = sub[Math.floor(sub.length/2)].time.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+    document.getElementById('xR').textContent = sub[sub.length-1].time.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+  }
   
   document.getElementById('xZoom').textContent = sub.length + 'v';
   document.getElementById('xslider').value = CFG.showN;
@@ -425,13 +458,6 @@ function zoomIn() { zoomLevel = Math.min(10, zoomLevel * 1.25); draw(); }
 function zoomOut() { zoomLevel = Math.max(0.1, zoomLevel / 1.25); draw(); }
 function resetView() { zoomLevel = 1.0; viewOffset = 0; vertOffset = 0; draw(); }
 function voltarPresente() { viewOffset = 0; document.getElementById('btnBack').classList.remove('show'); draw(); }
-function showAlert(msg, color, dur = 3000) {
-  const el = document.getElementById('alertBox');
-  el.textContent = msg;
-  el.style.cssText = `background:${color}22;border:1px solid ${color};color:${color}`;
-  el.className = 'alert show';
-  setTimeout(() => el.className = 'alert', dur);
-}
 
 // ═══════════════════════════════════════════════════════════════════
 // MOUSE
@@ -461,6 +487,28 @@ cwrap.addEventListener('mousemove', e => {
       viewOffset = Math.max(0, Math.min(pts.length - getVisN(), panOff0 + shift));
       document.getElementById('btnBack').classList.toggle('show', viewOffset > 2);
       draw();
+    }
+  }
+  
+  // Tooltip
+  if (!isPanning) {
+    const sub = getViewSub();
+    if (sub.length >= 2) {
+      const { sx, sy } = getScale(sub, canvas.width, canvas.height);
+      const step = (canvas.width - 12 - scaleW) / (sub.length - 1 || 1);
+      const idx = Math.round((pos.x - 12) / step);
+      const tt = document.getElementById('ttBox');
+      if (idx >= 0 && idx < sub.length && pos.x < canvas.width - scaleW) {
+        const p = sub[idx];
+        document.getElementById('ttV').textContent = p.val.toFixed(2) + 'x';
+        document.getElementById('ttV').style.color = col(p.val);
+        document.getElementById('ttS').textContent = p.time.toLocaleTimeString('pt-BR');
+        tt.style.display = 'block';
+        tt.style.left = Math.min(pos.x + 12, canvas.width - scaleW - 15) + 'px';
+        tt.style.top = Math.max(5, pos.y - 42) + 'px';
+      } else {
+        tt.style.display = 'none';
+      }
     }
   }
 });
@@ -499,17 +547,23 @@ new ResizeObserver(resize).observe(cwrap);
 // RELÓGIO
 // ═══════════════════════════════════════════════════════════════════
 setInterval(() => {
-  document.getElementById('xNow').textContent = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+  document.getElementById('xNow').textContent = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit', second:'2-digit' });
 }, 500);
 
 // ═══════════════════════════════════════════════════════════════════
 // INICIALIZAÇÃO
 // ═══════════════════════════════════════════════════════════════════
 resize();
-setTimeout(() => {
-  buscarVelasCompletas();
-  iniciarPolling();
-  showAlert('🟢 Conectado ao servidor! Aguardando dados da extensão...', '#22c55e', 4000);
+
+// Primeira carga
+setTimeout(async () => {
+  await buscarVelasCompletas();
+  
+  // Inicia polling a cada 2 segundos
+  if (pollingInterval) clearInterval(pollingInterval);
+  pollingInterval = setInterval(() => buscarNovasVelas(), 2000);
+  
+  showAlert('🟢 Conectado ao servidor! Velas em tempo real...', '#22c55e', 3000);
 }, 500);
 </script>
 </body>
