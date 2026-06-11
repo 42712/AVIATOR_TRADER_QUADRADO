@@ -107,6 +107,7 @@ def get_velas(painel: int = 1, limit: int = 500, desde: Optional[int] = None):
     }
 
 
+@app.get("/status")
 @app.get("/api/status")
 def status():
     return {
