@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -496,6 +495,7 @@ let _mx=0,_my=0;
 const srv = { url:'https://aviator-trader-quadrado.onrender.com', get:'/api/velas', post:'/api/nova-vela', painel:1, poll:1500 };
 let pollingTimer = null, simInt = null, modoFonte = 'simulado';
 let ultimaChave = null;
+let ultimaVelaTs = 0;  // ts_recebido da última vela processada
 
 // Áudio
 let audioCtx = null;
@@ -554,8 +554,9 @@ function desconectar(silencioso){
 }
 
 function buscar(primeiro){
-  const limit=primeiro?MAX_HIST:5;
-  const url=srv.url+srv.get+'?painel='+srv.painel+'&limit='+limit;
+  const limit=primeiro?20000:50;
+  const desde=(!primeiro&&ultimaVelaTs>0)?'&desde='+ultimaVelaTs:'';
+  const url=srv.url+srv.get+'?painel='+srv.painel+'&limit='+limit+desde;
   fetch(url)
     .then(r=>{if(!r.ok)throw new Error('HTTP '+r.status);return r.json();})
     .then(data=>{
@@ -573,10 +574,11 @@ function buscar(primeiro){
           lista.forEach(p=>{
             const v=parseFloat(p.multiplicador||p.valor||p.val||0);
             if(!isNaN(v)&&v>0){
-              // Tenta usar timestamp do servidor; se inválido usa now
               const ts=p.timestamp||p.ts||p.created_at||p.data||null;
               const t=ts?new Date(ts):new Date();
               push(v, isNaN(t.getTime())?new Date():t);
+              // Atualiza ts da última vela para polling incremental
+              if(p.ts_recebido>ultimaVelaTs) ultimaVelaTs=p.ts_recebido;
             }
           });
           draw();
@@ -584,10 +586,21 @@ function buscar(primeiro){
         pollingTimer=setInterval(()=>buscar(false),srv.poll);
       } else {
         if(!lista||!lista.length)return;
-        const u=lista[lista.length-1];
-        const v=parseFloat(u.multiplicador||u.valor||u.val||0);
-        const chave=(u.rodada||u.id||v)+'_'+srv.painel+'_'+(u.ts_recebido||'');
-        if(!isNaN(v)&&v>0&&chave!==ultimaChave){ultimaChave=chave;receberVela(v,u.timestamp||null,'extensao');}
+        // Processa TODAS as velas novas desde a última recebida
+        let novas=0;
+        lista.forEach(u=>{
+          const ts=u.ts_recebido||0;
+          if(ts<=ultimaVelaTs) return;  // já processada
+          const v=parseFloat(u.multiplicador||u.valor||u.val||0);
+          const chave=(u.rodada||u.id||v)+'_'+srv.painel+'_'+ts;
+          if(!isNaN(v)&&v>0&&chave!==ultimaChave){
+            ultimaChave=chave;
+            if(ts>ultimaVelaTs) ultimaVelaTs=ts;
+            receberVela(v,u.timestamp||null,'extensao');
+            novas++;
+          }
+        });
+        if(novas>1) console.log(`[poll] ${novas} velas novas recebidas`);
       }
     })
     .catch(e=>{
@@ -1436,11 +1449,25 @@ setInterval(()=>{
   if(el) el.textContent=new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
 },500);
 
-setTimeout(()=>{
-  fetch('https://aviator-trader-quadrado.onrender.com/api/status')
-    .then(r=>{if(r.ok)buscar(true);})
-    .catch(()=>{});
-},2000);
+// Auto-ping ao abrir — acorda Render e conecta automaticamente
+(function pingEConectar(){
+  const url = srv.url + '/api/status';
+  setSrv('acordando servidor...','var(--am)');
+  fetch(url, {signal: AbortSignal.timeout(8000)})
+    .then(r=>{
+      if(r.ok){
+        setSrv('online — conectando...','var(--gn)');
+        buscar(true);
+      } else {
+        setSrv('servidor retornou '+r.status,'var(--pk)');
+        setTimeout(pingEConectar, 8000);
+      }
+    })
+    .catch(()=>{
+      setSrv('aguardando servidor acordar...','var(--am)');
+      setTimeout(pingEConectar, 6000);  // tenta de novo
+    });
+})();
 
 // ═══════════ RESIZE ═══════════
 function resize(){
