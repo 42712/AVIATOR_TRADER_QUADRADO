@@ -1,10 +1,10 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import HTMLResponse, FileResponse
-from fastapi.staticfiles import StaticFiles
+from fastapi.responses import HTMLResponse
 from pydantic import BaseModel
 from typing import Optional
 from collections import deque
+from datetime import datetime
 import time
 import os
 
@@ -17,8 +17,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Armazena últimas 200 velas por painel em memória
-velas = {1: deque(maxlen=200), 2: deque(maxlen=200)}
+# Armazena últimas 500 velas por painel em memória
+velas = {1: deque(maxlen=500), 2: deque(maxlen=500)}
 
 
 class Vela(BaseModel):
@@ -28,6 +28,29 @@ class Vela(BaseModel):
     timestamp: Optional[str] = None
     soma: Optional[int] = None
     fonte: Optional[str] = None
+
+
+def ts_iso():
+    """Retorna timestamp ISO completo — nunca gera Invalid Date no JS"""
+    return datetime.now().isoformat()
+
+
+def parse_ts(ts_str: Optional[str]) -> str:
+    """Converte qualquer formato de timestamp para ISO completo"""
+    if not ts_str:
+        return ts_iso()
+    # Se já é HH:MM:SS (sem data), adiciona a data de hoje
+    if len(ts_str) <= 8 and ':' in ts_str:
+        hoje = datetime.now().strftime('%Y-%m-%d')
+        try:
+            return f"{hoje}T{ts_str}"
+        except:
+            return ts_iso()
+    # Tenta fazer parse
+    try:
+        return datetime.fromisoformat(ts_str.replace('Z','+00:00')).isoformat()
+    except:
+        return ts_iso()
 
 
 @app.get("/", response_class=HTMLResponse)
@@ -42,7 +65,8 @@ def root():
     <hr style="border-color:#18273d;margin:1rem 0">
     <p style="color:#4a6e94">Endpoints:</p>
     <pre style="color:#f59e0b">POST /api/nova-vela   — extensão envia velas
-GET  /api/velas?painel=1  — painel busca velas</pre>
+GET  /api/velas?painel=1&limit=100  — painel busca velas
+GET  /api/status      — health check</pre>
     </body></html>
     """
 
@@ -53,7 +77,7 @@ def nova_vela(vela: Vela):
     entrada = {
         "multiplicador": vela.multiplicador,
         "rodada": vela.rodada or str(int(time.time() * 1000)),
-        "timestamp": vela.timestamp or time.strftime("%H:%M:%S"),
+        "timestamp": parse_ts(vela.timestamp),  # sempre ISO completo
         "soma": vela.soma,
         "fonte": vela.fonte or "extensao",
         "painel": painel,
@@ -64,10 +88,23 @@ def nova_vela(vela: Vela):
 
 
 @app.get("/api/velas")
-def get_velas(painel: int = 1, limit: int = 100):
+def get_velas(painel: int = 1, limit: int = 500, desde: Optional[int] = None):
+    """
+    Retorna velas do painel.
+    - limit: quantas velas retornar (máx 500)
+    - desde: ts_recebido mínimo — retorna só velas mais novas que esse timestamp
+    """
     p = painel if painel in (1, 2) else 1
-    lista = list(velas[p])[-limit:]
-    return {"painel": p, "total": len(lista), "velas": lista}
+    lista = list(velas[p])
+    if desde:
+        lista = [v for v in lista if v.get('ts_recebido', 0) > desde]
+    lista = lista[-limit:]
+    return {
+        "painel": p,
+        "total": len(lista),
+        "velas": lista,
+        "ts_servidor": int(time.time() * 1000)
+    }
 
 
 @app.get("/api/status")
@@ -82,8 +119,10 @@ def status():
 
 @app.get("/painel", response_class=HTMLResponse)
 def painel():
-    path = os.path.join(os.path.dirname(__file__), "aviator_engine_v6_2.html")
-    if not os.path.exists(path):
-        return HTMLResponse("<h2>aviator_engine_v6_2.html não encontrado na raiz do projeto</h2>", status_code=404)
-    with open(path, "r", encoding="utf-8") as f:
-        return HTMLResponse(f.read())
+    # Tenta v7 primeiro, depois v6 como fallback
+    for nome in ["aviator_engine_v7.html", "aviator_engine_v6_2.html", "aviator_engine_v6.html"]:
+        path = os.path.join(os.path.dirname(__file__), nome)
+        if os.path.exists(path):
+            with open(path, "r", encoding="utf-8") as f:
+                return HTMLResponse(f.read())
+    return HTMLResponse("<h2>Painel HTML não encontrado</h2>", status_code=404)
