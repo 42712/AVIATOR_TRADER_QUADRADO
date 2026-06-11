@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-<title>Aviator v7 - Mobile</title>
+<title>Aviator v7 - Estável</title>
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
@@ -14,52 +14,48 @@
   --up:#a855f7;--dn:#06b6d4;--pk:#f43f5e;--gn:#22c55e;--am:#f59e0b;
   --font:'JetBrains Mono',monospace;
 }
-html,body{height:100%;overflow:hidden;background:var(--bg);font-family:var(--font);font-size:11px;color:var(--txt);touch-action:pan-x pan-y;}
+html,body{height:100%;overflow:hidden;background:var(--bg);font-family:var(--font);font-size:11px;color:var(--txt);}
 .root{display:flex;flex-direction:column;height:100vh}
 .main{display:flex;flex:1;overflow:hidden;min-height:0;flex-direction:column}
 
-/* TOPBAR RESPONSIVA */
 .topbar{height:44px;background:var(--bg2);border-bottom:1px solid var(--brd);display:flex;align-items:center;flex-shrink:0;padding:0 8px;gap:6px;overflow-x:auto}
 .tb-logo{font-size:12px;font-weight:700;color:#fff;display:flex;align-items:center;gap:6px;white-space:nowrap}
 .tb-dot{width:8px;height:8px;border-radius:50%;background:var(--gn);animation:glow 2s infinite}
 @keyframes glow{0%,100%{box-shadow:0 0 4px var(--gn)}50%{box-shadow:0 0 14px var(--gn)}}
 .tb-mid{display:flex;align-items:center;gap:4px;flex-shrink:0}
 .tb-right{display:flex;align-items:center;gap:4px;margin-left:auto}
-.btn{padding:4px 10px;border-radius:6px;border:1px solid var(--brd2);background:var(--bg3);color:var(--txt2);font-size:9px;font-family:var(--font);cursor:pointer;white-space:nowrap;transition:all .15s}
+.btn{padding:4px 10px;border-radius:6px;border:1px solid var(--brd2);background:var(--bg3);color:var(--txt2);font-size:9px;font-family:var(--font);cursor:pointer;white-space:nowrap}
 .btn:active{transform:scale(0.96)}
 .btn.g{border-color:#166534;background:rgba(34,197,94,.1);color:var(--gn)}
+.btn.b{border-color:#1e3a5f;background:rgba(96,165,250,.08);color:#60a5fa}
 .ws-pill{display:flex;align-items:center;gap:4px;font-size:8px;padding:0 6px}
 .ws-pill.ok{color:var(--gn)}.ws-pill.err{color:var(--pk)}
 .wsd{width:6px;height:6px;border-radius:50%;background:currentColor;animation:blink 1.4s infinite}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
 
-/* TOOLBOX MOBILE - MENU FLUTUANTE */
+/* TOOLBOX */
 .toolbox{position:fixed;bottom:20px;right:10px;background:var(--bg2);border:1px solid var(--brd);border-radius:40px;display:flex;flex-direction:row;padding:6px 12px;gap:10px;z-index:100;backdrop-filter:blur(10px)}
-.tool-btn{width:40px;height:40px;border-radius:30px;border:1px solid var(--brd2);background:var(--bg3);color:var(--txt2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:20px;transition:all .15s}
+.tool-btn{width:40px;height:40px;border-radius:30px;border:1px solid var(--brd2);background:var(--bg3);color:var(--txt2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:20px}
 .tool-btn:active{transform:scale(0.92)}
 .tool-btn.active{border-color:var(--gn);background:rgba(34,197,94,.2);color:var(--gn)}
 .tool-sep{width:1px;height:25px;background:var(--brd);margin:0}
 
-/* CHART */
 .chart-col{flex:1;display:flex;flex-direction:column;overflow:hidden;min-height:200px}
-.canvas-wrap{flex:1;position:relative;overflow:hidden;background:var(--bg);min-height:200px;touch-action:pan-x pan-y}
+.canvas-wrap{flex:1;position:relative;overflow:hidden;background:var(--bg);min-height:200px}
 #cv{display:block;position:absolute;top:0;left:0;width:100%;height:100%}
 #pov{position:absolute;inset:0;z-index:19;display:none}
 
-/* XBAR */
 .xbar{height:34px;background:var(--bg2);border-top:1px solid var(--brd);display:flex;align-items:center;padding:0 8px;gap:6px;font-size:8px;flex-shrink:0}
 .xslider{flex:1;height:4px;-webkit-appearance:none;background:var(--brd2);border-radius:2px}
 .xslider::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;border-radius:50%;background:var(--gn);cursor:pointer}
 
-/* SIDEBAR - AGORA EMBAIXO NO MOBILE */
 .data-sb{background:var(--bg2);border-top:1px solid var(--brd);display:flex;flex-direction:column;max-height:35%;min-height:120px;overflow:hidden;flex-shrink:0}
-.sbh{padding:6px 12px;font-size:8px;color:var(--txt3);border-bottom:1px solid var(--brd);text-transform:uppercase}
+.sbh{padding:6px 12px;font-size:8px;color:var(--txt3);border-bottom:1px solid var(--brd)}
 .kv-block{padding:6px 12px;display:flex;gap:16px;border-bottom:1px solid var(--brd)}
 .kv{display:flex;gap:6px}
 .kk{font-size:8px;color:var(--txt2)}.kvv{font-size:10px;font-weight:700}
 .log-area{flex:1;overflow-y:auto;max-height:120px}
 .log-row{display:flex;align-items:center;gap:8px;padding:6px 12px;border-bottom:1px solid #070d15;font-size:9px}
-.log-row:active{background:var(--bg3)}
 .ldot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
 .lt{color:var(--txt2);min-width:60px;font-size:8px}
 .lv{font-weight:700;min-width:45px}
@@ -67,6 +63,7 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:var(--fon
 .ltag.rosa{background:rgba(244,114,182,.2);color:#f472b6}
 .ltag.roxa{background:rgba(168,85,247,.2);color:#a855f7}
 .ltag.ciano{background:rgba(6,182,212,.2);color:#06b6d4}
+.ltag.sinal{background:rgba(34,197,94,.3);color:#22c55e}
 
 .tooltip{position:absolute;background:#080f1c;border:1px solid var(--brd2);border-radius:8px;padding:8px 12px;display:none;z-index:60;min-width:100px}
 .tt-v{font-size:16px;font-weight:700}.tt-s{font-size:9px;color:var(--txt2)}
@@ -74,8 +71,36 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:var(--fon
 .alert.show{opacity:1}
 .flash{position:absolute;inset:0;border:3px solid var(--gn);opacity:0;pointer-events:none;transition:opacity .12s;z-index:45}
 .flash.on{opacity:1}
-#btnBack{position:absolute;bottom:80px;left:50%;transform:translateX(-50%);background:rgba(34,197,94,.9);border:none;border-radius:30px;padding:10px 20px;font-size:11px;font-weight:700;color:#000;cursor:pointer;display:none;z-index:60;white-space:nowrap}
+#btnBack{position:absolute;bottom:80px;left:50%;transform:translateX(-50%);background:rgba(34,197,94,.9);border:none;border-radius:30px;padding:10px 20px;font-size:11px;font-weight:700;color:#000;cursor:pointer;display:none;z-index:60}
 #btnBack.show{display:block}
+
+/* MODAL CONFIG */
+.modal-bg{position:fixed;inset:0;background:rgba(5,8,13,.95);display:none;align-items:center;justify-content:center;z-index:1000}
+.modal-bg.open{display:flex}
+.modal{background:var(--bg4);border:1px solid var(--brd2);border-radius:12px;padding:20px;width:90%;max-width:380px;max-height:80vh;overflow-y:auto}
+.m-title{font-size:13px;font-weight:700;color:#fff;display:flex;justify-content:space-between;margin-bottom:12px}
+.m-x{cursor:pointer;color:var(--txt2);font-size:16px}
+.m-group{margin-bottom:12px}
+.m-group label{font-size:9px;color:var(--txt2);display:block;margin-bottom:4px}
+.m-group input,.m-group select{width:100%;padding:8px;background:var(--bg3);border:1px solid var(--brd2);border-radius:6px;color:var(--txt);font-family:var(--font);font-size:10px}
+.m-row{display:flex;gap:8px}
+.m-row .m-group{flex:1}
+.m-btns{display:flex;gap:8px;margin-top:16px}
+.mbtn{padding:8px;border-radius:6px;font-size:10px;font-weight:700;cursor:pointer;border:1px solid;flex:1;text-align:center}
+.mb-g{background:rgba(34,197,94,.12);border-color:#166534;color:var(--gn)}
+.mb-b{background:rgba(96,165,250,.08);border-color:#1e3a5f;color:#60a5fa}
+.mb-r{background:rgba(244,63,94,.08);border-color:#9f1239;color:var(--pk)}
+.mb-c{background:var(--bg3);border-color:var(--brd);color:var(--txt3)}
+.mm-item{background:var(--bg3);border:1px solid var(--brd2);border-radius:8px;padding:10px;margin-bottom:10px}
+.mm-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;cursor:pointer}
+.mm-header .mm-nome{font-size:10px;font-weight:700}
+.mm-header .mm-toggle{width:32px;height:16px;border-radius:8px;background:var(--brd2);cursor:pointer;position:relative}
+.mm-header .mm-toggle.on{background:var(--gn)}
+.mm-header .mm-toggle::after{content:'';position:absolute;width:12px;height:12px;border-radius:50%;background:#fff;top:2px;left:2px;transition:left .2s}
+.mm-header .mm-toggle.on::after{left:18px}
+.mm-detalhes{display:none;margin-top:10px;gap:8px;flex-wrap:wrap}
+.mm-detalhes.open{display:flex}
+.mm-detalhes input,.mm-detalhes select{padding:5px;background:var(--bg2);border:1px solid var(--brd);border-radius:4px;color:var(--txt);font-size:9px;flex:1;min-width:60px}
 </style>
 </head>
 <body>
@@ -87,6 +112,7 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:var(--fon
     <button class="btn" onclick="zoomIn()">+</button>
     <button class="btn" onclick="zoomOut()">-</button>
     <button class="btn" onclick="resetView()">↺</button>
+    <button class="btn b" onclick="abrirConfigMM()">⚙ MM</button>
   </div>
   <div class="tb-right">
     <button class="btn g" onclick="syncNow()">↻ SINCRONIZAR</button>
@@ -106,14 +132,14 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:var(--fon
   </div>
   <div class="xbar">
     <span id="xL">—</span><span id="xM">—</span><span id="xR">—</span>
-    <input type="range" class="xslider" id="xslider" min="5" max="100" value="30" oninput="CFG.showN=parseInt(this.value);draw()">
+    <input type="range" class="xslider" id="xslider" min="5" max="80" value="30" oninput="CFG.showN=parseInt(this.value);salvarConfig();draw()">
     <span id="xNow" style="color:var(--gn);font-size:11px">—</span>
   </div>
 </div>
 
 <div class="data-sb">
   <div class="kv-block">
-    <div class="kv"><span class="kk">Último</span><span class="kvv" id="sCot" style="color:var(--gn)">—</span></div>
+    <div class="kv"><span class="kk">Último</span><span class="kvv" id="sCot">—</span></div>
     <div class="kv"><span class="kk">Total</span><span class="kvv" id="sTot">0</span></div>
     <div class="kv"><span class="kk">Painel</span><span class="kvv" id="painelInfo">1</span></div>
   </div>
@@ -123,7 +149,6 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:var(--fon
 </div>
 </div>
 
-<!-- TOOLBOX MOBILE -->
 <div class="toolbox">
   <div class="tool-btn" id="tool-cursor" onclick="setTool('cursor')" title="Mover">✋</div>
   <div class="tool-btn" id="tool-line" onclick="setTool('line')" title="Linha">📏</div>
@@ -131,9 +156,20 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:var(--fon
   <div class="tool-btn" id="tool-delete" onclick="deleteSelected()" title="Excluir">🗑️</div>
 </div>
 
+<!-- MODAL CONFIG MM -->
+<div class="modal-bg" id="modalMM" onclick="if(event.target===this)fecharModalMM()">
+  <div class="modal">
+    <div class="m-title">Configurar MMs <span class="m-x" onclick="fecharModalMM()">✕</span></div>
+    <div id="mmLista"></div>
+    <div class="m-btns">
+      <button class="mbtn mb-c" onclick="fecharModalMM()">Fechar</button>
+    </div>
+  </div>
+</div>
+
 <script>
 // ═══════════════════════════════════════════════════════════════════
-// SEU SERVIDOR - CORRETO
+// CONFIGURAÇÃO INICIAL
 // ═══════════════════════════════════════════════════════════════════
 const SERVIDOR_URL = "https://aviator-trader-quadrado.onrender.com";
 const PAINEL = 1;
@@ -145,18 +181,135 @@ const cwrap = document.getElementById('cwrap');
 let pts = [];
 let pollingInterval = null;
 let ultimoTimestamp = 0;
-const CFG = { showN: 30, showMA: true };
+let ultimoSinalTimestamp = 0;
+let sequenciaFraca = 0;
+
+// Configurações padrão
+let CFG = {
+  showN: 30,
+  showMA: true,
+  mm1On: true, mm1Per: 9, mm1Cor: '#f59e0b', mm1Lw: 1.8, mm1Curva: 'smooth',
+  mm2On: true, mm2Per: 21, mm2Cor: '#06b6d4', mm2Lw: 1.5, mm2Curva: 'linear',
+  mm3On: true, mm3Per: 50, mm3Cor: '#22c55e', mm3Lw: 1.3, mm3Curva: 'bezier',
+  mm4On: true, mm4Per: 100, mm4Cor: '#ef4444', mm4Lw: 1.2, mm4Curva: 'wavy',
+  mm5On: false, mm5Per: 200, mm5Cor: '#eab308', mm5Lw: 1.0, mm5Curva: 'arc',
+  mm6On: false, mm6Per: 14, mm6Cor: '#ec4899', mm6Lw: 1.0, mm6Curva: 'spiky'
+};
 
 let viewOffset = 0, zoomLevel = 1.0, vertOffset = 0, scaleW = 50;
 let isPanning = false, panX0 = 0, panOff0 = 0;
 let _mx = 0, _my = 0;
 
-// FERRAMENTAS
 let currentTool = 'cursor';
 let drawings = [];
 let selectedDrawing = null;
 let isDrawing = false, drawStart = null;
 
+// ═══════════════════════════════════════════════════════════════════
+// PERSISTÊNCIA
+// ═══════════════════════════════════════════════════════════════════
+function salvarConfig() {
+  try {
+    localStorage.setItem('aviator_cfg', JSON.stringify({
+      showN: CFG.showN,
+      mm1On: CFG.mm1On, mm1Per: CFG.mm1Per, mm1Cor: CFG.mm1Cor, mm1Lw: CFG.mm1Lw, mm1Curva: CFG.mm1Curva,
+      mm2On: CFG.mm2On, mm2Per: CFG.mm2Per, mm2Cor: CFG.mm2Cor, mm2Lw: CFG.mm2Lw, mm2Curva: CFG.mm2Curva,
+      mm3On: CFG.mm3On, mm3Per: CFG.mm3Per, mm3Cor: CFG.mm3Cor, mm3Lw: CFG.mm3Lw, mm3Curva: CFG.mm3Curva,
+      mm4On: CFG.mm4On, mm4Per: CFG.mm4Per, mm4Cor: CFG.mm4Cor, mm4Lw: CFG.mm4Lw, mm4Curva: CFG.mm4Curva,
+      mm5On: CFG.mm5On, mm5Per: CFG.mm5Per, mm5Cor: CFG.mm5Cor, mm5Lw: CFG.mm5Lw, mm5Curva: CFG.mm5Curva,
+      mm6On: CFG.mm6On, mm6Per: CFG.mm6Per, mm6Cor: CFG.mm6Cor, mm6Lw: CFG.mm6Lw, mm6Curva: CFG.mm6Curva
+    }));
+  } catch(e) {}
+}
+
+function carregarConfig() {
+  try {
+    const saved = localStorage.getItem('aviator_cfg');
+    if (saved) {
+      const cfg = JSON.parse(saved);
+      Object.assign(CFG, cfg);
+      document.getElementById('xslider').value = CFG.showN;
+    }
+  } catch(e) {}
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// MODAL CONFIG MM
+// ═══════════════════════════════════════════════════════════════════
+function abrirConfigMM() {
+  const container = document.getElementById('mmLista');
+  const mmLista = [
+    { id: 1, nome: 'MM1 (Rápida)', cor: CFG.mm1Cor, per: CFG.mm1Per, on: CFG.mm1On, lw: CFG.mm1Lw, curva: CFG.mm1Curva },
+    { id: 2, nome: 'MM2 (Média 1)', cor: CFG.mm2Cor, per: CFG.mm2Per, on: CFG.mm2On, lw: CFG.mm2Lw, curva: CFG.mm2Curva },
+    { id: 3, nome: 'MM3 (Média 2)', cor: CFG.mm3Cor, per: CFG.mm3Per, on: CFG.mm3On, lw: CFG.mm3Lw, curva: CFG.mm3Curva },
+    { id: 4, nome: 'MM4 (Lenta)', cor: CFG.mm4Cor, per: CFG.mm4Per, on: CFG.mm4On, lw: CFG.mm4Lw, curva: CFG.mm4Curva },
+    { id: 5, nome: 'MM5 (Extra 1)', cor: CFG.mm5Cor, per: CFG.mm5Per, on: CFG.mm5On, lw: CFG.mm5Lw, curva: CFG.mm5Curva },
+    { id: 6, nome: 'MM6 (Extra 2)', cor: CFG.mm6Cor, per: CFG.mm6Per, on: CFG.mm6On, lw: CFG.mm6Lw, curva: CFG.mm6Curva }
+  ];
+  
+  container.innerHTML = mmLista.map(mm => `
+    <div class="mm-item" data-id="${mm.id}">
+      <div class="mm-header" onclick="toggleMMDetalhes(${mm.id})">
+        <span class="mm-nome" style="color:${mm.cor}">${mm.nome} (EMA ${mm.per})</span>
+        <div class="mm-toggle ${mm.on ? 'on' : ''}" onclick="event.stopPropagation(); toggleMM(${mm.id})"></div>
+      </div>
+      <div class="mm-detalhes" id="mmDetalhes${mm.id}">
+        <input type="number" id="mmPer${mm.id}" value="${mm.per}" min="2" max="500" placeholder="Período">
+        <input type="color" id="mmCor${mm.id}" value="${mm.cor}">
+        <input type="number" id="mmLw${mm.id}" value="${mm.lw}" step="0.1" min="0.5" max="3" placeholder="Espessura">
+        <select id="mmCurva${mm.id}">
+          <option value="linear" ${mm.curva === 'linear' ? 'selected' : ''}>Linear</option>
+          <option value="smooth" ${mm.curva === 'smooth' ? 'selected' : ''}>Smooth</option>
+          <option value="bezier" ${mm.curva === 'bezier' ? 'selected' : ''}>Bezier</option>
+          <option value="wavy" ${mm.curva === 'wavy' ? 'selected' : ''}>Wavy</option>
+          <option value="arc" ${mm.curva === 'arc' ? 'selected' : ''}>Arc</option>
+          <option value="spiky" ${mm.curva === 'spiky' ? 'selected' : ''}>Spiky</option>
+        </select>
+        <button class="btn" onclick="aplicarMM(${mm.id})" style="margin-top:4px;width:100%">Aplicar</button>
+      </div>
+    </div>
+  `).join('');
+  
+  document.getElementById('modalMM').classList.add('open');
+}
+
+function toggleMMDetalhes(id) {
+  const el = document.getElementById(`mmDetalhes${id}`);
+  if (el) el.classList.toggle('open');
+}
+
+function toggleMM(id) {
+  const on = !CFG[`mm${id}On`];
+  CFG[`mm${id}On`] = on;
+  const toggle = document.querySelector(`.mm-item[data-id="${id}"] .mm-toggle`);
+  if (toggle) toggle.classList.toggle('on', on);
+  salvarConfig();
+  draw();
+}
+
+function aplicarMM(id) {
+  const per = parseInt(document.getElementById(`mmPer${id}`).value);
+  const cor = document.getElementById(`mmCor${id}`).value;
+  const lw = parseFloat(document.getElementById(`mmLw${id}`).value);
+  const curva = document.getElementById(`mmCurva${id}`).value;
+  
+  if (!isNaN(per)) CFG[`mm${id}Per`] = per;
+  CFG[`mm${id}Cor`] = cor;
+  if (!isNaN(lw)) CFG[`mm${id}Lw`] = lw;
+  CFG[`mm${id}Curva`] = curva;
+  
+  salvarConfig();
+  draw();
+  showAlert(`MM${id} configurada!`, '#22c55e', 1000);
+}
+
+function fecharModalMM() {
+  document.getElementById('modalMM').classList.remove('open');
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// FERRAMENTAS
+// ═══════════════════════════════════════════════════════════════════
 function setTool(tool) {
   currentTool = tool;
   document.querySelectorAll('.tool-btn').forEach(btn => btn.classList.remove('active'));
@@ -195,8 +348,10 @@ function getDrawingAt(x, y) {
   return -1;
 }
 
+// ═══════════════════════════════════════════════════════════════════
 // MÉDIAS MÓVEIS
-function calcularEMA(dados, periodo) {
+// ═══════════════════════════════════════════════════════════════════
+function calcularEMA(dados, periodo, extendFuturo = 10) {
   const k = 2 / (periodo + 1);
   let ema = dados[0];
   const resultado = [ema];
@@ -204,56 +359,82 @@ function calcularEMA(dados, periodo) {
     ema = dados[i] * k + ema * (1 - k);
     resultado.push(ema);
   }
+  let ultimo = ema;
+  for (let i = 0; i < extendFuturo; i++) {
+    ultimo = ultimo * (1 - k);
+    resultado.push(ultimo);
+  }
   return resultado;
 }
 
-// Funções de curva
-function drawCurveLinear(p, sx, sy) { if(p.length<2)return; ctx.beginPath();ctx.moveTo(sx(0),sy(p[0]));for(let i=1;i<p.length;i++)ctx.lineTo(sx(i),sy(p[i]));ctx.stroke(); }
-function drawCurveSmooth(p, sx, sy) { if(p.length<2)return; ctx.beginPath();ctx.moveTo(sx(0),sy(p[0]));for(let i=0;i<p.length-1;i++){const x1=sx(i),y1=sy(p[i]),x2=sx(i+1),y2=sy(p[i+1]);const cp1x=x1+(x2-x1)*0.33,cp1y=y1,cp2x=x1+(x2-x1)*0.66,cp2y=y2;ctx.bezierCurveTo(cp1x,cp1y,cp2x,cp2y,x2,y2);}ctx.stroke(); }
-function drawCurveBezier(p, sx, sy) { if(p.length<2)return; ctx.beginPath();ctx.moveTo(sx(0),sy(p[0]));for(let i=0;i<p.length-1;i++){const x1=sx(i),y1=sy(p[i]),x2=sx(i+1),y2=sy(p[i+1]);const cp1x=x1+(x2-x1)*0.25,cp1y=y1-Math.abs(p[i+1]-p[i])*2,cp2x=x2-(x2-x1)*0.25,cp2y=y2+Math.abs(p[i+1]-p[i])*2;ctx.bezierCurveTo(cp1x,cp1y,cp2x,cp2y,x2,y2);}ctx.stroke(); }
-function drawCurveWavy(p, sx, sy) { if(p.length<2)return; ctx.beginPath();ctx.moveTo(sx(0),sy(p[0]));for(let i=0;i<p.length-1;i++){const x1=sx(i),y1=sy(p[i]),x2=sx(i+1),y2=sy(p[i+1]);const mx=(x1+x2)/2,amp=Math.abs(p[i+1]-p[i])*3;ctx.quadraticCurveTo(x1,y1-amp,mx,(y1+y2)/2);ctx.quadraticCurveTo(x2,y2+amp,x2,y2);}ctx.stroke(); }
-function drawCurveArc(p, sx, sy) { if(p.length<2)return; ctx.beginPath();ctx.moveTo(sx(0),sy(p[0]));for(let i=0;i<p.length-1;i++){const x1=sx(i),y1=sy(p[i]),x2=sx(i+1),y2=sy(p[i+1]);const cpx=(x1+x2)/2, cpy=Math.min(y1,y2)-15;ctx.quadraticCurveTo(cpx,cpy,x2,y2);}ctx.stroke(); }
-function drawCurveSpiky(p, sx, sy) { if(p.length<2)return; ctx.beginPath();ctx.moveTo(sx(0),sy(p[0]));for(let i=0;i<p.length-1;i++){const x1=sx(i),y1=sy(p[i]),x2=sx(i+1),y2=sy(p[i+1]);const mx=(x1+x2)/2;ctx.lineTo(mx,Math.min(y1,y2)-12);ctx.lineTo(x2,y2);}ctx.stroke(); }
+const curvaFn = {
+  linear: (p,sx,sy) => { if(p.length<2)return; ctx.beginPath();ctx.moveTo(sx(0),sy(p[0]));for(let i=1;i<p.length;i++)ctx.lineTo(sx(i),sy(p[i]));ctx.stroke(); },
+  smooth: (p,sx,sy) => { if(p.length<2)return; ctx.beginPath();ctx.moveTo(sx(0),sy(p[0]));for(let i=0;i<p.length-1;i++){const x1=sx(i),y1=sy(p[i]),x2=sx(i+1),y2=sy(p[i+1]);ctx.bezierCurveTo(x1+(x2-x1)*0.33,y1,x1+(x2-x1)*0.66,y2,x2,y2);}ctx.stroke(); },
+  bezier: (p,sx,sy) => { if(p.length<2)return; ctx.beginPath();ctx.moveTo(sx(0),sy(p[0]));for(let i=0;i<p.length-1;i++){const x1=sx(i),y1=sy(p[i]),x2=sx(i+1),y2=sy(p[i+1]);ctx.bezierCurveTo(x1+(x2-x1)*0.25,y1-Math.abs(p[i+1]-p[i])*2,x2-(x2-x1)*0.25,y2+Math.abs(p[i+1]-p[i])*2,x2,y2);}ctx.stroke(); },
+  wavy: (p,sx,sy) => { if(p.length<2)return; ctx.beginPath();ctx.moveTo(sx(0),sy(p[0]));for(let i=0;i<p.length-1;i++){const x1=sx(i),y1=sy(p[i]),x2=sx(i+1),y2=sy(p[i+1]);const mx=(x1+x2)/2,amp=Math.abs(p[i+1]-p[i])*3;ctx.quadraticCurveTo(x1,y1-amp,mx,(y1+y2)/2);ctx.quadraticCurveTo(x2,y2+amp,x2,y2);}ctx.stroke(); },
+  arc: (p,sx,sy) => { if(p.length<2)return; ctx.beginPath();ctx.moveTo(sx(0),sy(p[0]));for(let i=0;i<p.length-1;i++){const x1=sx(i),y1=sy(p[i]),x2=sx(i+1),y2=sy(p[i+1]);ctx.quadraticCurveTo((x1+x2)/2,Math.min(y1,y2)-15,x2,y2);}ctx.stroke(); },
+  spiky: (p,sx,sy) => { if(p.length<2)return; ctx.beginPath();ctx.moveTo(sx(0),sy(p[0]));for(let i=0;i<p.length-1;i++){const x1=sx(i),y1=sy(p[i]),x2=sx(i+1),y2=sy(p[i+1]);const mx=(x1+x2)/2;ctx.lineTo(mx,Math.min(y1,y2)-12);ctx.lineTo(x2,y2);}ctx.stroke(); }
+};
 
-const mmConfigs = [
-  { per: 9, cor: '#f59e0b', lw: 2, dash: [], curva: 'smooth' },
-  { per: 21, cor: '#06b6d4', lw: 1.8, dash: [], curva: 'linear' },
-  { per: 50, cor: '#22c55e', lw: 1.5, dash: [5,3], curva: 'bezier' },
-  { per: 100, cor: '#ef4444', lw: 1.3, dash: [6,4], curva: 'wavy' },
-  { per: 200, cor: '#eab308', lw: 1.2, dash: [8,4], curva: 'arc' },
-  { per: 14, cor: '#ec4899', lw: 1.2, dash: [4,6], curva: 'spiky' }
-];
-
-const curvaFn = { linear: drawCurveLinear, smooth: drawCurveSmooth, bezier: drawCurveBezier, wavy: drawCurveWavy, arc: drawCurveArc, spiky: drawCurveSpiky };
-
-// SINAL DE ENFRAQUECIMENTO
-let razaoSeq = 0, ultSinal = 0;
-function detectarEnfraquecimento() {
-  if (pts.length < 8) return false;
-  const ultimos = pts.slice(-8).map(p=>p.val);
-  const media = ultimos.reduce((a,b)=>a+b,0)/ultimos.length;
-  const ultimo = ultimos[ultimos.length-1];
-  if (ultimo < media && ultimo < 1.8 && ultimo > 1.0 && razaoSeq < 2) {
-    razaoSeq++;
-    if (razaoSeq === 1 && Date.now() - ultSinal > 30000) { ultSinal = Date.now(); return true; }
-  } else { razaoSeq = 0; }
+// ═══════════════════════════════════════════════════════════════════
+// SINAL DE ENTRADA (1 vela antes da ROSA)
+// ═══════════════════════════════════════════════════════════════════
+function detectarSinalAntecipado() {
+  if (pts.length < 5) return false;
+  const valores = pts.slice(-5).map(p => p.val);
+  const ultimo = valores[valores.length-1];
+  const penultimo = valores[valores.length-2];
+  const antepenultimo = valores[valores.length-3];
+  
+  const naZonaAzul = ultimo >= 1.0 && ultimo <= 2.2;
+  const enfraquecendo = ultimo < penultimo && penultimo < antepenultimo;
+  const timeout = Date.now() - ultimoSinalTimestamp > 60000;
+  
+  if (naZonaAzul && enfraquecendo && timeout) {
+    sequenciaFraca++;
+    if (sequenciaFraca >= 2) {
+      ultimoSinalTimestamp = Date.now();
+      sequenciaFraca = 0;
+      return true;
+    }
+  } else {
+    sequenciaFraca = 0;
+  }
   return false;
 }
 
+function marcarSinal() {
+  if (pts.length < 2) return;
+  const idx = pts.length - 2;
+  if (idx >= 0 && !pts[idx].sinal) {
+    pts[idx].sinal = true;
+    const t = pts[idx].time.toLocaleTimeString('pt-BR');
+    const area = document.getElementById('logArea');
+    const row = document.createElement('div');
+    row.className = 'log-row';
+    row.style.background = 'rgba(34,197,94,0.15)';
+    row.innerHTML = `<div class="ldot" style="background:#22c55e"></div><span class="lt">${t}</span><span class="lv" style="color:#22c55e">${pts[idx].val.toFixed(2)}x</span><span class="ltag sinal">⚡ SINAL</span>`;
+    area.insertBefore(row, area.firstChild);
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════
 // LOG E UI
+// ═══════════════════════════════════════════════════════════════════
 function addLog(vela) {
-  const t = vela.time.toLocaleTimeString('pt-BR', { hour:'2-digit', minute:'2-digit', second:'2-digit' });
+  const t = vela.time.toLocaleTimeString('pt-BR');
   const v = vela.val;
   let classe, cor;
   if (v >= 10) { classe = 'rosa'; cor = '#f472b6'; }
   else if (v >= 2) { classe = 'roxa'; cor = '#a855f7'; }
   else { classe = 'ciano'; cor = '#06b6d4'; }
+  
   const area = document.getElementById('logArea');
   const row = document.createElement('div');
   row.className = 'log-row';
   row.innerHTML = `<div class="ldot" style="background:${cor}"></div><span class="lt">${t}</span><span class="lv" style="color:${cor}">${v.toFixed(2)}x</span><span class="ltag ${classe}">${classe.toUpperCase()}</span>`;
   area.insertBefore(row, area.firstChild);
-  while(area.children.length > 25) area.removeChild(area.lastChild);
+  while(area.children.length > 30) area.removeChild(area.lastChild);
 }
 
 function atualizarUI() {
@@ -272,60 +453,67 @@ function showAlert(msg, color, dur=2500) {
   setTimeout(() => el.className = 'alert', dur);
 }
 
-function triggerFlash() { const f=document.getElementById('flash'); f.className='flash on'; setTimeout(()=>f.className='flash',400); }
+function triggerFlash() {
+  const f = document.getElementById('flash');
+  f.className = 'flash on';
+  setTimeout(() => f.className = 'flash', 400);
+}
 
-// ═══════════ BUSCAR VELAS DO SERVIDOR ═══════════
+// ═══════════════════════════════════════════════════════════════════
+// BUSCAR VELAS
+// ═══════════════════════════════════════════════════════════════════
 async function buscarVelasCompletas() {
   try {
-    showAlert('🔄 Sincronizando...', '#60a5fa', 1000);
     const url = `${SERVIDOR_URL}/api/velas?painel=${PAINEL}&limit=500`;
     const res = await fetch(url);
     const data = await res.json();
     
-    if (data.velas && Array.isArray(data.velas)) {
-      const novas = [];
-      let ultTs = 0;
+    if (data.velas && data.velas.length) {
+      pts = [];
       for (const v of data.velas) {
         if (v.rodada === 'TESTE_CONEXAO') continue;
         const mult = parseFloat(v.multiplicador);
         if (!isNaN(mult) && mult > 0) {
           let ts = v.timestamp ? new Date(v.timestamp) : new Date();
           if (isNaN(ts.getTime())) ts = new Date();
-          novas.push({ val: mult, time: ts, rodada: v.rodada });
-          if (v.ts_recebido > ultTs) ultTs = v.ts_recebido;
+          pts.push({ val: mult, time: ts, rodada: v.rodada });
+          if (v.ts_recebido > ultimoTimestamp) ultimoTimestamp = v.ts_recebido;
         }
       }
-      novas.sort((a,b)=>a.time-b.time);
-      pts = novas;
-      ultimoTimestamp = ultTs;
+      pts.sort((a,b)=>a.time-b.time);
       atualizarUI();
       document.getElementById('logArea').innerHTML = '';
       pts.slice(-25).reverse().forEach(v => addLog(v));
       draw();
-      showAlert(`✅ ${pts.length} velas carregadas`, '#22c55e', 1500);
     }
-  } catch(err) { console.error(err); showAlert('❌ Erro de conexão', '#f43f5e', 2000); }
+  } catch(e) { console.error(e); }
 }
 
 async function buscarNovasVelas() {
   try {
-    let url = `${SERVIDOR_URL}/api/velas?painel=${PAINEL}&limit=30`;
+    let url = `${SERVIDOR_URL}/api/velas?painel=${PAINEL}&limit=20`;
     if (ultimoTimestamp > 0) url += `&desde=${ultimoTimestamp}`;
     const res = await fetch(url);
     const data = await res.json();
     
-    if (data.velas && data.velas.length > 0) {
+    if (data.velas && data.velas.length) {
       let novas = 0;
       for (const v of data.velas) {
         if (v.rodada === 'TESTE_CONEXAO') continue;
         const mult = parseFloat(v.multiplicador);
         if (!isNaN(mult) && mult > 0) {
-          const existe = pts.some(p => p.rodada === v.rodada && Math.abs(p.val - mult) < 0.1);
+          const existe = pts.some(p => p.rodada === v.rodada);
           if (!existe) {
             let ts = v.timestamp ? new Date(v.timestamp) : new Date();
             if (isNaN(ts.getTime())) ts = new Date();
             pts.push({ val: mult, time: ts, rodada: v.rodada });
             addLog({ val: mult, time: ts });
+            
+            if (detectarSinalAntecipado()) {
+              marcarSinal();
+              showAlert('🔔 SINAL! Próxima vela pode ser ROSA!', '#22c55e', 4000);
+              triggerFlash();
+            }
             novas++;
           }
           if (v.ts_recebido > ultimoTimestamp) ultimoTimestamp = v.ts_recebido;
@@ -333,23 +521,22 @@ async function buscarNovasVelas() {
       }
       if (novas > 0) {
         pts.sort((a,b)=>a.time-b.time);
-        if (pts.length > 2000) pts = pts.slice(-2000);
         atualizarUI();
         draw();
-        showAlert(`📈 +${novas} nova(s) vela(s)!`, '#22c55e', 1500);
-        triggerFlash();
-        if (detectarEnfraquecimento()) {
-          showAlert('⚠️ ENFRAQUECENDO! Próxima pode ser ROSA?', '#f472b6', 4000);
-          triggerFlash();
-        }
+        if (novas > 0) showAlert(`📈 +${novas} vela(s)`, '#22c55e', 1000);
       }
     }
-  } catch(e) { console.error(e); }
+  } catch(e) {}
 }
 
-async function syncNow() { await buscarVelasCompletas(); }
+async function syncNow() {
+  showAlert('🔄 Sincronizando...', '#60a5fa', 1000);
+  await buscarVelasCompletas();
+}
 
-// ═══════════ GRÁFICO ═══════════
+// ═══════════════════════════════════════════════════════════════════
+// GRÁFICO
+// ═══════════════════════════════════════════════════════════════════
 function getVisN() { return Math.max(5, Math.round(CFG.showN / zoomLevel)); }
 function getViewSub() {
   const n = getVisN();
@@ -383,8 +570,8 @@ function draw() {
   if (sub.length < 2) return;
   const { sx, sy, minV, maxV } = getScale(sub, W, H);
   
-  ctx.font = '7px "JetBrains Mono"';
-  [1, 2, 5, 10, 20, 50].filter(v=>v>=minV&&v<=maxV*1.05).forEach(v=>{
+  ctx.font = '7px monospace';
+  [1, 2, 5, 10, 20].filter(v=>v>=minV&&v<=maxV*1.05).forEach(v=>{
     const py = sy(v);
     ctx.strokeStyle = v>=10?'rgba(244,114,182,0.08)':v>=2?'rgba(168,85,247,0.06)':'#0c1b2e';
     ctx.beginPath(); ctx.moveTo(8, py); ctx.lineTo(W-scaleW, py); ctx.stroke();
@@ -392,8 +579,9 @@ function draw() {
     ctx.fillText(v+'x', W-scaleW+3, py+2);
   });
   
-  const zonas = [[1,'#06b6d4'],[2,'#a855f7'],[10,'#f472b6']];
-  zonas.forEach(([z,c])=>{ if(z>=minV&&z<=maxV){ const py=sy(z); ctx.strokeStyle=c+'80'; ctx.lineWidth=1.2; ctx.setLineDash([5,4]); ctx.beginPath(); ctx.moveTo(8,py); ctx.lineTo(W-scaleW,py); ctx.stroke(); } });
+  [[1,'#06b6d4'],[2,'#a855f7'],[10,'#f472b6']].forEach(([z,c])=>{
+    if(z>=minV&&z<=maxV){ const py=sy(z); ctx.strokeStyle=c+'80'; ctx.lineWidth=1; ctx.setLineDash([5,4]); ctx.beginPath(); ctx.moveTo(8,py); ctx.lineTo(W-scaleW,py); ctx.stroke(); }
+  });
   ctx.setLineDash([]);
   
   const yBase = sy(minV);
@@ -411,23 +599,32 @@ function draw() {
   if (CFG.showMA && pts.length >= 2) {
     const valores = pts.map(p=>p.val);
     const subStart = Math.max(0, pts.length - viewOffset - sub.length);
-    mmConfigs.forEach(mm => {
-      if (pts.length < mm.per) return;
-      const ema = calcularEMA(valores, mm.per);
-      const slice = ema.slice(subStart, subStart+sub.length+3);
-      if (slice.length < 2) return;
-      ctx.strokeStyle = mm.cor; ctx.lineWidth = mm.lw; ctx.setLineDash(mm.dash);
-      (curvaFn[mm.curva] || drawCurveLinear)(slice, sx, sy);
-    });
+    for (let i=1; i<=6; i++) {
+      if (!CFG[`mm${i}On`] || pts.length < CFG[`mm${i}Per`]) continue;
+      const ema = calcularEMA(valores, CFG[`mm${i}Per`], 10);
+      const slice = ema.slice(subStart, subStart + sub.length + 15);
+      if (slice.length < 2) continue;
+      ctx.strokeStyle = CFG[`mm${i}Cor`];
+      ctx.lineWidth = CFG[`mm${i}Lw`];
+      ctx.setLineDash(i>=3?[5,3]:[]);
+      (curvaFn[CFG[`mm${i}Curva`]] || curvaFn.linear)(slice, sx, sy);
+    }
     ctx.setLineDash([]);
   }
   
-  // Bolinhas
+  // Bolinhas e sinal
   sub.forEach((p,i)=>{
     const x=sx(i), y=sy(p.val), r = p.val>=10?6:p.val>=2?4.5:3;
     ctx.beginPath(); ctx.arc(x,y,r,0,Math.PI*2);
     ctx.fillStyle = col(p.val); ctx.fill();
     ctx.strokeStyle = '#fff'; ctx.lineWidth=1; ctx.stroke();
+    
+    if(p.sinal){
+      ctx.beginPath(); ctx.arc(x, y-12, 8, 0, Math.PI*2);
+      ctx.fillStyle = '#22c55e'; ctx.fill();
+      ctx.fillStyle = '#fff'; ctx.font='bold 7px monospace'; ctx.textAlign='center';
+      ctx.fillText('⚡', x, y-11);
+    }
   });
   
   // Linhas desenhadas
@@ -452,14 +649,16 @@ function draw() {
   }
   
   if(sub.length){
-    document.getElementById('xL').textContent = sub[0].time.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
-    document.getElementById('xM').textContent = sub[Math.floor(sub.length/2)].time.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
-    document.getElementById('xR').textContent = sub[sub.length-1].time.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+    document.getElementById('xL').textContent = sub[0].time.toLocaleTimeString('pt-BR');
+    document.getElementById('xM').textContent = sub[Math.floor(sub.length/2)].time.toLocaleTimeString('pt-BR');
+    document.getElementById('xR').textContent = sub[sub.length-1].time.toLocaleTimeString('pt-BR');
   }
   document.getElementById('xslider').value = CFG.showN;
 }
 
-// ═══════════ EVENTOS TOUCH/MOUSE ═══════════
+// ═══════════════════════════════════════════════════════════════════
+// EVENTOS
+// ═══════════════════════════════════════════════════════════════════
 function getPos(e) {
   const rect = cwrap.getBoundingClientRect();
   const clientX = e.touches ? e.touches[0].clientX : e.clientX;
@@ -492,24 +691,6 @@ function onTouchMove(e) {
       draw();
     }
   } else if (isDrawing && currentTool === 'line') { draw(); }
-  else {
-    const sub = getViewSub();
-    if (sub.length >= 2 && !isPanning) {
-      const { sx, sy } = getScale(sub, canvas.width, canvas.height);
-      const step = (canvas.width - 12 - scaleW) / (sub.length - 1 || 1);
-      const idx = Math.round((pos.x - 12) / step);
-      const tt = document.getElementById('ttBox');
-      if (idx >= 0 && idx < sub.length && pos.x < canvas.width - scaleW) {
-        const p = sub[idx];
-        document.getElementById('ttV').textContent = p.val.toFixed(2) + 'x';
-        document.getElementById('ttV').style.color = col(p.val);
-        document.getElementById('ttS').textContent = p.time.toLocaleTimeString('pt-BR');
-        tt.style.display = 'block';
-        tt.style.left = Math.min(pos.x + 12, canvas.width - scaleW - 15) + 'px';
-        tt.style.top = Math.max(5, pos.y - 42) + 'px';
-      } else { tt.style.display = 'none'; }
-    }
-  }
 }
 
 function onTouchEnd(e) {
@@ -534,7 +715,6 @@ function zoomOut() { zoomLevel = Math.max(0.3, zoomLevel / 1.2); draw(); }
 function resetView() { zoomLevel = 1.0; viewOffset = 0; vertOffset = 0; draw(); }
 function voltarPresente() { viewOffset = 0; document.getElementById('btnBack').classList.remove('show'); draw(); }
 
-// RESIZE
 function resize() {
   const dpr = window.devicePixelRatio || 2;
   const w = cwrap.clientWidth, h = cwrap.clientHeight;
@@ -548,17 +728,17 @@ function resize() {
 new ResizeObserver(resize).observe(cwrap);
 
 setInterval(() => {
-  document.getElementById('xNow').textContent = new Date().toLocaleTimeString('pt-BR', { hour:'2-digit', minute:'2-digit', second:'2-digit' });
+  document.getElementById('xNow').textContent = new Date().toLocaleTimeString('pt-BR');
 }, 1000);
 
 // INICIALIZAÇÃO
+carregarConfig();
 resize();
 setTool('cursor');
 setTimeout(async () => {
   await buscarVelasCompletas();
-  if (pollingInterval) clearInterval(pollingInterval);
   pollingInterval = setInterval(() => buscarNovasVelas(), 2000);
-  showAlert('🟢 Conectado! Velas em tempo real', '#22c55e', 3000);
+  showAlert('🟢 Painel estável! Clique em ⚙ MM para configurar', '#22c55e', 4000);
 }, 500);
 </script>
 </body>
