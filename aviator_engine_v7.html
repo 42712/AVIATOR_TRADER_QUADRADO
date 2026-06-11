@@ -674,19 +674,19 @@ function getViewSubExt(extra){
 function getScale(sub,W,H){
   scaleW=Math.max(44,scaleW);
   const vals=sub.map(p=>p.val);
+  const absMin=Math.min(...vals), absMax=Math.max(...vals);
   // maxV suavizado: picos isolados não comprimem todo o gráfico
   const sortedV=[...vals].sort((a,b)=>a-b);
   const p95=sortedV[Math.floor(sortedV.length*0.95)]||sortedV[sortedV.length-1];
-  const absMax=Math.max(...vals);
-  // Se o pico for >3x a mediana, usa p95 como referência mas ainda mostra o pico
-  const maxV=absMax>p95*3 ? Math.max(p95*2.5, absMax*1.05) : absMax*1.12;
-  const minV=0.7;  // mais espaço abaixo do 1x
+  // Ajuste mais agressivo: se pico > 2x p95, usa p95*1.8 como teto
+  const maxV=absMax>p95*2 ? Math.max(p95*1.8, absMax*1.02) : absMax*1.08;
+  const minV=Math.max(0.85, absMin<1?absMin*0.95:0.85);
   const cW=W-12-scaleW, cH=H-44-20;
   const n=sub.length;
   const logMin=Math.log10(minV), logMax=Math.log10(maxV);
   const vsh=(vertOffset/cH)*(logMax-logMin);
   return{
-    sx:i=>12+i*((cW-40)/(n-1||1)),  // -40px reserva espaço fixo para última vela
+    sx:i=>12+i*((cW-40)/(n-1||1)),
     sy:v=>44+cH*(1-(Math.log10(Math.max(v,minV))-logMin+vsh)/(logMax-logMin||1)),
     yToV:y=>Math.pow(10,logMin+(logMax-logMin)*(1-(y-44)/cH))-vsh,
     minV,maxV,cW,cH
