@@ -2,11 +2,11 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Aviator Engine v7 - SORTENABET</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>Aviator v7 - Mobile</title>
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 :root{
   --bg:#05080f;--bg2:#0a0f1a;--bg3:#0e1522;--bg4:#121d2e;
   --brd:#18273d;--brd2:#203555;
@@ -14,63 +14,67 @@
   --up:#a855f7;--dn:#06b6d4;--pk:#f43f5e;--gn:#22c55e;--am:#f59e0b;
   --font:'JetBrains Mono',monospace;
 }
-html,body{height:100%;overflow:hidden;background:var(--bg);font-family:var(--font);font-size:11px;color:var(--txt)}
+html,body{height:100%;overflow:hidden;background:var(--bg);font-family:var(--font);font-size:11px;color:var(--txt);touch-action:pan-x pan-y;}
 .root{display:flex;flex-direction:column;height:100vh}
-.main{display:flex;flex:1;overflow:hidden;min-height:0}
+.main{display:flex;flex:1;overflow:hidden;min-height:0;flex-direction:column}
 
-.topbar{height:38px;background:var(--bg2);border-bottom:1px solid var(--brd);display:flex;align-items:center;flex-shrink:0;user-select:none}
-.tb-logo{padding:0 14px;font-size:13px;font-weight:700;color:#fff;border-right:1px solid var(--brd);height:100%;display:flex;align-items:center;gap:8px}
+/* TOPBAR RESPONSIVA */
+.topbar{height:44px;background:var(--bg2);border-bottom:1px solid var(--brd);display:flex;align-items:center;flex-shrink:0;padding:0 8px;gap:6px;overflow-x:auto}
+.tb-logo{font-size:12px;font-weight:700;color:#fff;display:flex;align-items:center;gap:6px;white-space:nowrap}
 .tb-dot{width:8px;height:8px;border-radius:50%;background:var(--gn);animation:glow 2s infinite}
 @keyframes glow{0%,100%{box-shadow:0 0 4px var(--gn)}50%{box-shadow:0 0 14px var(--gn)}}
-.tb-mid{flex:1;display:flex;align-items:center;gap:3px;padding:0 10px}
-.tb-right{display:flex;align-items:center;gap:4px;padding:0 10px;border-left:1px solid var(--brd)}
-.btn{padding:2px 9px;border-radius:4px;border:1px solid var(--brd2);background:var(--bg3);color:var(--txt2);font-size:9px;font-family:var(--font);cursor:pointer;height:22px;display:flex;align-items:center;gap:3px;transition:all .15s;white-space:nowrap}
-.btn:hover{border-color:var(--txt2);color:var(--txt)}
-.btn.on{border-color:var(--up);background:rgba(168,85,247,.15);color:var(--up)}
+.tb-mid{display:flex;align-items:center;gap:4px;flex-shrink:0}
+.tb-right{display:flex;align-items:center;gap:4px;margin-left:auto}
+.btn{padding:4px 10px;border-radius:6px;border:1px solid var(--brd2);background:var(--bg3);color:var(--txt2);font-size:9px;font-family:var(--font);cursor:pointer;white-space:nowrap;transition:all .15s}
+.btn:active{transform:scale(0.96)}
 .btn.g{border-color:#166534;background:rgba(34,197,94,.1);color:var(--gn)}
-.btn.b{border-color:#1e3a5f;background:rgba(96,165,250,.08);color:#60a5fa}
-.ws-pill{display:flex;align-items:center;gap:4px;font-size:9px;padding:0 8px;border-left:1px solid var(--brd)}
+.ws-pill{display:flex;align-items:center;gap:4px;font-size:8px;padding:0 6px}
 .ws-pill.ok{color:var(--gn)}.ws-pill.err{color:var(--pk)}
-.wsd{width:5px;height:5px;border-radius:50%;background:currentColor;animation:blink 1.4s infinite}
+.wsd{width:6px;height:6px;border-radius:50%;background:currentColor;animation:blink 1.4s infinite}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
 
-.toolbox{position:fixed;left:10px;top:50%;transform:translateY(-50%);background:var(--bg2);border:1px solid var(--brd);border-radius:8px;display:flex;flex-direction:column;padding:5px;gap:3px;z-index:100}
-.tool-btn{width:32px;height:32px;border-radius:6px;border:1px solid var(--brd2);background:var(--bg3);color:var(--txt2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;transition:all .15s}
-.tool-btn:hover{border-color:var(--gn);color:var(--gn)}
+/* TOOLBOX MOBILE - MENU FLUTUANTE */
+.toolbox{position:fixed;bottom:20px;right:10px;background:var(--bg2);border:1px solid var(--brd);border-radius:40px;display:flex;flex-direction:row;padding:6px 12px;gap:10px;z-index:100;backdrop-filter:blur(10px)}
+.tool-btn{width:40px;height:40px;border-radius:30px;border:1px solid var(--brd2);background:var(--bg3);color:var(--txt2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:20px;transition:all .15s}
+.tool-btn:active{transform:scale(0.92)}
 .tool-btn.active{border-color:var(--gn);background:rgba(34,197,94,.2);color:var(--gn)}
-.tool-sep{width:24px;height:1px;background:var(--brd);margin:2px 0}
+.tool-sep{width:1px;height:25px;background:var(--brd);margin:0}
 
-.chart-col{flex:1;display:flex;flex-direction:column;overflow:hidden}
-.canvas-wrap{flex:1;position:relative;overflow:hidden;background:var(--bg);cursor:default}
-#cv{display:block;position:absolute;top:0;left:0}
-#pov{position:absolute;inset:0;z-index:19;display:none;cursor:grabbing}
-.xbar{height:26px;background:var(--bg2);border-top:1px solid var(--brd);display:flex;align-items:center;padding:0 8px;gap:8px;font-size:8px;flex-shrink:0}
-.xslider{flex:1;height:4px;-webkit-appearance:none;background:var(--brd2);border-radius:2px;cursor:pointer}
-.xslider::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;border-radius:50%;background:var(--gn);cursor:pointer}
+/* CHART */
+.chart-col{flex:1;display:flex;flex-direction:column;overflow:hidden;min-height:200px}
+.canvas-wrap{flex:1;position:relative;overflow:hidden;background:var(--bg);min-height:200px;touch-action:pan-x pan-y}
+#cv{display:block;position:absolute;top:0;left:0;width:100%;height:100%}
+#pov{position:absolute;inset:0;z-index:19;display:none}
 
-.data-sb{width:210px;background:var(--bg2);border-left:1px solid var(--brd);display:flex;flex-direction:column;overflow:hidden;flex-shrink:0}
-.sbh{padding:4px 10px;font-size:7px;color:var(--txt3);border-bottom:1px solid var(--brd);text-transform:uppercase}
-.kv-block{padding:4px 10px 6px;border-bottom:1px solid var(--brd)}
-.kv{display:flex;justify-content:space-between;padding:2px 0}
-.kk{font-size:8px;color:var(--txt2)}.kvv{font-size:9px;font-weight:500;color:var(--txt)}
-.log-area{flex:1;overflow-y:auto}
-.log-row{display:flex;align-items:center;gap:5px;padding:3px 8px;border-bottom:1px solid #070d15;cursor:pointer;font-size:9px}
-.log-row:hover{background:var(--bg3)}
-.ldot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
-.lt{color:var(--txt2);min-width:55px;font-size:8px;font-family:monospace}
+/* XBAR */
+.xbar{height:34px;background:var(--bg2);border-top:1px solid var(--brd);display:flex;align-items:center;padding:0 8px;gap:6px;font-size:8px;flex-shrink:0}
+.xslider{flex:1;height:4px;-webkit-appearance:none;background:var(--brd2);border-radius:2px}
+.xslider::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;border-radius:50%;background:var(--gn);cursor:pointer}
+
+/* SIDEBAR - AGORA EMBAIXO NO MOBILE */
+.data-sb{background:var(--bg2);border-top:1px solid var(--brd);display:flex;flex-direction:column;max-height:35%;min-height:120px;overflow:hidden;flex-shrink:0}
+.sbh{padding:6px 12px;font-size:8px;color:var(--txt3);border-bottom:1px solid var(--brd);text-transform:uppercase}
+.kv-block{padding:6px 12px;display:flex;gap:16px;border-bottom:1px solid var(--brd)}
+.kv{display:flex;gap:6px}
+.kk{font-size:8px;color:var(--txt2)}.kvv{font-size:10px;font-weight:700}
+.log-area{flex:1;overflow-y:auto;max-height:120px}
+.log-row{display:flex;align-items:center;gap:8px;padding:6px 12px;border-bottom:1px solid #070d15;font-size:9px}
+.log-row:active{background:var(--bg3)}
+.ldot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.lt{color:var(--txt2);min-width:60px;font-size:8px}
 .lv{font-weight:700;min-width:45px}
-.ltag{font-size:7px;padding:1px 4px;border-radius:3px;margin-left:auto;font-weight:600}
+.ltag{font-size:7px;padding:2px 6px;border-radius:4px;margin-left:auto}
 .ltag.rosa{background:rgba(244,114,182,.2);color:#f472b6}
 .ltag.roxa{background:rgba(168,85,247,.2);color:#a855f7}
 .ltag.ciano{background:rgba(6,182,212,.2);color:#06b6d4}
 
-.tooltip{position:absolute;background:#080f1c;border:1px solid var(--brd2);border-radius:5px;padding:6px 10px;display:none;z-index:60;min-width:120px}
-.tt-v{font-size:14px;font-weight:700}.tt-s{font-size:8px;color:var(--txt2)}
-.alert{position:absolute;top:10px;left:50%;transform:translateX(-50%);padding:6px 22px;border-radius:20px;font-size:11px;font-weight:700;pointer-events:none;z-index:50;white-space:nowrap;opacity:0;transition:opacity .3s}
+.tooltip{position:absolute;background:#080f1c;border:1px solid var(--brd2);border-radius:8px;padding:8px 12px;display:none;z-index:60;min-width:100px}
+.tt-v{font-size:16px;font-weight:700}.tt-s{font-size:9px;color:var(--txt2)}
+.alert{position:absolute;top:50px;left:10px;right:10px;transform:none;padding:10px;border-radius:12px;font-size:11px;text-align:center;white-space:normal;z-index:50;opacity:0;transition:opacity .3s}
 .alert.show{opacity:1}
-.flash{position:absolute;inset:0;border:2px solid var(--gn);opacity:0;pointer-events:none;transition:opacity .12s;z-index:45}
+.flash{position:absolute;inset:0;border:3px solid var(--gn);opacity:0;pointer-events:none;transition:opacity .12s;z-index:45}
 .flash.on{opacity:1}
-#btnBack{position:absolute;bottom:36px;left:50%;transform:translateX(-50%);background:rgba(34,197,94,.35);border:1.5px solid var(--gn);border-radius:20px;padding:7px 22px;font-size:11px;font-weight:700;color:var(--gn);cursor:pointer;display:none;z-index:60}
+#btnBack{position:absolute;bottom:80px;left:50%;transform:translateX(-50%);background:rgba(34,197,94,.9);border:none;border-radius:30px;padding:10px 20px;font-size:11px;font-weight:700;color:#000;cursor:pointer;display:none;z-index:60;white-space:nowrap}
 #btnBack.show{display:block}
 </style>
 </head>
@@ -78,16 +82,15 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:var(--fon
 <div class="root">
 
 <div class="topbar">
-  <div class="tb-logo"><div class="tb-dot"></div>AVIATOR v7 - SORTENABET</div>
+  <div class="tb-logo"><div class="tb-dot"></div>AVIATOR</div>
   <div class="tb-mid">
     <button class="btn" onclick="zoomIn()">+</button>
     <button class="btn" onclick="zoomOut()">-</button>
     <button class="btn" onclick="resetView()">↺</button>
-    <button class="btn" id="maBtn" onclick="toggleMA()" style="background:rgba(34,197,94,.1);color:#22c55e">📈 MM</button>
-    <div class="ws-pill ok" id="wsStatus"><span class="wsd"></span><span id="wsLabel">ONLINE</span></div>
   </div>
   <div class="tb-right">
     <button class="btn g" onclick="syncNow()">↻ SINCRONIZAR</button>
+    <div class="ws-pill ok" id="wsStatus"><span class="wsd"></span><span id="wsLabel">ON</span></div>
   </div>
 </div>
 
@@ -99,40 +102,38 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:var(--fon
     <div class="flash" id="flash"></div>
     <div class="alert" id="alertBox"></div>
     <div class="tooltip" id="ttBox"><div class="tt-v" id="ttV"></div><div class="tt-s" id="ttS"></div></div>
-    <button id="btnBack" onclick="voltarPresente()">▶▶ VOLTAR AO PRESENTE</button>
+    <button id="btnBack" onclick="voltarPresente()">◀ VOLTAR</button>
   </div>
   <div class="xbar">
     <span id="xL">—</span><span id="xM">—</span><span id="xR">—</span>
-    <input type="range" class="xslider" id="xslider" min="5" max="200" value="50" oninput="CFG.showN=parseInt(this.value);draw()">
-    <span id="xNow" style="color:var(--gn);font-size:13px;font-weight:700">—</span>
-    <span id="xZoom" style="color:var(--txt3)">50v</span>
+    <input type="range" class="xslider" id="xslider" min="5" max="100" value="30" oninput="CFG.showN=parseInt(this.value);draw()">
+    <span id="xNow" style="color:var(--gn);font-size:11px">—</span>
   </div>
 </div>
 
 <div class="data-sb">
-  <div class="sbh">ÚLTIMO VALOR</div>
   <div class="kv-block">
-    <div class="kv"><span class="kk">Atual</span><span class="kvv" id="sCot">—</span></div>
-    <div class="kv"><span class="kk">Total velas</span><span class="kvv" id="sTot">0</span></div>
+    <div class="kv"><span class="kk">Último</span><span class="kvv" id="sCot" style="color:var(--gn)">—</span></div>
+    <div class="kv"><span class="kk">Total</span><span class="kvv" id="sTot">0</span></div>
     <div class="kv"><span class="kk">Painel</span><span class="kvv" id="painelInfo">1</span></div>
   </div>
-  <div class="sbh">LOG VELAS</div>
+  <div class="sbh">ÚLTIMAS VELAS</div>
   <div class="log-area" id="logArea"></div>
 </div>
 </div>
 </div>
 
-<div class="toolbox" id="toolbox">
-  <div class="tool-btn" id="tool-cursor" onclick="setTool('cursor')" title="Cursor">🖱️</div>
-  <div class="tool-btn" id="tool-line" onclick="setTool('line')" title="Desenhar linha">📏</div>
-  <div class="tool-btn" id="tool-move" onclick="setTool('move')" title="Mover objeto">✋</div>
+<!-- TOOLBOX MOBILE -->
+<div class="toolbox">
+  <div class="tool-btn" id="tool-cursor" onclick="setTool('cursor')" title="Mover">✋</div>
+  <div class="tool-btn" id="tool-line" onclick="setTool('line')" title="Linha">📏</div>
   <div class="tool-sep"></div>
   <div class="tool-btn" id="tool-delete" onclick="deleteSelected()" title="Excluir">🗑️</div>
 </div>
 
 <script>
 // ═══════════════════════════════════════════════════════════════════
-// SEU SERVIDOR - JÁ CONFIGURADO
+// SEU SERVIDOR - CORRETO
 // ═══════════════════════════════════════════════════════════════════
 const SERVIDOR_URL = "https://aviator-trader-quadrado.onrender.com";
 const PAINEL = 1;
@@ -144,9 +145,9 @@ const cwrap = document.getElementById('cwrap');
 let pts = [];
 let pollingInterval = null;
 let ultimoTimestamp = 0;
-const CFG = { showN: 50, showMA: true };
+const CFG = { showN: 30, showMA: true };
 
-let viewOffset = 0, zoomLevel = 1.0, vertOffset = 0, scaleW = 60;
+let viewOffset = 0, zoomLevel = 1.0, vertOffset = 0, scaleW = 50;
 let isPanning = false, panX0 = 0, panOff0 = 0;
 let _mx = 0, _my = 0;
 
@@ -155,7 +156,6 @@ let currentTool = 'cursor';
 let drawings = [];
 let selectedDrawing = null;
 let isDrawing = false, drawStart = null;
-let isMoving = false, movingDrawing = null, moveOffsetX = 0, moveOffsetY = 0;
 
 function setTool(tool) {
   currentTool = tool;
@@ -169,9 +169,9 @@ function deleteSelected() {
     drawings.splice(selectedDrawing, 1);
     selectedDrawing = null;
     draw();
-    showAlert('✓ Objeto removido', '#22c55e', 1000);
+    showAlert('✓ Linha removida', '#22c55e', 1000);
   } else {
-    showAlert('Selecione um objeto primeiro', '#f59e0b', 1000);
+    showAlert('Toque numa linha para selecionar', '#f59e0b', 1000);
   }
 }
 
@@ -189,13 +189,13 @@ function getDrawingAt(x, y) {
       if (len === 0) continue;
       const t = Math.max(0, Math.min(1, ((x - d.x1) * dx + (y - d.y1) * dy) / (len * len)));
       const projX = d.x1 + t * dx, projY = d.y1 + t * dy;
-      if (Math.hypot(x - projX, y - projY) < 8) return i;
+      if (Math.hypot(x - projX, y - projY) < 15) return i;
     }
   }
   return -1;
 }
 
-// MÉDIAS MÓVEIS COM ESTILOS
+// MÉDIAS MÓVEIS
 function calcularEMA(dados, periodo) {
   const k = 2 / (periodo + 1);
   let ema = dados[0];
@@ -207,200 +207,64 @@ function calcularEMA(dados, periodo) {
   return resultado;
 }
 
-function drawCurveLinear(points, sx, sy) {
-  if (points.length < 2) return;
-  ctx.beginPath();
-  ctx.moveTo(sx(0), sy(points[0]));
-  for (let i = 1; i < points.length; i++) ctx.lineTo(sx(i), sy(points[i]));
-  ctx.stroke();
-}
-
-function drawCurveSmooth(points, sx, sy) {
-  if (points.length < 2) return;
-  ctx.beginPath();
-  ctx.moveTo(sx(0), sy(points[0]));
-  for (let i = 0; i < points.length - 1; i++) {
-    const x1 = sx(i), y1 = sy(points[i]);
-    const x2 = sx(i+1), y2 = sy(points[i+1]);
-    const cp1x = x1 + (x2 - x1) * 0.33, cp1y = y1;
-    const cp2x = x1 + (x2 - x1) * 0.66, cp2y = y2;
-    ctx.bezierCurveTo(cp1x, cp1y, cp2x, cp2y, x2, y2);
-  }
-  ctx.stroke();
-}
-
-function drawCurveBezier(points, sx, sy) {
-  if (points.length < 2) return;
-  ctx.beginPath();
-  ctx.moveTo(sx(0), sy(points[0]));
-  for (let i = 0; i < points.length - 1; i++) {
-    const x1 = sx(i), y1 = sy(points[i]);
-    const x2 = sx(i+1), y2 = sy(points[i+1]);
-    const cp1x = x1 + (x2 - x1) * 0.25, cp1y = y1 - Math.abs(points[i+1] - points[i]) * 2;
-    const cp2x = x2 - (x2 - x1) * 0.25, cp2y = y2 + Math.abs(points[i+1] - points[i]) * 2;
-    ctx.bezierCurveTo(cp1x, cp1y, cp2x, cp2y, x2, y2);
-  }
-  ctx.stroke();
-}
-
-function drawCurveStep(points, sx, sy) {
-  if (points.length < 2) return;
-  ctx.beginPath();
-  ctx.moveTo(sx(0), sy(points[0]));
-  for (let i = 1; i < points.length; i++) {
-    ctx.lineTo(sx(i), sy(points[i-1]));
-    ctx.lineTo(sx(i), sy(points[i]));
-  }
-  ctx.stroke();
-}
-
-function drawCurveWavy(points, sx, sy) {
-  if (points.length < 2) return;
-  ctx.beginPath();
-  ctx.moveTo(sx(0), sy(points[0]));
-  for (let i = 0; i < points.length - 1; i++) {
-    const x1 = sx(i), y1 = sy(points[i]);
-    const x2 = sx(i+1), y2 = sy(points[i+1]);
-    const midX = (x1 + x2) / 2;
-    const midY = (y1 + y2) / 2;
-    const amp = Math.abs(points[i+1] - points[i]) * 3;
-    ctx.quadraticCurveTo(x1, y1 - amp, midX, midY);
-    ctx.quadraticCurveTo(x2, y2 + amp, x2, y2);
-  }
-  ctx.stroke();
-}
-
-function drawCurveSpiky(points, sx, sy) {
-  if (points.length < 2) return;
-  ctx.beginPath();
-  ctx.moveTo(sx(0), sy(points[0]));
-  for (let i = 0; i < points.length - 1; i++) {
-    const x1 = sx(i), y1 = sy(points[i]);
-    const x2 = sx(i+1), y2 = sy(points[i+1]);
-    const midX = (x1 + x2) / 2;
-    const spikeY = Math.min(y1, y2) - 15;
-    ctx.lineTo(midX, spikeY);
-    ctx.lineTo(x2, y2);
-  }
-  ctx.stroke();
-}
-
-function drawCurveArc(points, sx, sy) {
-  if (points.length < 2) return;
-  ctx.beginPath();
-  ctx.moveTo(sx(0), sy(points[0]));
-  for (let i = 0; i < points.length - 1; i++) {
-    const x1 = sx(i), y1 = sy(points[i]);
-    const x2 = sx(i+1), y2 = sy(points[i+1]);
-    const cpx = (x1 + x2) / 2;
-    const cpy = Math.min(y1, y2) - 18;
-    ctx.quadraticCurveTo(cpx, cpy, x2, y2);
-  }
-  ctx.stroke();
-}
-
-function drawCurveSquare(points, sx, sy) {
-  if (points.length < 2) return;
-  ctx.beginPath();
-  ctx.moveTo(sx(0), sy(points[0]));
-  for (let i = 0; i < points.length - 1; i++) {
-    const x1 = sx(i), y1 = sy(points[i]);
-    const x2 = sx(i+1), y2 = sy(points[i+1]);
-    const midX = (x1 + x2) / 2;
-    ctx.lineTo(midX, y1);
-    ctx.lineTo(midX, y2);
-    ctx.lineTo(x2, y2);
-  }
-  ctx.stroke();
-}
-
-function drawCurveBalloon(points, sx, sy) {
-  if (points.length < 2) return;
-  ctx.beginPath();
-  ctx.moveTo(sx(0), sy(points[0]));
-  for (let i = 0; i < points.length - 1; i++) {
-    const x1 = sx(i), y1 = sy(points[i]);
-    const x2 = sx(i+1), y2 = sy(points[i+1]);
-    const midX = (x1 + x2) / 2;
-    const balloonY = (y1 + y2) / 2 + 20;
-    ctx.bezierCurveTo(x1 + (x2-x1)*0.25, balloonY, x1 + (x2-x1)*0.75, balloonY, x2, y2);
-  }
-  ctx.stroke();
-}
+// Funções de curva
+function drawCurveLinear(p, sx, sy) { if(p.length<2)return; ctx.beginPath();ctx.moveTo(sx(0),sy(p[0]));for(let i=1;i<p.length;i++)ctx.lineTo(sx(i),sy(p[i]));ctx.stroke(); }
+function drawCurveSmooth(p, sx, sy) { if(p.length<2)return; ctx.beginPath();ctx.moveTo(sx(0),sy(p[0]));for(let i=0;i<p.length-1;i++){const x1=sx(i),y1=sy(p[i]),x2=sx(i+1),y2=sy(p[i+1]);const cp1x=x1+(x2-x1)*0.33,cp1y=y1,cp2x=x1+(x2-x1)*0.66,cp2y=y2;ctx.bezierCurveTo(cp1x,cp1y,cp2x,cp2y,x2,y2);}ctx.stroke(); }
+function drawCurveBezier(p, sx, sy) { if(p.length<2)return; ctx.beginPath();ctx.moveTo(sx(0),sy(p[0]));for(let i=0;i<p.length-1;i++){const x1=sx(i),y1=sy(p[i]),x2=sx(i+1),y2=sy(p[i+1]);const cp1x=x1+(x2-x1)*0.25,cp1y=y1-Math.abs(p[i+1]-p[i])*2,cp2x=x2-(x2-x1)*0.25,cp2y=y2+Math.abs(p[i+1]-p[i])*2;ctx.bezierCurveTo(cp1x,cp1y,cp2x,cp2y,x2,y2);}ctx.stroke(); }
+function drawCurveWavy(p, sx, sy) { if(p.length<2)return; ctx.beginPath();ctx.moveTo(sx(0),sy(p[0]));for(let i=0;i<p.length-1;i++){const x1=sx(i),y1=sy(p[i]),x2=sx(i+1),y2=sy(p[i+1]);const mx=(x1+x2)/2,amp=Math.abs(p[i+1]-p[i])*3;ctx.quadraticCurveTo(x1,y1-amp,mx,(y1+y2)/2);ctx.quadraticCurveTo(x2,y2+amp,x2,y2);}ctx.stroke(); }
+function drawCurveArc(p, sx, sy) { if(p.length<2)return; ctx.beginPath();ctx.moveTo(sx(0),sy(p[0]));for(let i=0;i<p.length-1;i++){const x1=sx(i),y1=sy(p[i]),x2=sx(i+1),y2=sy(p[i+1]);const cpx=(x1+x2)/2, cpy=Math.min(y1,y2)-15;ctx.quadraticCurveTo(cpx,cpy,x2,y2);}ctx.stroke(); }
+function drawCurveSpiky(p, sx, sy) { if(p.length<2)return; ctx.beginPath();ctx.moveTo(sx(0),sy(p[0]));for(let i=0;i<p.length-1;i++){const x1=sx(i),y1=sy(p[i]),x2=sx(i+1),y2=sy(p[i+1]);const mx=(x1+x2)/2;ctx.lineTo(mx,Math.min(y1,y2)-12);ctx.lineTo(x2,y2);}ctx.stroke(); }
 
 const mmConfigs = [
-  { per: 9, cor: '#f59e0b', lw: 1.8, dash: [], curva: 'smooth', label: 'MM1' },
-  { per: 21, cor: '#06b6d4', lw: 1.5, dash: [], curva: 'linear', label: 'MM2' },
-  { per: 50, cor: '#22c55e', lw: 1.3, dash: [5, 3], curva: 'bezier', label: 'MM3' },
-  { per: 100, cor: '#ef4444', lw: 1.2, dash: [8, 4], curva: 'wavy', label: 'MM4' },
-  { per: 200, cor: '#eab308', lw: 1.0, dash: [10, 5], curva: 'arc', label: 'MM5' },
-  { per: 14, cor: '#ec4899', lw: 1.0, dash: [4, 6], curva: 'spiky', label: 'MM6' },
-  { per: 30, cor: '#3b82f6', lw: 0.9, dash: [6, 4, 2, 4], curva: 'square', label: 'MM7' },
-  { per: 55, cor: '#8b5cf6', lw: 0.8, dash: [3, 5], curva: 'balloon', label: 'MM8' }
+  { per: 9, cor: '#f59e0b', lw: 2, dash: [], curva: 'smooth' },
+  { per: 21, cor: '#06b6d4', lw: 1.8, dash: [], curva: 'linear' },
+  { per: 50, cor: '#22c55e', lw: 1.5, dash: [5,3], curva: 'bezier' },
+  { per: 100, cor: '#ef4444', lw: 1.3, dash: [6,4], curva: 'wavy' },
+  { per: 200, cor: '#eab308', lw: 1.2, dash: [8,4], curva: 'arc' },
+  { per: 14, cor: '#ec4899', lw: 1.2, dash: [4,6], curva: 'spiky' }
 ];
 
-const curvaFunctions = {
-  linear: drawCurveLinear, smooth: drawCurveSmooth, bezier: drawCurveBezier,
-  step: drawCurveStep, wavy: drawCurveWavy, spiky: drawCurveSpiky,
-  arc: drawCurveArc, square: drawCurveSquare, balloon: drawCurveBalloon
-};
+const curvaFn = { linear: drawCurveLinear, smooth: drawCurveSmooth, bezier: drawCurveBezier, wavy: drawCurveWavy, arc: drawCurveArc, spiky: drawCurveSpiky };
 
 // SINAL DE ENFRAQUECIMENTO
-let ultimoSinal = 0, razaoSequencia = 0;
-
+let razaoSeq = 0, ultSinal = 0;
 function detectarEnfraquecimento() {
-  if (pts.length < 10) return false;
-  const ultimas = pts.slice(-10);
-  const valores = ultimas.map(p => p.val);
-  const media = valores.reduce((a,b) => a+b,0) / valores.length;
-  const ultimo = valores[valores.length-1];
-  const penultimo = valores[valores.length-2];
-  
-  if (ultimo < media && ultimo < penultimo && razaoSequencia < 3) {
-    razaoSequencia++;
-    if (razaoSequencia === 2) {
-      const now = Date.now();
-      if (now - ultimoSinal > 60000) {
-        ultimoSinal = now;
-        return true;
-      }
-    }
-  } else {
-    razaoSequencia = 0;
-  }
+  if (pts.length < 8) return false;
+  const ultimos = pts.slice(-8).map(p=>p.val);
+  const media = ultimos.reduce((a,b)=>a+b,0)/ultimos.length;
+  const ultimo = ultimos[ultimos.length-1];
+  if (ultimo < media && ultimo < 1.8 && ultimo > 1.0 && razaoSeq < 2) {
+    razaoSeq++;
+    if (razaoSeq === 1 && Date.now() - ultSinal > 30000) { ultSinal = Date.now(); return true; }
+  } else { razaoSeq = 0; }
   return false;
 }
 
-// BUSCAR VELAS DO SERVIDOR
+// LOG E UI
 function addLog(vela) {
   const t = vela.time.toLocaleTimeString('pt-BR', { hour:'2-digit', minute:'2-digit', second:'2-digit' });
   const v = vela.val;
-  let classe;
-  if (v >= 10) classe = 'rosa';
-  else if (v >= 2) classe = 'roxa';
-  else classe = 'ciano';
-  
+  let classe, cor;
+  if (v >= 10) { classe = 'rosa'; cor = '#f472b6'; }
+  else if (v >= 2) { classe = 'roxa'; cor = '#a855f7'; }
+  else { classe = 'ciano'; cor = '#06b6d4'; }
   const area = document.getElementById('logArea');
   const row = document.createElement('div');
   row.className = 'log-row';
-  row.innerHTML = `<div class="ldot" style="background:${classe === 'rosa' ? '#f472b6' : classe === 'roxa' ? '#a855f7' : '#06b6d4'}"></div>
-                   <span class="lt">${t}</span>
-                   <span class="lv" style="color:${classe === 'rosa' ? '#f472b6' : classe === 'roxa' ? '#a855f7' : '#06b6d4'}">${v.toFixed(2)}x</span>
-                   <span class="ltag ${classe}">${classe.toUpperCase()}</span>`;
+  row.innerHTML = `<div class="ldot" style="background:${cor}"></div><span class="lt">${t}</span><span class="lv" style="color:${cor}">${v.toFixed(2)}x</span><span class="ltag ${classe}">${classe.toUpperCase()}</span>`;
   area.insertBefore(row, area.firstChild);
-  while(area.children.length > 40) area.removeChild(area.lastChild);
+  while(area.children.length > 25) area.removeChild(area.lastChild);
 }
 
 function atualizarUI() {
-  if (pts.length === 0) return;
-  const ultima = pts[pts.length-1];
-  document.getElementById('sCot').textContent = ultima.val.toFixed(2) + 'x';
+  if (!pts.length) return;
+  const ult = pts[pts.length-1];
+  document.getElementById('sCot').textContent = ult.val.toFixed(2)+'x';
   document.getElementById('sTot').textContent = pts.length;
-  const cor = ultima.val >= 10 ? '#f472b6' : ultima.val >= 2 ? '#a855f7' : '#06b6d4';
-  document.getElementById('sCot').style.color = cor;
+  document.getElementById('sCot').style.color = ult.val>=10?'#f472b6':ult.val>=2?'#a855f7':'#06b6d4';
 }
 
-function showAlert(msg, color, dur = 3000) {
+function showAlert(msg, color, dur=2500) {
   const el = document.getElementById('alertBox');
   el.textContent = msg;
   el.style.cssText = `background:${color}22;border:1px solid ${color};color:${color}`;
@@ -408,95 +272,84 @@ function showAlert(msg, color, dur = 3000) {
   setTimeout(() => el.className = 'alert', dur);
 }
 
-function triggerFlash() {
-  const f = document.getElementById('flash');
-  f.className = 'flash on';
-  setTimeout(() => f.className = 'flash', 500);
-}
+function triggerFlash() { const f=document.getElementById('flash'); f.className='flash on'; setTimeout(()=>f.className='flash',400); }
 
+// ═══════════ BUSCAR VELAS DO SERVIDOR ═══════════
 async function buscarVelasCompletas() {
   try {
-    showAlert('🔄 Sincronizando com servidor...', '#60a5fa', 1000);
+    showAlert('🔄 Sincronizando...', '#60a5fa', 1000);
     const url = `${SERVIDOR_URL}/api/velas?painel=${PAINEL}&limit=500`;
     const res = await fetch(url);
     const data = await res.json();
     
     if (data.velas && Array.isArray(data.velas)) {
-      pts = [];
-      ultimoTimestamp = 0;
-      
-      for (const vela of data.velas) {
-        if (vela.rodada === 'TESTE_CONEXAO') continue;
-        const mult = parseFloat(vela.multiplicador);
+      const novas = [];
+      let ultTs = 0;
+      for (const v of data.velas) {
+        if (v.rodada === 'TESTE_CONEXAO') continue;
+        const mult = parseFloat(v.multiplicador);
         if (!isNaN(mult) && mult > 0) {
-          let ts = vela.timestamp ? new Date(vela.timestamp) : new Date();
+          let ts = v.timestamp ? new Date(v.timestamp) : new Date();
           if (isNaN(ts.getTime())) ts = new Date();
-          pts.push({ val: mult, time: ts, rodada: vela.rodada });
-          if (vela.ts_recebido && vela.ts_recebido > ultimoTimestamp) ultimoTimestamp = vela.ts_recebido;
+          novas.push({ val: mult, time: ts, rodada: v.rodada });
+          if (v.ts_recebido > ultTs) ultTs = v.ts_recebido;
         }
       }
-      pts.sort((a,b) => a.time - b.time);
+      novas.sort((a,b)=>a.time-b.time);
+      pts = novas;
+      ultimoTimestamp = ultTs;
       atualizarUI();
       document.getElementById('logArea').innerHTML = '';
-      pts.slice(-30).reverse().forEach(v => addLog(v));
+      pts.slice(-25).reverse().forEach(v => addLog(v));
       draw();
-      showAlert(`✅ ${pts.length} velas carregadas do painel ${PAINEL}`, '#22c55e', 2000);
-    } else {
-      showAlert('Nenhuma vela encontrada. Aguardando dados da extensão...', '#f59e0b', 3000);
+      showAlert(`✅ ${pts.length} velas carregadas`, '#22c55e', 1500);
     }
-  } catch (err) {
-    console.error('Erro ao buscar velas:', err);
-    showAlert('❌ Erro ao conectar com o servidor', '#f43f5e', 3000);
-  }
+  } catch(err) { console.error(err); showAlert('❌ Erro de conexão', '#f43f5e', 2000); }
 }
 
 async function buscarNovasVelas() {
   try {
-    let url = `${SERVIDOR_URL}/api/velas?painel=${PAINEL}&limit=20`;
+    let url = `${SERVIDOR_URL}/api/velas?painel=${PAINEL}&limit=30`;
     if (ultimoTimestamp > 0) url += `&desde=${ultimoTimestamp}`;
     const res = await fetch(url);
     const data = await res.json();
     
-    if (data.velas && Array.isArray(data.velas) && data.velas.length > 0) {
+    if (data.velas && data.velas.length > 0) {
       let novas = 0;
-      for (const vela of data.velas) {
-        if (vela.rodada === 'TESTE_CONEXAO') continue;
-        const mult = parseFloat(vela.multiplicador);
+      for (const v of data.velas) {
+        if (v.rodada === 'TESTE_CONEXAO') continue;
+        const mult = parseFloat(v.multiplicador);
         if (!isNaN(mult) && mult > 0) {
-          const jaExiste = pts.some(p => p.rodada === vela.rodada);
-          if (!jaExiste) {
-            let ts = vela.timestamp ? new Date(vela.timestamp) : new Date();
+          const existe = pts.some(p => p.rodada === v.rodada && Math.abs(p.val - mult) < 0.1);
+          if (!existe) {
+            let ts = v.timestamp ? new Date(v.timestamp) : new Date();
             if (isNaN(ts.getTime())) ts = new Date();
-            pts.push({ val: mult, time: ts, rodada: vela.rodada });
+            pts.push({ val: mult, time: ts, rodada: v.rodada });
             addLog({ val: mult, time: ts });
             novas++;
           }
-          if (vela.ts_recebido && vela.ts_recebido > ultimoTimestamp) ultimoTimestamp = vela.ts_recebido;
+          if (v.ts_recebido > ultimoTimestamp) ultimoTimestamp = v.ts_recebido;
         }
       }
       if (novas > 0) {
-        pts.sort((a,b) => a.time - b.time);
+        pts.sort((a,b)=>a.time-b.time);
         if (pts.length > 2000) pts = pts.slice(-2000);
         atualizarUI();
         draw();
-        showAlert(`📈 +${novas} nova(s) vela(s) em tempo real!`, '#22c55e', 1500);
+        showAlert(`📈 +${novas} nova(s) vela(s)!`, '#22c55e', 1500);
         triggerFlash();
         if (detectarEnfraquecimento()) {
-          showAlert('⚠️ ENFRAQUECIMENTO DETECTADO! Próxima vela pode ser ROSA?', '#f472b6', 5000);
+          showAlert('⚠️ ENFRAQUECENDO! Próxima pode ser ROSA?', '#f472b6', 4000);
           triggerFlash();
         }
       }
     }
-  } catch (err) {
-    console.error('Polling error:', err);
-  }
+  } catch(e) { console.error(e); }
 }
 
-async function syncNow() {
-  await buscarVelasCompletas();
-}
+async function syncNow() { await buscarVelasCompletas(); }
 
-// GRÁFICO
+// ═══════════ GRÁFICO ═══════════
 function getVisN() { return Math.max(5, Math.round(CFG.showN / zoomLevel)); }
 function getViewSub() {
   const n = getVisN();
@@ -506,21 +359,21 @@ function getViewSub() {
 }
 function getScale(sub, W, H) {
   scaleW = Math.max(44, scaleW);
-  const vals = sub.map(p => p.val);
-  if (vals.length === 0) return { sx: () => 0, sy: () => 0, minV: 0, maxV: 1 };
-  const minV = Math.max(0.85, Math.min(...vals) * 0.95);
-  const maxV = Math.max(...vals) * 1.08;
-  const cW = W - 12 - scaleW, cH = H - 44 - 20;
+  const vals = sub.map(p=>p.val);
+  if (!vals.length) return { sx:()=>0, sy:()=>0, minV:0.8, maxV:2 };
+  const minV = Math.max(0.85, Math.min(...vals) * 0.92);
+  const maxV = Math.max(...vals) * 1.1;
+  const cW = W - 10 - scaleW, cH = H - 50 - 20;
   const n = sub.length;
   const logMin = Math.log10(minV), logMax = Math.log10(maxV);
   const vsh = (vertOffset / cH) * (logMax - logMin);
   return {
-    sx: i => 12 + i * ((cW - 40) / (n - 1 || 1)),
-    sy: v => 44 + cH * (1 - (Math.log10(Math.max(v, minV)) - logMin + vsh) / (logMax - logMin || 1)),
+    sx: i => 10 + i * ((cW - 30) / (n-1||1)),
+    sy: v => 45 + cH * (1 - (Math.log10(Math.max(v,minV)) - logMin + vsh) / (logMax - logMin||1)),
     minV, maxV
   };
 }
-function col(v) { return v >= 10 ? '#f472b6' : v >= 2 ? '#a855f7' : '#06b6d4'; }
+function col(v) { return v>=10?'#f472b6':v>=2?'#a855f7':'#06b6d4'; }
 
 function draw() {
   const W = canvas.width, H = canvas.height;
@@ -530,125 +383,103 @@ function draw() {
   if (sub.length < 2) return;
   const { sx, sy, minV, maxV } = getScale(sub, W, H);
   
-  ctx.font = '8px "JetBrains Mono", monospace';
-  [1, 2, 3, 5, 10, 20, 50, 100].filter(v => v >= minV && v <= maxV * 1.05).forEach(v => {
+  ctx.font = '7px "JetBrains Mono"';
+  [1, 2, 5, 10, 20, 50].filter(v=>v>=minV&&v<=maxV*1.05).forEach(v=>{
     const py = sy(v);
-    ctx.strokeStyle = v >= 10 ? 'rgba(244,114,182,0.08)' : v >= 2 ? 'rgba(168,85,247,0.06)' : '#0c1b2e';
-    ctx.lineWidth = 0.5;
-    ctx.beginPath(); ctx.moveTo(12, py); ctx.lineTo(W - scaleW, py); ctx.stroke();
-    ctx.fillStyle = v >= 10 ? '#be185d' : v >= 2 ? '#7e22ce' : '#1e3a58';
-    ctx.fillText(v + 'x', W - scaleW + 4, py + 3);
+    ctx.strokeStyle = v>=10?'rgba(244,114,182,0.08)':v>=2?'rgba(168,85,247,0.06)':'#0c1b2e';
+    ctx.beginPath(); ctx.moveTo(8, py); ctx.lineTo(W-scaleW, py); ctx.stroke();
+    ctx.fillStyle = v>=10?'#f472b6':v>=2?'#a855f7':'#1e3a58';
+    ctx.fillText(v+'x', W-scaleW+3, py+2);
   });
   
-  const zonas = [{ val: 1.0, cor: 'rgba(6,182,212,0.5)', dash: [6,3] }, { val: 2.0, cor: 'rgba(168,85,247,0.5)', dash: [6,3] }, { val: 10.0, cor: 'rgba(244,114,182,0.5)', dash: [8,3] }];
-  zonas.forEach(z => {
-    if (z.val >= minV && z.val <= maxV) {
-      const py = sy(z.val);
-      ctx.strokeStyle = z.cor;
-      ctx.lineWidth = 1.5;
-      ctx.setLineDash(z.dash);
-      ctx.beginPath(); ctx.moveTo(12, py); ctx.lineTo(W - scaleW, py); ctx.stroke();
-    }
-  });
+  const zonas = [[1,'#06b6d4'],[2,'#a855f7'],[10,'#f472b6']];
+  zonas.forEach(([z,c])=>{ if(z>=minV&&z<=maxV){ const py=sy(z); ctx.strokeStyle=c+'80'; ctx.lineWidth=1.2; ctx.setLineDash([5,4]); ctx.beginPath(); ctx.moveTo(8,py); ctx.lineTo(W-scaleW,py); ctx.stroke(); } });
   ctx.setLineDash([]);
   
   const yBase = sy(minV);
-  for (let i = 1; i < sub.length; i++) {
-    const p0 = sub[i-1], p1 = sub[i];
-    const x0 = sx(i-1), y0 = sy(p0.val), x1 = sx(i), y1 = sy(p1.val);
-    const vm = Math.max(p0.val, p1.val);
-    ctx.beginPath();
-    ctx.moveTo(x0, yBase); ctx.lineTo(x0, y0);
-    const cp1x = x0 + (x1 - x0) * 0.42, cp2x = x0 + (x1 - x0) * 0.58;
-    ctx.bezierCurveTo(cp1x, y0, cp2x, y1, x1, y1);
-    ctx.lineTo(x1, yBase); ctx.closePath();
-    const grad = ctx.createLinearGradient(x0, yBase, x0, y0);
-    grad.addColorStop(0, col(vm) + '05'); grad.addColorStop(1, col(vm) + '25');
-    ctx.fillStyle = grad; ctx.fill();
-    ctx.beginPath(); ctx.moveTo(x0, y0); ctx.bezierCurveTo(cp1x, y0, cp2x, y1, x1, y1);
-    ctx.strokeStyle = col(vm); ctx.lineWidth = 2.2; ctx.stroke();
+  for(let i=1;i<sub.length;i++){
+    const p0=sub[i-1],p1=sub[i], x0=sx(i-1),y0=sy(p0.val), x1=sx(i),y1=sy(p1.val);
+    ctx.beginPath(); ctx.moveTo(x0,yBase); ctx.lineTo(x0,y0);
+    const cp1x=x0+(x1-x0)*0.42, cp2x=x0+(x1-x0)*0.58;
+    ctx.bezierCurveTo(cp1x,y0,cp2x,y1,x1,y1);
+    ctx.lineTo(x1,yBase); ctx.fillStyle = col(Math.max(p0.val,p1.val))+'20'; ctx.fill();
+    ctx.beginPath(); ctx.moveTo(x0,y0); ctx.bezierCurveTo(cp1x,y0,cp2x,y1,x1,y1);
+    ctx.strokeStyle = col(p1.val); ctx.lineWidth = 2; ctx.stroke();
   }
   
-  // MÉDIAS MÓVEIS
+  // Médias móveis
   if (CFG.showMA && pts.length >= 2) {
-    const valores = pts.map(p => p.val);
+    const valores = pts.map(p=>p.val);
     const subStart = Math.max(0, pts.length - viewOffset - sub.length);
     mmConfigs.forEach(mm => {
       if (pts.length < mm.per) return;
       const ema = calcularEMA(valores, mm.per);
-      const emaSub = ema.slice(subStart, subStart + sub.length + 5);
-      if (emaSub.length < 2) return;
+      const slice = ema.slice(subStart, subStart+sub.length+3);
+      if (slice.length < 2) return;
       ctx.strokeStyle = mm.cor; ctx.lineWidth = mm.lw; ctx.setLineDash(mm.dash);
-      (curvaFunctions[mm.curva] || drawCurveLinear)(emaSub, sx, sy);
+      (curvaFn[mm.curva] || drawCurveLinear)(slice, sx, sy);
     });
     ctx.setLineDash([]);
   }
   
   // Bolinhas
-  sub.forEach((p, i) => {
-    const x = sx(i), y = sy(p.val);
-    const r = p.val >= 10 ? 6 : p.val >= 2 ? 4.5 : 3;
-    ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI*2);
+  sub.forEach((p,i)=>{
+    const x=sx(i), y=sy(p.val), r = p.val>=10?6:p.val>=2?4.5:3;
+    ctx.beginPath(); ctx.arc(x,y,r,0,Math.PI*2);
     ctx.fillStyle = col(p.val); ctx.fill();
-    ctx.strokeStyle = '#fff'; ctx.lineWidth = 1; ctx.stroke();
+    ctx.strokeStyle = '#fff'; ctx.lineWidth=1; ctx.stroke();
   });
   
   // Linhas desenhadas
-  drawings.forEach((d, idx) => {
-    const isSelected = (idx === selectedDrawing);
-    ctx.strokeStyle = isSelected ? '#22c55e' : d.color;
-    ctx.lineWidth = isSelected ? 2.5 : 1.8;
-    ctx.setLineDash(isSelected ? [8,4] : []);
+  drawings.forEach((d,idx)=>{
+    const sel = idx===selectedDrawing;
+    ctx.strokeStyle = sel ? '#22c55e' : d.color;
+    ctx.lineWidth = sel ? 2.5 : 1.8;
     if (d.type === 'line') {
-      ctx.beginPath(); ctx.moveTo(d.x1, d.y1); ctx.lineTo(d.x2, d.y2); ctx.stroke();
-      if (isSelected) {
-        ctx.fillStyle = '#22c55e';
-        ctx.beginPath(); ctx.arc(d.x1, d.y1, 5, 0, Math.PI*2); ctx.fill();
-        ctx.beginPath(); ctx.arc(d.x2, d.y2, 5, 0, Math.PI*2); ctx.fill();
+      ctx.beginPath(); ctx.moveTo(d.x1,d.y1); ctx.lineTo(d.x2,d.y2); ctx.stroke();
+      if(sel){
+        ctx.fillStyle='#22c55e';
+        ctx.beginPath(); ctx.arc(d.x1,d.y1,6,0,Math.PI*2); ctx.fill();
+        ctx.beginPath(); ctx.arc(d.x2,d.y2,6,0,Math.PI*2); ctx.fill();
       }
     }
   });
-  ctx.setLineDash([]);
   
-  // Preview de desenho
   if (isDrawing && currentTool === 'line' && drawStart) {
-    ctx.strokeStyle = '#f59e0b'; ctx.lineWidth = 1.5; ctx.setLineDash([5,5]);
-    ctx.beginPath(); ctx.moveTo(drawStart.x, drawStart.y); ctx.lineTo(_mx, _my); ctx.stroke();
+    ctx.strokeStyle = '#f59e0b'; ctx.lineWidth=1.5; ctx.setLineDash([5,5]);
+    ctx.beginPath(); ctx.moveTo(drawStart.x,drawStart.y); ctx.lineTo(_mx,_my); ctx.stroke();
     ctx.setLineDash([]);
   }
   
-  // Labels X
-  if (sub.length > 0) {
-    document.getElementById('xL').textContent = sub[0].time.toLocaleTimeString('pt-BR', { hour:'2-digit', minute:'2-digit', second:'2-digit' });
-    document.getElementById('xM').textContent = sub[Math.floor(sub.length/2)].time.toLocaleTimeString('pt-BR', { hour:'2-digit', minute:'2-digit', second:'2-digit' });
-    document.getElementById('xR').textContent = sub[sub.length-1].time.toLocaleTimeString('pt-BR', { hour:'2-digit', minute:'2-digit', second:'2-digit' });
+  if(sub.length){
+    document.getElementById('xL').textContent = sub[0].time.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+    document.getElementById('xM').textContent = sub[Math.floor(sub.length/2)].time.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+    document.getElementById('xR').textContent = sub[sub.length-1].time.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
   }
-  document.getElementById('xZoom').textContent = sub.length + 'v';
   document.getElementById('xslider').value = CFG.showN;
 }
 
-// EVENTOS DO MOUSE
-function getPos(e) { const r = cwrap.getBoundingClientRect(); return { x: e.clientX - r.left, y: e.clientY - r.top }; }
+// ═══════════ EVENTOS TOUCH/MOUSE ═══════════
+function getPos(e) {
+  const rect = cwrap.getBoundingClientRect();
+  const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+  const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+  return { x: clientX - rect.left, y: clientY - rect.top };
+}
 
-cwrap.addEventListener('mousedown', e => {
+function onTouchStart(e) {
+  e.preventDefault();
   const pos = getPos(e);
   if (currentTool === 'cursor') {
     isPanning = true; panX0 = pos.x; panOff0 = viewOffset;
     document.getElementById('pov').style.display = 'block';
   } else if (currentTool === 'line') {
     isDrawing = true; drawStart = { x: pos.x, y: pos.y };
-  } else if (currentTool === 'move') {
-    const idx = getDrawingAt(pos.x, pos.y);
-    if (idx !== -1) {
-      isMoving = true; movingDrawing = idx;
-      moveOffsetX = pos.x - drawings[idx].x1;
-      moveOffsetY = pos.y - drawings[idx].y1;
-      selectedDrawing = idx; draw();
-    } else { selectedDrawing = null; draw(); }
   }
-});
+}
 
-cwrap.addEventListener('mousemove', e => {
+function onTouchMove(e) {
+  e.preventDefault();
   const pos = getPos(e);
   _mx = pos.x; _my = pos.y;
   if (isPanning && currentTool === 'cursor') {
@@ -660,12 +491,6 @@ cwrap.addEventListener('mousemove', e => {
       document.getElementById('btnBack').classList.toggle('show', viewOffset > 2);
       draw();
     }
-  } else if (isMoving && movingDrawing !== null) {
-    drawings[movingDrawing].x1 = pos.x - moveOffsetX;
-    drawings[movingDrawing].y1 = pos.y - moveOffsetY;
-    drawings[movingDrawing].x2 = drawings[movingDrawing].x1 + (drawings[movingDrawing].x2 - drawings[movingDrawing].x1);
-    drawings[movingDrawing].y2 = drawings[movingDrawing].y1 + (drawings[movingDrawing].y2 - drawings[movingDrawing].y1);
-    draw();
   } else if (isDrawing && currentTool === 'line') { draw(); }
   else {
     const sub = getViewSub();
@@ -685,36 +510,36 @@ cwrap.addEventListener('mousemove', e => {
       } else { tt.style.display = 'none'; }
     }
   }
-});
+}
 
-cwrap.addEventListener('mouseup', () => {
+function onTouchEnd(e) {
   if (isDrawing && currentTool === 'line' && drawStart) {
     addLine(drawStart.x, drawStart.y, _mx, _my);
     isDrawing = false; drawStart = null;
   }
   document.getElementById('pov').style.display = 'none';
-  isPanning = false; isMoving = false; movingDrawing = null;
-});
+  isPanning = false;
+}
 
-cwrap.addEventListener('wheel', e => {
-  e.preventDefault();
-  if (e.shiftKey) vertOffset += e.deltaY > 0 ? -10 : 10;
-  else e.deltaY < 0 ? zoomIn() : zoomOut();
-  draw();
-}, { passive: false });
+cwrap.addEventListener('touchstart', onTouchStart, { passive: false });
+cwrap.addEventListener('touchmove', onTouchMove, { passive: false });
+cwrap.addEventListener('touchend', onTouchEnd);
+cwrap.addEventListener('mousedown', onTouchStart);
+cwrap.addEventListener('mousemove', onTouchMove);
+cwrap.addEventListener('mouseup', onTouchEnd);
+cwrap.addEventListener('wheel', e => { e.preventDefault(); e.deltaY < 0 ? zoomIn() : zoomOut(); draw(); }, { passive: false });
 
-function zoomIn() { zoomLevel = Math.min(10, zoomLevel * 1.25); draw(); }
-function zoomOut() { zoomLevel = Math.max(0.1, zoomLevel / 1.25); draw(); }
+function zoomIn() { zoomLevel = Math.min(10, zoomLevel * 1.2); draw(); }
+function zoomOut() { zoomLevel = Math.max(0.3, zoomLevel / 1.2); draw(); }
 function resetView() { zoomLevel = 1.0; viewOffset = 0; vertOffset = 0; draw(); }
 function voltarPresente() { viewOffset = 0; document.getElementById('btnBack').classList.remove('show'); draw(); }
-function toggleMA() { CFG.showMA = !CFG.showMA; document.getElementById('maBtn').classList.toggle('on', CFG.showMA); draw(); }
 
 // RESIZE
 function resize() {
   const dpr = window.devicePixelRatio || 2;
   const w = cwrap.clientWidth, h = cwrap.clientHeight;
-  canvas.width = Math.round(w * dpr);
-  canvas.height = Math.round(h * dpr);
+  canvas.width = Math.max(100, Math.round(w * dpr));
+  canvas.height = Math.max(100, Math.round(h * dpr));
   canvas.style.width = w + 'px';
   canvas.style.height = h + 'px';
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
@@ -722,18 +547,18 @@ function resize() {
 }
 new ResizeObserver(resize).observe(cwrap);
 
-// RELÓGIO
 setInterval(() => {
   document.getElementById('xNow').textContent = new Date().toLocaleTimeString('pt-BR', { hour:'2-digit', minute:'2-digit', second:'2-digit' });
-}, 500);
+}, 1000);
 
 // INICIALIZAÇÃO
 resize();
 setTool('cursor');
 setTimeout(async () => {
   await buscarVelasCompletas();
+  if (pollingInterval) clearInterval(pollingInterval);
   pollingInterval = setInterval(() => buscarNovasVelas(), 2000);
-  showAlert('🟢 Conectado ao servidor! Velas em tempo real...', '#22c55e', 4000);
+  showAlert('🟢 Conectado! Velas em tempo real', '#22c55e', 3000);
 }, 500);
 </script>
 </body>
