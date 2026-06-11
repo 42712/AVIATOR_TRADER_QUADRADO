@@ -12,6 +12,7 @@ function calcularSoma(mult) {
 }
 
 const enviadas = new Set();
+const MAX_ENVIADAS = 500;
 
 function enviarVela(mult, rodada, timestamp, origem) {
     const multNum = parseFloat(mult);
@@ -20,8 +21,13 @@ function enviarVela(mult, rodada, timestamp, origem) {
     const chave = painel + '_' + rodada;
     if (enviadas.has(chave)) return;
     enviadas.add(chave);
+    // Limpa set antigo
+    if (enviadas.size > MAX_ENVIADAS) {
+        const it = enviadas.values();
+        for (let i = 0; i < 200; i++) { enviadas.delete(it.next().value); }
+    }
 
-    const horario = timestamp || new Date().toLocaleTimeString('pt-BR');
+    const horario = timestamp || new Date().toLocaleTimeString('pt-BR', { timeZone: 'America/Sao_Paulo', hour12: false });
 
     fetch(API_URL, {
         method: 'POST',
@@ -69,7 +75,18 @@ function extrairRodada() {
 setInterval(() => { const r = extrairRodada(); if (r) rodadaCache = r; }, 300);
 extrairRodada();
 
-// ===== DOM SCANNER (fallback caso WebSocket do background falhe) =====
+// ═══ LISTENER para eventos do main-world.js (WebSocket proxy + DOM scan) ═══
+window.addEventListener('aviator-ws-data', (e) => {
+    try {
+        const msg = JSON.parse(e.detail);
+        const mult = parseFloat(msg.data?.valor || msg.valor || msg.multiplier);
+        if (isNaN(mult) || mult <= 0) return;
+        const rodada = msg.data?.rodada || msg.rodada || rodadaCache || `ws-${Date.now()}`;
+        enviarVela(mult, rodada, null, "ws-page");
+    } catch(ex) {}
+});
+
+// ═══ DOM SCANNER (fallback) ═══
 let ultPayout = 0, maxPayoutRodada = 0;
 
 setInterval(() => {
@@ -79,7 +96,7 @@ setInterval(() => {
     if (!m) return;
     const mult = parseFloat(m[1]);
     if (isNaN(mult)) return;
-    if (ultPayout >= 1.01 && mult <= 1.01 && maxPayoutRodada >= 1.01) {
+    if (ultPayout >= 1.01 && mult <= 1.00 && maxPayoutRodada >= 1.01) {
         const rodada = rodadaCache || extrairRodada() || `dom-${Date.now()}`;
         enviarVela(maxPayoutRodada, rodada, null, "dom");
     }

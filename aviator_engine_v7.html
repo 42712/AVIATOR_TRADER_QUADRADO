@@ -590,7 +590,11 @@ function buscar(primeiro){
       }
     })
     .catch(e=>{
-      if(primeiro){setSrv('erro: '+e.message,'var(--pk)');setWs('err','ERRO');setTimeout(()=>buscar(true),5000);}
+      if(primeiro){
+        setSrv('erro: '+e.message,'var(--pk)');setWs('err','ERRO');
+        modoFonte='simulado'; if(!simInt) iniciarSim();
+        setTimeout(()=>buscar(true),5000);
+      }
     });
 }
 
@@ -879,7 +883,7 @@ function draw(){
       if(rodadaConfig.horario && (rodadaConfig.velaNro-1) === (subStart+i)){
         ctx.font='bold 9px JetBrains Mono,monospace';
         ctx.fillStyle='rgba(255,255,255,0.75)';
-        ctx.fillText(rodadaConfig.horario, x, ty+13);
+        ctx.fillText(rodadaConfig.horario, x, by+13);
       }
     }
   });
