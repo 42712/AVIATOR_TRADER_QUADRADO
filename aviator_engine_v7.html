@@ -19,12 +19,12 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:var(--fon
 .main{display:flex;flex:1;overflow:hidden;min-height:0}
 
 .topbar{height:38px;background:var(--bg2);border-bottom:1px solid var(--brd);display:flex;align-items:center;flex-shrink:0;user-select:none}
-.tb-logo{padding:0 14px;font-size:13px;font-weight:700;color:#fff;letter-spacing:.5px;border-right:1px solid var(--brd);height:100%;display:flex;align-items:center;gap:8px;white-space:nowrap}
-.tb-dot{width:8px;height:8px;border-radius:50%;background:var(--up);animation:glow 2s infinite}
-@keyframes glow{0%,100%{box-shadow:0 0 4px var(--up)}50%{box-shadow:0 0 14px var(--up)}}
-.tb-mid{flex:1;display:flex;align-items:center;gap:3px;padding:0 10px;overflow-x:auto}
+.tb-logo{padding:0 14px;font-size:13px;font-weight:700;color:#fff;border-right:1px solid var(--brd);height:100%;display:flex;align-items:center;gap:8px}
+.tb-dot{width:8px;height:8px;border-radius:50%;background:var(--gn);animation:glow 2s infinite}
+@keyframes glow{0%,100%{box-shadow:0 0 4px var(--gn)}50%{box-shadow:0 0 14px var(--gn)}}
+.tb-mid{flex:1;display:flex;align-items:center;gap:3px;padding:0 10px}
 .tb-right{display:flex;align-items:center;gap:4px;padding:0 10px;border-left:1px solid var(--brd)}
-.btn{padding:2px 9px;border-radius:4px;border:1px solid var(--brd2);background:var(--bg3);color:var(--txt2);font-size:9px;font-family:var(--font);cursor:pointer;height:22px;display:flex;align-items:center;gap:3px;transition:all .15s;white-space:nowrap;flex-shrink:0}
+.btn{padding:2px 9px;border-radius:4px;border:1px solid var(--brd2);background:var(--bg3);color:var(--txt2);font-size:9px;font-family:var(--font);cursor:pointer;height:22px;display:flex;align-items:center;gap:3px;transition:all .15s}
 .btn:hover{border-color:var(--txt2);color:var(--txt)}
 .btn.on{border-color:var(--up);background:rgba(168,85,247,.15);color:var(--up)}
 .btn.g{border-color:#166534;background:rgba(34,197,94,.1);color:var(--gn)}
@@ -32,25 +32,15 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:var(--fon
 .ws-pill{display:flex;align-items:center;gap:4px;font-size:9px;padding:0 8px;border-left:1px solid var(--brd)}
 .ws-pill.ok{color:var(--gn)}.ws-pill.err{color:var(--pk)}.ws-pill.am{color:var(--am)}
 .wsd{width:5px;height:5px;border-radius:50%;background:currentColor;animation:blink 1.4s infinite}
-.rod-input{width:100%;padding:6px 9px;background:var(--bg3);border:1px solid var(--brd2);border-radius:4px;color:var(--txt);font-family:var(--font);font-size:10px;outline:none}
-.rod-input:focus{border-color:var(--gn)}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
 
-.toolbox{width:38px;background:var(--bg2);border-right:1px solid var(--brd);display:flex;flex-direction:column;align-items:center;padding:5px 0;gap:2px;flex-shrink:0;user-select:none}
-.tb{width:28px;height:28px;border-radius:4px;border:1px solid var(--brd);background:var(--bg3);color:var(--txt2);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;flex-shrink:0}
-.tb:hover{border-color:var(--txt2);color:var(--txt);background:var(--bg4)}
-.tb.active{border-color:var(--up);background:rgba(168,85,247,.2);color:var(--up)}
-.tb svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:1.7}
-.tblabel{position:absolute;left:34px;top:50%;transform:translateY(-50%);background:var(--bg4);border:1px solid var(--brd2);border-radius:4px;padding:2px 7px;font-size:8px;color:var(--txt);white-space:nowrap;pointer-events:none;opacity:0;transition:opacity .12s;z-index:300}
-.tb:hover .tblabel{opacity:1}
-
-.chart-col{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0}
-.canvas-wrap{flex:1;position:relative;overflow:hidden;background:var(--bg);min-height:0;cursor:default}
+.chart-col{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.canvas-wrap{flex:1;position:relative;overflow:hidden;background:var(--bg);cursor:default}
 #cv{display:block;position:absolute;top:0;left:0}
 #pov{position:absolute;inset:0;z-index:19;display:none;cursor:grabbing}
-.xbar{height:26px;background:var(--bg2);border-top:1px solid var(--brd);display:flex;align-items:center;padding:0 8px;gap:8px;font-size:8px;color:var(--txt3);flex-shrink:0}
+.xbar{height:26px;background:var(--bg2);border-top:1px solid var(--brd);display:flex;align-items:center;padding:0 8px;gap:8px;font-size:8px;flex-shrink:0}
 .xslider{flex:1;height:4px;-webkit-appearance:none;background:var(--brd2);border-radius:2px;cursor:pointer}
-.xslider::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;border-radius:50%;background:var(--up);cursor:pointer}
+.xslider::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;border-radius:50%;background:var(--gn);cursor:pointer}
 
 .data-sb{width:170px;background:var(--bg2);border-left:1px solid var(--brd);display:flex;flex-direction:column;overflow:hidden;flex-shrink:0}
 .sbh{padding:4px 10px;font-size:7px;color:var(--txt3);border-bottom:1px solid var(--brd);text-transform:uppercase}
@@ -58,7 +48,7 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:var(--fon
 .kv{display:flex;justify-content:space-between;padding:2px 0}
 .kk{font-size:8px;color:var(--txt2)}.kvv{font-size:9px;font-weight:500;color:var(--txt)}
 .log-area{flex:1;overflow-y:auto}
-.log-row{display:flex;align-items:center;gap:3px;padding:2px 8px;border-bottom:1px solid #070d15;cursor:default;font-size:9px}
+.log-row{display:flex;align-items:center;gap:3px;padding:2px 8px;border-bottom:1px solid #070d15;font-size:9px}
 .log-row:hover{background:var(--bg3)}
 .ldot{width:4px;height:4px;border-radius:50%;flex-shrink:0}
 .lt{color:var(--txt3);min-width:28px;font-size:8px}.lv{font-weight:500}
@@ -66,7 +56,6 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:var(--fon
 .t-up{background:rgba(168,85,247,.12);color:var(--up)}
 .t-dn{background:rgba(6,182,212,.12);color:var(--dn)}
 .t-pk{background:rgba(244,114,182,.15);color:#f472b6}
-.t-ext{background:rgba(245,158,11,.15);color:var(--am)}
 
 .tooltip{position:absolute;background:#080f1c;border:1px solid var(--brd2);border-radius:5px;padding:6px 10px;display:none;z-index:60;min-width:100px}
 .tt-v{font-size:14px;font-weight:700}.tt-s{font-size:8px;color:var(--txt2)}
@@ -74,30 +63,24 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:var(--fon
 .alert.show{opacity:1}
 .flash{position:absolute;inset:0;border:2px solid var(--gn);opacity:0;pointer-events:none;transition:opacity .12s;z-index:45}
 .flash.on{opacity:1}
-#btnBack{position:absolute;bottom:36px;left:50%;transform:translateX(-50%);background:rgba(168,85,247,.35);border:1.5px solid var(--up);border-radius:20px;padding:7px 22px;font-size:11px;font-weight:700;color:var(--up);cursor:pointer;display:none;z-index:60;box-shadow:0 2px 12px rgba(168,85,247,.3);animation:pulseBtn 1.5s infinite}
+#btnBack{position:absolute;bottom:36px;left:50%;transform:translateX(-50%);background:rgba(34,197,94,.35);border:1.5px solid var(--gn);border-radius:20px;padding:7px 22px;font-size:11px;font-weight:700;color:var(--gn);cursor:pointer;display:none;z-index:60}
 #btnBack.show{display:block}
-@keyframes pulseBtn{0%,100%{box-shadow:0 2px 12px rgba(168,85,247,.3)}50%{box-shadow:0 2px 20px rgba(168,85,247,.7)}}
 
 .modal-bg{position:fixed;inset:0;background:rgba(5,8,13,.93);display:none;align-items:center;justify-content:center;z-index:999}
 .modal-bg.open{display:flex}
-.modal{background:var(--bg4);border:1px solid var(--brd2);border-radius:10px;padding:22px 24px;width:400px;display:flex;flex-direction:column;gap:10px;max-height:90vh;overflow-y:auto}
+.modal{background:var(--bg4);border:1px solid var(--brd2);border-radius:10px;padding:22px 24px;width:400px;display:flex;flex-direction:column;gap:10px}
 .m-title{font-size:13px;font-weight:700;color:#fff;display:flex;justify-content:space-between}
 .m-x{cursor:pointer;color:var(--txt2)}
 .m-group{display:flex;flex-direction:column;gap:3px}
 .m-group label{font-size:9px;color:var(--txt2)}
-.m-group input,.m-group select{padding:5px 8px;background:var(--bg3);border:1px solid var(--brd2);border-radius:4px;color:var(--txt);font-family:var(--font);font-size:10px;outline:none}
-.m-status{background:var(--bg3);border:1px solid var(--brd);border-radius:4px;padding:7px 9px;font-size:9px;color:var(--txt2);min-height:30px}
+.m-group input{padding:5px 8px;background:var(--bg3);border:1px solid var(--brd2);border-radius:4px;color:var(--txt);font-family:var(--font);font-size:10px;outline:none}
+.m-status{background:var(--bg3);border:1px solid var(--brd);border-radius:4px;padding:7px 9px;font-size:9px;color:var(--txt2)}
 .mbtn{padding:8px;border-radius:5px;font-size:10px;font-weight:700;cursor:pointer;font-family:var(--font);transition:all .15s;border:1px solid;flex:1}
 .mb-g{background:rgba(34,197,94,.12);border-color:#166534;color:var(--gn)}.mb-g:hover{background:rgba(34,197,94,.22)}
 .mb-b{background:rgba(96,165,250,.08);border-color:#1e3a5f;color:#60a5fa}.mb-b:hover{background:rgba(96,165,250,.18)}
 .mb-r{background:rgba(244,63,94,.08);border-color:#9f1239;color:var(--pk)}.mb-r:hover{background:rgba(244,63,94,.18)}
 .mb-c{background:var(--bg3);border-color:var(--brd);color:var(--txt3)}.mb-c:hover{color:var(--txt2)}
 .m-btns{display:flex;gap:6px}
-#rodPopup{position:fixed;z-index:802;display:none;flex-direction:column;gap:8px;background:#0a1320;border:1.5px solid var(--gn);border-radius:8px;padding:12px 16px;min-width:200px;box-shadow:0 6px 24px rgba(0,0,0,.8)}
-#rodPopup.show{display:flex}
-#rodPopup b{color:var(--gn);font-size:10px}
-#rodPopup small{font-size:9px;color:var(--txt2)}
-#rodPopup input{padding:7px 9px;background:var(--bg3);border:1px solid var(--gn);border-radius:4px;color:#fff;font-family:var(--font);font-size:13px;font-weight:700;outline:none;width:100%}
 </style>
 </head>
 <body>
@@ -109,15 +92,9 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:var(--fon
     <button class="btn" onclick="zoomIn()">+</button>
     <button class="btn" onclick="zoomOut()">&#8722;</button>
     <button class="btn" onclick="resetView()">&#8635;</button>
-    <button class="btn b" onclick="openServerModal()">&#9775; SERVIDOR</button>
-    <div class="ws-pill err" id="wsStatus"><span class="wsd"></span><span id="wsLabel">DESCONECTADO</span></div>
+    <div class="ws-pill ok" id="wsStatus"><span class="wsd"></span><span id="wsLabel">CONECTADO</span></div>
   </div>
   <div class="tb-right">
-    <span style="font-size:9px;color:var(--txt2)">Painel:</span>
-    <select id="painelSelect" style="background:var(--bg3);border:1px solid var(--brd2);color:var(--txt);border-radius:3px;padding:2px 4px;font-size:9px">
-      <option value="1">Aviator 1</option>
-      <option value="2">Aviator 2</option>
-    </select>
     <button class="btn g" id="syncBtn" onclick="syncNow()">&#8635; SINCRONIZAR</button>
   </div>
 </div>
@@ -135,7 +112,7 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:var(--fon
   <div class="xbar">
     <span id="xL">—</span><span id="xM">—</span><span id="xR">—</span>
     <input type="range" class="xslider" id="xslider" min="5" max="300" value="50" oninput="CFG.showN=parseInt(this.value);draw()">
-    <span id="xNow" style="color:var(--up);font-size:13px;font-weight:700">—</span>
+    <span id="xNow" style="color:var(--gn);font-size:13px;font-weight:700">—</span>
     <span id="xZoom" style="color:var(--txt3)">50v</span>
   </div>
 </div>
@@ -143,8 +120,8 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:var(--fon
 <div class="data-sb">
   <div class="sbh">ÚLTIMO VALOR</div>
   <div class="kv-block">
-    <div class="kv"><span class="kk">Atual</span><span class="kvv" id="sCot" style="color:var(--up)">—</span></div>
-    <div class="kv"><span class="kk">Fonte</span><span class="kvv" id="oSrc">—</span></div>
+    <div class="kv"><span class="kk">Atual</span><span class="kvv" id="sCot" style="color:var(--gn)">—</span></div>
+    <div class="kv"><span class="kk">Fonte</span><span class="kvv" id="oSrc">Render</span></div>
     <div class="kv"><span class="kk">Total velas</span><span class="kvv" id="sTot">0</span></div>
     <div class="kv"><span class="kk">Painel</span><span class="kvv" id="painelInfo">1</span></div>
   </div>
@@ -154,39 +131,22 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:var(--fon
 </div>
 </div>
 
-<!-- MODAL SERVIDOR -->
-<div class="modal-bg" id="serverModal" onclick="if(event.target===this)closeServerModal()">
-  <div class="modal">
-    <div class="m-title">&#9775; Servidor Render <span class="m-x" onclick="closeServerModal()">&#10005;</span></div>
-    <div class="m-group"><label>URL Base do Render</label><input type="text" id="serverUrl" placeholder="https://seu-app.onrender.com"></div>
-    <div class="m-group"><label>Endpoint GET</label><input type="text" id="getEndpoint" value="/api/velas"></div>
-    <div class="m-status" id="srvStatus">Status: não conectado</div>
-    <div class="m-btns">
-      <button class="mbtn mb-g" onclick="conectarServidor()">&#10003; Conectar</button>
-      <button class="mbtn mb-r" onclick="desconectarServidor()">&#9632; Desconectar</button>
-    </div>
-  </div>
-</div>
-
 <script>
 // ═══════════════════════════════════════════════════════════════════
-// CONFIGURAÇÃO GLOBAL
+// SERVIDOR FIXO - SEU RENDER
 // ═══════════════════════════════════════════════════════════════════
+const SERVIDOR_URL = "https://aviator-trader-quadrado.onrender.com";
+const PAINEL = 1;  // Painel 1
+
 const canvas = document.getElementById('cv');
 const ctx = canvas.getContext('2d');
 const cwrap = document.getElementById('cwrap');
 
-let pts = [];              // array de {val, time, rodada?}
+let pts = [];
 let pollingInterval = null;
-let servidorConectado = false;
-let currentPainel = 1;    // 1 ou 2
-let servidorURL = localStorage.getItem('servidorURL') || '';
-let ultimoTimestamp = 0;   // para polling incremental
+let ultimoTimestamp = 0;
 
-const CFG = {
-  showN: 50,
-  showMA: false
-};
+const CFG = { showN: 50 };
 
 let viewOffset = 0;
 let zoomLevel = 1.0;
@@ -206,16 +166,16 @@ function addLog(val, fonte, rodada) {
   const area = document.getElementById('logArea');
   const row = document.createElement('div');
   row.className = 'log-row';
-  let extra = rodada ? ` R#${rodada}` : '';
+  let extra = rodada ? ` #${rodada}` : '';
   row.innerHTML = `<div class="ldot" style="background:${col}"></div>
                    <span class="lt">${t}</span>
                    <span class="lv" style="color:${col}">${v.toFixed(2)}x</span>
-                   <span class="ltag" style="background:rgba(0,0,0,0.3)">${fonte}${extra}</span>`;
+                   <span class="ltag">${fonte}${extra}</span>`;
   area.insertBefore(row, area.firstChild);
   while(area.children.length > 80) area.removeChild(area.lastChild);
 }
 
-function adicionarVela(multiplicador, timestamp, rodada, fonte) {
+function adicionarVela(multiplicador, timestamp, rodada) {
   const val = parseFloat(multiplicador);
   if (isNaN(val) || val <= 0) return;
   
@@ -229,7 +189,7 @@ function adicionarVela(multiplicador, timestamp, rodada, fonte) {
   document.getElementById('sTot').textContent = pts.length;
   document.getElementById('sCot').style.color = val >= 10 ? '#f472b6' : val >= 2 ? '#a855f7' : '#06b6d4';
   
-  addLog(val, fonte, rodada);
+  addLog(val, 'RENDER', rodada);
   scheduleDraw();
 }
 
@@ -238,92 +198,17 @@ function scheduleDraw() {
 }
 
 // ═══════════════════════════════════════════════════════════════════
-// SINCRONIZAÇÃO COM SERVIDOR RENDER
+// BUSCAR VELAS DO SERVIDOR
 // ═══════════════════════════════════════════════════════════════════
-function openServerModal() {
-  document.getElementById('serverUrl').value = servidorURL;
-  document.getElementById('serverModal').classList.add('open');
-}
-function closeServerModal() {
-  document.getElementById('serverModal').classList.remove('open');
-}
-
-function setStatus(msg, isOk) {
-  const el = document.getElementById('srvStatus');
-  el.textContent = 'Status: ' + msg;
-  el.style.color = isOk ? '#22c55e' : '#f43f5e';
-  const wsStatus = document.getElementById('wsStatus');
-  if (isOk) {
-    wsStatus.className = 'ws-pill ok';
-    document.getElementById('wsLabel').textContent = 'ONLINE';
-  } else {
-    wsStatus.className = 'ws-pill err';
-    document.getElementById('wsLabel').textContent = 'DESCONECTADO';
-  }
-}
-
-function desconectarServidor() {
-  if (pollingInterval) {
-    clearInterval(pollingInterval);
-    pollingInterval = null;
-  }
-  servidorConectado = false;
-  setStatus('desconectado', false);
-  document.getElementById('oSrc').textContent = 'Modo offline';
-}
-
-async function conectarServidor() {
-  const url = document.getElementById('serverUrl').value.trim();
-  if (!url) {
-    setStatus('Digite a URL do servidor', false);
-    return;
-  }
-  servidorURL = url;
-  localStorage.setItem('servidorURL', servidorURL);
-  
-  const painel = parseInt(document.getElementById('painelSelect').value) || 1;
-  currentPainel = painel;
-  document.getElementById('painelInfo').textContent = painel;
-  
-  setStatus('conectando...', false);
-  
-  try {
-    // Testa a conexão
-    const testUrl = `${servidorURL}/api/status`;
-    const res = await fetch(testUrl);
-    if (!res.ok) throw new Error('HTTP ' + res.status);
-    const data = await res.json();
-    
-    servidorConectado = true;
-    setStatus(`online (painel ${painel})`, true);
-    document.getElementById('oSrc').textContent = `Render (P${painel})`;
-    
-    // Faz a primeira busca completa
-    await buscarVelasCompletas();
-    
-    // Inicia polling incremental
-    if (pollingInterval) clearInterval(pollingInterval);
-    pollingInterval = setInterval(() => buscarNovasVelas(), 2000);
-    
-    showAlert(`Conectado ao servidor! ${data.painel1 + data.painel2} velas disponíveis`, '#22c55e', 3000);
-  } catch (err) {
-    setStatus('erro: ' + err.message, false);
-    servidorConectado = false;
-    showAlert('Falha na conexão com o servidor', '#f43f5e', 3000);
-  }
-}
-
 async function buscarVelasCompletas() {
-  if (!servidorConectado || !servidorURL) return;
-  const painel = parseInt(document.getElementById('painelSelect').value) || 1;
   try {
-    const url = `${servidorURL}/api/velas?painel=${painel}&limit=500`;
+    showAlert('Sincronizando com servidor...', '#60a5fa', 1500);
+    const url = `${SERVIDOR_URL}/api/velas?painel=${PAINEL}&limit=500`;
     const res = await fetch(url);
     const data = await res.json();
     
     if (data.velas && Array.isArray(data.velas) && data.velas.length > 0) {
       pts = [];
-      // Atualiza último timestamp
       ultimoTimestamp = 0;
       
       for (const vela of data.velas) {
@@ -342,26 +227,30 @@ async function buscarVelasCompletas() {
         }
       }
       
-      // Ordena por tempo
       pts.sort((a,b) => a.time - b.time);
       
       document.getElementById('sTot').textContent = pts.length;
       if (pts.length > 0) {
         document.getElementById('sCot').textContent = pts[pts.length-1].val.toFixed(2) + 'x';
       }
+      document.getElementById('oSrc').textContent = 'Render (online)';
+      document.getElementById('painelInfo').textContent = PAINEL;
+      
       scheduleDraw();
-      showAlert(`Carregadas ${pts.length} velas do painel ${painel}`, '#60a5fa', 2000);
+      showAlert(`✅ ${pts.length} velas carregadas do painel ${PAINEL}`, '#22c55e', 2500);
+    } else {
+      showAlert('Nenhuma vela encontrada no servidor. A extensão está enviando?', '#f59e0b', 4000);
     }
   } catch (err) {
     console.error('Erro ao buscar velas:', err);
+    showAlert('❌ Erro ao conectar com o servidor', '#f43f5e', 3000);
+    document.getElementById('oSrc').textContent = 'Erro de conexão';
   }
 }
 
 async function buscarNovasVelas() {
-  if (!servidorConectado || !servidorURL) return;
-  const painel = parseInt(document.getElementById('painelSelect').value) || 1;
   try {
-    let url = `${servidorURL}/api/velas?painel=${painel}&limit=50`;
+    let url = `${SERVIDOR_URL}/api/velas?painel=${PAINEL}&limit=50`;
     if (ultimoTimestamp > 0) {
       url += `&desde=${ultimoTimestamp}`;
     }
@@ -373,7 +262,6 @@ async function buscarNovasVelas() {
       for (const vela of data.velas) {
         const mult = parseFloat(vela.multiplicador);
         if (!isNaN(mult) && mult > 0) {
-          // Verifica se já não existe (evita duplicatas)
           const jaExiste = pts.some(p => p.rodada === vela.rodada && Math.abs(p.val - mult) < 0.01);
           if (!jaExiste) {
             let ts = vela.timestamp ? new Date(vela.timestamp) : new Date();
@@ -383,7 +271,6 @@ async function buscarNovasVelas() {
               time: ts,
               rodada: vela.rodada || null
             });
-            addLog(mult, 'RENDER', vela.rodada);
             novas++;
           }
           if (vela.ts_recebido && vela.ts_recebido > ultimoTimestamp) {
@@ -398,7 +285,7 @@ async function buscarNovasVelas() {
           document.getElementById('sCot').textContent = pts[pts.length-1].val.toFixed(2) + 'x';
         }
         scheduleDraw();
-        if (novas > 0) showAlert(`+${novas} nova(s) vela(s) recebida(s)!`, '#22c55e', 1500);
+        showAlert(`📈 +${novas} nova(s) vela(s) recebida(s)!`, '#22c55e', 1500);
       }
     }
   } catch (err) {
@@ -407,12 +294,13 @@ async function buscarNovasVelas() {
 }
 
 async function syncNow() {
-  if (!servidorConectado) {
-    showAlert('Conecte ao servidor primeiro', '#f43f5e', 2000);
-    return;
-  }
-  showAlert('Sincronizando...', '#f59e0b', 1000);
   await buscarVelasCompletas();
+}
+
+// Iniciar polling automático
+function iniciarPolling() {
+  if (pollingInterval) clearInterval(pollingInterval);
+  pollingInterval = setInterval(() => buscarNovasVelas(), 2000);
 }
 
 // ═══════════════════════════════════════════════════════════════════
@@ -461,15 +349,14 @@ function draw() {
   const sub = getViewSub();
   if (sub.length < 2) return;
   
-  const { sx, sy, yToV, minV, maxV, cW, cH } = getScale(sub, W, H);
+  const { sx, sy, minV, maxV } = getScale(sub, W, H);
   
   // Grid
   ctx.font = '8px JetBrains Mono, monospace';
-  [1, 2, 3, 5, 10, 20, 50, 100, 200].filter(v => v >= minV && v <= maxV * 1.05).forEach(v => {
+  [1, 2, 3, 5, 10, 20, 50, 100].filter(v => v >= minV && v <= maxV * 1.05).forEach(v => {
     const py = sy(v);
     ctx.strokeStyle = v >= 10 ? 'rgba(244,114,182,0.07)' : v >= 2 ? 'rgba(168,85,247,0.06)' : '#0c1b2e';
     ctx.lineWidth = 0.5;
-    ctx.setLineDash([]);
     ctx.beginPath();
     ctx.moveTo(12, py);
     ctx.lineTo(W - scaleW, py);
@@ -478,7 +365,7 @@ function draw() {
     ctx.fillText(v + 'x', W - scaleW + 4, py + 3);
   });
   
-  // Área + linha
+  // Área e linha
   const yBase = sy(minV);
   for (let i = 1; i < sub.length; i++) {
     const p0 = sub[i-1], p1 = sub[i];
@@ -486,14 +373,12 @@ function draw() {
     const x1 = sx(i), y1 = sy(p1.val);
     const vm = Math.max(p0.val, p1.val);
     const cpx1 = x0 + (x1 - x0) * 0.42;
-    const cpy1 = y0;
     const cpx2 = x0 + (x1 - x0) * 0.58;
-    const cpy2 = y1;
     
     ctx.beginPath();
     ctx.moveTo(x0, yBase);
     ctx.lineTo(x0, y0);
-    ctx.bezierCurveTo(cpx1, cpy1, cpx2, cpy2, x1, y1);
+    ctx.bezierCurveTo(cpx1, y0, cpx2, y1, x1, y1);
     ctx.lineTo(x1, yBase);
     ctx.closePath();
     ctx.fillStyle = col(vm) + '20';
@@ -501,14 +386,13 @@ function draw() {
     
     ctx.beginPath();
     ctx.moveTo(x0, y0);
-    ctx.bezierCurveTo(cpx1, cpy1, cpx2, cpy2, x1, y1);
+    ctx.bezierCurveTo(cpx1, y0, cpx2, y1, x1, y1);
     ctx.strokeStyle = col(vm);
     ctx.lineWidth = 2;
     ctx.stroke();
   }
   
   // Bolinhas
-  const subStart = Math.max(0, pts.length - viewOffset - sub.length);
   sub.forEach((p, i) => {
     const x = sx(i), y = sy(p.val);
     const r = p.val >= 10 ? 6 : p.val >= 2 ? 4.5 : 3;
@@ -519,22 +403,13 @@ function draw() {
     ctx.strokeStyle = p.val >= 10 ? '#be185d' : p.val >= 2 ? '#7e22ce' : '#0891b2';
     ctx.lineWidth = 0.8;
     ctx.stroke();
-    
-    if (p.rodada && Math.hypot(x - _mx, y - _my) < 35) {
-      ctx.font = 'bold 11px JetBrains Mono, monospace';
-      ctx.textAlign = 'center';
-      ctx.fillStyle = '#fff';
-      ctx.shadowBlur = 4;
-      ctx.fillText('#' + p.rodada, x, y - r - 8);
-      ctx.shadowBlur = 0;
-    }
   });
   
-  // Label do eixo X
+  // Labels X
   const s3 = [sub[0], sub[Math.floor(sub.length / 2)], sub[sub.length - 1]];
   ['xL', 'xM', 'xR'].forEach((id, i) => {
     const p = s3[i];
-    if (p && p.time && !isNaN(p.time)) {
+    if (p && p.time) {
       document.getElementById(id).textContent = p.time.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
     }
   });
@@ -576,8 +451,7 @@ cwrap.addEventListener('mousedown', e => {
 
 cwrap.addEventListener('mousemove', e => {
   const pos = getPos(e);
-  _mx = pos.x;
-  _my = pos.y;
+  _mx = pos.x; _my = pos.y;
   
   if (isPanning) {
     const sub = getViewSub();
@@ -589,34 +463,10 @@ cwrap.addEventListener('mousemove', e => {
       draw();
     }
   }
-  
-  // Tooltip
-  if (!isPanning && sub.length >= 2) {
-    const { sx, sy } = getScale(sub, canvas.width, canvas.height);
-    const step = (canvas.width - 12 - scaleW) / (sub.length - 1 || 1);
-    const idx = Math.round((pos.x - 12) / step);
-    const tt = document.getElementById('ttBox');
-    if (idx >= 0 && idx < sub.length && pos.x < canvas.width - scaleW) {
-      const p = sub[idx];
-      document.getElementById('ttV').textContent = p.val.toFixed(2) + 'x';
-      document.getElementById('ttV').style.color = col(p.val);
-      document.getElementById('ttS').textContent = p.time && !isNaN(p.time) ? p.time.toLocaleTimeString('pt-BR') : '';
-      tt.style.display = 'block';
-      tt.style.left = Math.min(pos.x + 12, canvas.width - scaleW - 15) + 'px';
-      tt.style.top = Math.max(5, pos.y - 42) + 'px';
-    } else {
-      tt.style.display = 'none';
-    }
-  }
 });
 
 cwrap.addEventListener('mouseup', () => {
   document.getElementById('pov').style.display = 'none';
-  isPanning = false;
-});
-
-cwrap.addEventListener('mouseleave', () => {
-  document.getElementById('ttBox').style.display = 'none';
   isPanning = false;
 });
 
@@ -655,21 +505,12 @@ setInterval(() => {
 // ═══════════════════════════════════════════════════════════════════
 // INICIALIZAÇÃO
 // ═══════════════════════════════════════════════════════════════════
-document.getElementById('painelSelect').addEventListener('change', () => {
-  if (servidorConectado) {
-    syncNow();
-  }
-});
-
-// Tentativa de reconexão automática
-setInterval(() => {
-  if (servidorConectado && !pollingInterval) {
-    conectarServidor();
-  }
-}, 30000);
-
 resize();
-showAlert('Configure o servidor no ícone 🖧 para sincronizar', '#f59e0b', 5000);
+setTimeout(() => {
+  buscarVelasCompletas();
+  iniciarPolling();
+  showAlert('🟢 Conectado ao servidor! Aguardando dados da extensão...', '#22c55e', 4000);
+}, 500);
 </script>
 </body>
 </html>
