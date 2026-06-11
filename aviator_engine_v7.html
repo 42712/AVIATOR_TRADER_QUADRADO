@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>Aviator Engine v7 - Ultimate</title>
+<title>Aviator Engine v7 - Ultimate v2</title>
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
@@ -42,7 +42,7 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:var(--fon
 
 .chart-col{flex:1;display:flex;flex-direction:column;overflow:hidden}
 .canvas-wrap{flex:1;position:relative;overflow:hidden;background:var(--bg);cursor:default}
-#cv{display:block;position:absolute;top:0;left:0;image-rendering:crisp-edges}
+#cv{display:block;position:absolute;top:0;left:0}
 #pov{position:absolute;inset:0;z-index:19;display:none;cursor:grabbing}
 .xbar{height:26px;background:var(--bg2);border-top:1px solid var(--brd);display:flex;align-items:center;padding:0 8px;gap:8px;font-size:8px;flex-shrink:0}
 .xslider{flex:1;height:4px;-webkit-appearance:none;background:var(--brd2);border-radius:2px;cursor:pointer}
@@ -66,26 +66,12 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:var(--fon
 
 .tooltip{position:absolute;background:#080f1c;border:1px solid var(--brd2);border-radius:5px;padding:6px 10px;display:none;z-index:60;min-width:120px}
 .tt-v{font-size:14px;font-weight:700}.tt-s{font-size:8px;color:var(--txt2)}
-.alert{position:absolute;top:10px;left:50%;transform:translateX(-50%);padding:6px 22px;border-radius:20px;font-size:11px;font-weight:700;pointer-events:none;z-index:50;white-space:nowrap;opacity:0;transition:opacity .3s}
+.alert{position:absolute;top:10px;left:50%;transform:translateX(-50%);padding:6px 22px;border-radius:20px;font-size:11px;font-weight:700;pointer-events:none;z-index:50;white-space:nowrap;opacity:0;transition:opacity .3s;background:#000}
 .alert.show{opacity:1}
 .flash{position:absolute;inset:0;border:2px solid var(--gn);opacity:0;pointer-events:none;transition:opacity .12s;z-index:45}
 .flash.on{opacity:1}
 #btnBack{position:absolute;bottom:36px;left:50%;transform:translateX(-50%);background:rgba(34,197,94,.35);border:1.5px solid var(--gn);border-radius:20px;padding:7px 22px;font-size:11px;font-weight:700;color:var(--gn);cursor:pointer;display:none;z-index:60}
 #btnBack.show{display:block}
-
-.modal-bg{position:fixed;inset:0;background:rgba(5,8,13,.95);display:none;align-items:center;justify-content:center;z-index:1000}
-.modal-bg.open{display:flex}
-.modal{background:var(--bg4);border:1px solid var(--brd2);border-radius:10px;padding:20px;width:350px}
-.m-title{font-size:13px;font-weight:700;color:#fff;display:flex;justify-content:space-between;margin-bottom:12px}
-.m-x{cursor:pointer;color:var(--txt2)}
-.m-group{display:flex;flex-direction:column;gap:3px;margin-bottom:10px}
-.m-group label{font-size:9px;color:var(--txt2)}
-.m-group input{padding:5px 8px;background:var(--bg3);border:1px solid var(--brd2);border-radius:4px;color:var(--txt);font-family:var(--font);font-size:10px;outline:none}
-.m-btns{display:flex;gap:6px;margin-top:10px}
-.mbtn{padding:6px 12px;border-radius:4px;font-size:9px;font-weight:700;cursor:pointer;border:1px solid;flex:1}
-.mb-g{background:rgba(34,197,94,.12);border-color:#166534;color:var(--gn)}
-.mb-r{background:rgba(244,63,94,.08);border-color:#9f1239;color:var(--pk)}
-.mb-c{background:var(--bg3);border-color:var(--brd);color:var(--txt3)}
 </style>
 </head>
 <body>
@@ -95,12 +81,12 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:var(--fon
   <div class="tb-logo"><div class="tb-dot"></div>AVIATOR v7 - ULTIMATE</div>
   <div class="tb-mid">
     <button class="btn" onclick="zoomIn()">+</button>
-    <button class="btn" onclick="zoomOut()">&#8722;</button>
-    <button class="btn" onclick="resetView()">&#8635;</button>
+    <button class="btn" onclick="zoomOut()">-</button>
+    <button class="btn" onclick="resetView()">↺</button>
     <div class="ws-pill ok" id="wsStatus"><span class="wsd"></span><span id="wsLabel">ONLINE</span></div>
   </div>
   <div class="tb-right">
-    <button class="btn g" onclick="syncNow()">&#8635; SINCRONIZAR</button>
+    <button class="btn g" onclick="syncNow()">↻ SINCRONIZAR</button>
   </div>
 </div>
 
@@ -112,7 +98,7 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:var(--fon
     <div class="flash" id="flash"></div>
     <div class="alert" id="alertBox"></div>
     <div class="tooltip" id="ttBox"><div class="tt-v" id="ttV"></div><div class="tt-s" id="ttS"></div></div>
-    <button id="btnBack" onclick="voltarPresente()">&#9654;&#9654; VOLTAR AO PRESENTE</button>
+    <button id="btnBack" onclick="voltarPresente()">▶▶ VOLTAR AO PRESENTE</button>
   </div>
   <div class="xbar">
     <span id="xL">—</span><span id="xM">—</span><span id="xR">—</span>
@@ -125,7 +111,7 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:var(--fon
 <div class="data-sb">
   <div class="sbh">ÚLTIMO VALOR</div>
   <div class="kv-block">
-    <div class="kv"><span class="kk">Atual</span><span class="kvv" id="sCot" style="color:var(--gn)">—</span></div>
+    <div class="kv"><span class="kk">Atual</span><span class="kvv" id="sCot">—</span></div>
     <div class="kv"><span class="kk">Total velas</span><span class="kvv" id="sTot">0</span></div>
     <div class="kv"><span class="kk">Painel</span><span class="kvv" id="painelInfo">1</span></div>
   </div>
@@ -135,19 +121,16 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:var(--fon
 </div>
 </div>
 
-<!-- TOOLBOX FLUTUANTE -->
 <div class="toolbox" id="toolbox">
   <div class="tool-btn" id="tool-cursor" onclick="setTool('cursor')" title="Cursor">🖱️</div>
-  <div class="tool-btn" id="tool-line" onclick="setTool('line')" title="Linha/Reta">📏</div>
+  <div class="tool-btn" id="tool-line" onclick="setTool('line')" title="Desenhar linha">📏</div>
   <div class="tool-btn" id="tool-move" onclick="setTool('move')" title="Mover objeto">✋</div>
   <div class="tool-sep"></div>
-  <div class="tool-btn" id="tool-delete" onclick="deleteSelected()" title="Excluir selecionado">🗑️</div>
+  <div class="tool-btn" id="tool-delete" onclick="deleteSelected()" title="Excluir">🗑️</div>
 </div>
 
 <script>
-// ═══════════════════════════════════════════════════════════════════
-// CONFIGURAÇÃO
-// ═══════════════════════════════════════════════════════════════════
+// CONFIGURACAO
 const SERVIDOR_URL = "https://aviator-trader-quadrado.onrender.com";
 const PAINEL = 1;
 
@@ -158,37 +141,24 @@ const cwrap = document.getElementById('cwrap');
 let pts = [];
 let pollingInterval = null;
 let ultimoTimestamp = 0;
+const CFG = { showN: 50 };
 
-const CFG = { showN: 50, showMA: true };
-
-let viewOffset = 0;
-let zoomLevel = 1.0;
-let vertOffset = 0;
-let scaleW = 60;
-let isPanning = false;
-let panX0 = 0, panOff0 = 0;
+let viewOffset = 0, zoomLevel = 1.0, vertOffset = 0, scaleW = 60;
+let isPanning = false, panX0 = 0, panOff0 = 0;
 let _mx = 0, _my = 0;
 
-// ═══════════════════════════════════════════════════════════════════
-// FERRAMENTAS DE DESENHO
-// ═══════════════════════════════════════════════════════════════════
+// FERRAMENTAS
 let currentTool = 'cursor';
 let drawings = [];
 let selectedDrawing = null;
-let isDrawing = false;
-let drawStart = null;
-let isMoving = false;
-let movingDrawing = null;
-let moveOffsetX = 0, moveOffsetY = 0;
+let isDrawing = false, drawStart = null;
+let isMoving = false, movingDrawing = null, moveOffsetX = 0, moveOffsetY = 0;
 
 function setTool(tool) {
   currentTool = tool;
   document.querySelectorAll('.tool-btn').forEach(btn => btn.classList.remove('active'));
   document.getElementById(`tool-${tool}`).classList.add('active');
-  if (tool !== 'move') {
-    selectedDrawing = null;
-    draw();
-  }
+  if (tool !== 'move') { selectedDrawing = null; draw(); }
 }
 
 function deleteSelected() {
@@ -203,11 +173,7 @@ function deleteSelected() {
 }
 
 function addLine(x1, y1, x2, y2) {
-  drawings.push({
-    type: 'line',
-    x1, y1, x2, y2,
-    color: '#f59e0b'
-  });
+  drawings.push({ type: 'line', x1, y1, x2, y2, color: '#f59e0b' });
   draw();
 }
 
@@ -223,20 +189,15 @@ function getDrawingAt(x, y) {
 }
 
 function pointToLineDistance(px, py, x1, y1, x2, y2) {
-  const dx = x2 - x1;
-  const dy = y2 - y1;
+  const dx = x2 - x1, dy = y2 - y1;
   const len = Math.hypot(dx, dy);
   if (len === 0) return Math.hypot(px - x1, py - y1);
-  const t = ((px - x1) * dx + (py - y1) * dy) / (len * len);
-  const tClamped = Math.max(0, Math.min(1, t));
-  const projX = x1 + tClamped * dx;
-  const projY = y1 + tClamped * dy;
+  const t = Math.max(0, Math.min(1, ((px - x1) * dx + (py - y1) * dy) / (len * len)));
+  const projX = x1 + t * dx, projY = y1 + t * dy;
   return Math.hypot(px - projX, py - projY);
 }
 
-// ═══════════════════════════════════════════════════════════════════
-// MÉDIAS MÓVEIS COM ESTILOS DIFERENTES
-// ═══════════════════════════════════════════════════════════════════
+// MÉDIAS MÓVEIS
 function calcularEMA(dados, periodo) {
   const k = 2 / (periodo + 1);
   let ema = dados[0];
@@ -248,14 +209,11 @@ function calcularEMA(dados, periodo) {
   return resultado;
 }
 
-// Funções de estilo de linha diferentes
 function drawCurveLinear(points, sx, sy) {
   if (points.length < 2) return;
   ctx.beginPath();
   ctx.moveTo(sx(0), sy(points[0]));
-  for (let i = 1; i < points.length; i++) {
-    ctx.lineTo(sx(i), sy(points[i]));
-  }
+  for (let i = 1; i < points.length; i++) ctx.lineTo(sx(i), sy(points[i]));
   ctx.stroke();
 }
 
@@ -264,15 +222,10 @@ function drawCurveSmooth(points, sx, sy) {
   ctx.beginPath();
   ctx.moveTo(sx(0), sy(points[0]));
   for (let i = 0; i < points.length - 1; i++) {
-    const x0 = sx(Math.max(0, i-1)), y0 = sy(points[Math.max(0, i-1)]);
     const x1 = sx(i), y1 = sy(points[i]);
     const x2 = sx(i+1), y2 = sy(points[i+1]);
-    const x3 = sx(Math.min(points.length-1, i+2)), y3 = sy(points[Math.min(points.length-1, i+2)]);
-    const tension = 0.35;
-    const cp1x = x1 + (x2 - x0) * tension;
-    const cp1y = y1 + (y2 - y0) * tension;
-    const cp2x = x2 - (x3 - x1) * tension;
-    const cp2y = y2 - (y3 - y1) * tension;
+    const cp1x = x1 + (x2 - x1) * 0.33, cp1y = y1;
+    const cp2x = x1 + (x2 - x1) * 0.66, cp2y = y2;
     ctx.bezierCurveTo(cp1x, cp1y, cp2x, cp2y, x2, y2);
   }
   ctx.stroke();
@@ -283,11 +236,11 @@ function drawCurveBezier(points, sx, sy) {
   ctx.beginPath();
   ctx.moveTo(sx(0), sy(points[0]));
   for (let i = 0; i < points.length - 1; i++) {
-    const cp1x = sx(i) + (sx(i+1) - sx(i)) * 0.33;
-    const cp1y = sy(points[i]);
-    const cp2x = sx(i) + (sx(i+1) - sx(i)) * 0.66;
-    const cp2y = sy(points[i+1]);
-    ctx.bezierCurveTo(cp1x, cp1y, cp2x, cp2y, sx(i+1), sy(points[i+1]));
+    const x1 = sx(i), y1 = sy(points[i]);
+    const x2 = sx(i+1), y2 = sy(points[i+1]);
+    const cp1x = x1 + (x2 - x1) * 0.25, cp1y = y1 - Math.abs(points[i+1] - points[i]) * 2;
+    const cp2x = x2 - (x2 - x1) * 0.25, cp2y = y2 + Math.abs(points[i+1] - points[i]) * 2;
+    ctx.bezierCurveTo(cp1x, cp1y, cp2x, cp2y, x2, y2);
   }
   ctx.stroke();
 }
@@ -308,11 +261,13 @@ function drawCurveWave(points, sx, sy) {
   ctx.beginPath();
   ctx.moveTo(sx(0), sy(points[0]));
   for (let i = 0; i < points.length - 1; i++) {
-    const midX = (sx(i) + sx(i+1)) / 2;
-    const midY = (sy(points[i]) + sy(points[i+1])) / 2;
-    const amp = Math.abs(points[i+1] - points[i]) * 5;
-    ctx.quadraticCurveTo(sx(i), sy(points[i]) - amp, midX, midY);
-    ctx.quadraticCurveTo(sx(i+1), sy(points[i+1]) + amp, sx(i+1), sy(points[i+1]));
+    const x1 = sx(i), y1 = sy(points[i]);
+    const x2 = sx(i+1), y2 = sy(points[i+1]);
+    const midX = (x1 + x2) / 2;
+    const midY = (y1 + y2) / 2;
+    const amp = Math.abs(points[i+1] - points[i]) * 3;
+    ctx.quadraticCurveTo(x1, y1 - amp, midX, midY);
+    ctx.quadraticCurveTo(x2, y2 + amp, x2, y2);
   }
   ctx.stroke();
 }
@@ -323,9 +278,7 @@ function drawCurveAngle(points, sx, sy) {
   ctx.moveTo(sx(0), sy(points[0]));
   for (let i = 1; i < points.length; i++) {
     const angle = Math.atan2(points[i] - points[i-1], 1);
-    const offsetX = Math.sin(angle) * 3;
-    const offsetY = Math.cos(angle) * 3;
-    ctx.lineTo(sx(i) + offsetX, sy(points[i]) + offsetY);
+    ctx.lineTo(sx(i) + Math.sin(angle) * 3, sy(points[i]) + Math.cos(angle) * 3);
   }
   ctx.stroke();
 }
@@ -336,7 +289,7 @@ function drawCurveCircle(points, sx, sy) {
   ctx.moveTo(sx(0), sy(points[0]));
   for (let i = 1; i < points.length; i++) {
     const radius = Math.abs(points[i] - points[i-1]) * 2;
-    ctx.arcTo(sx(i-1), sy(points[i-1]), sx(i), sy(points[i]), radius);
+    ctx.arcTo(sx(i-1), sy(points[i-1]), sx(i), sy(points[i]), Math.min(radius, 20));
   }
   ctx.stroke();
 }
@@ -346,57 +299,44 @@ function drawCurveDash(points, sx, sy) {
   ctx.setLineDash([8, 6]);
   ctx.beginPath();
   ctx.moveTo(sx(0), sy(points[0]));
-  for (let i = 1; i < points.length; i++) {
-    ctx.lineTo(sx(i), sy(points[i]));
-  }
+  for (let i = 1; i < points.length; i++) ctx.lineTo(sx(i), sy(points[i]));
   ctx.stroke();
   ctx.setLineDash([]);
 }
 
-// Configurações das MMs
 const mmConfigs = [
-  { per: 9, cor: '#f59e0b', lw: 1.8, dash: [], curva: 'smooth', label: 'MM1' },
-  { per: 21, cor: '#06b6d4', lw: 1.5, dash: [], curva: 'linear', label: 'MM2' },
-  { per: 50, cor: '#22c55e', lw: 1.3, dash: [5, 3], curva: 'bezier', label: 'MM3' },
-  { per: 100, cor: '#ef4444', lw: 1.2, dash: [8, 4], curva: 'wave', label: 'MM4' },
-  { per: 200, cor: '#eab308', lw: 1.0, dash: [10, 5], curva: 'angle', label: 'MM5' },
-  { per: 14, cor: '#ec4899', lw: 1.0, dash: [4, 6], curva: 'circle', label: 'MM6' },
-  { per: 30, cor: '#3b82f6', lw: 0.9, dash: [6, 4, 2, 4], curva: 'dash', label: 'MM7' },
-  { per: 55, cor: '#8b5cf6', lw: 0.8, dash: [3, 5], curva: 'step', label: 'MM8' }
+  { per: 9, cor: '#f59e0b', lw: 1.8, dash: [], curva: 'smooth' },
+  { per: 21, cor: '#06b6d4', lw: 1.5, dash: [], curva: 'linear' },
+  { per: 50, cor: '#22c55e', lw: 1.3, dash: [5, 3], curva: 'bezier' },
+  { per: 100, cor: '#ef4444', lw: 1.2, dash: [8, 4], curva: 'wave' },
+  { per: 200, cor: '#eab308', lw: 1.0, dash: [10, 5], curva: 'angle' },
+  { per: 14, cor: '#ec4899', lw: 1.0, dash: [4, 6], curva: 'circle' },
+  { per: 30, cor: '#3b82f6', lw: 0.9, dash: [6, 4, 2, 4], curva: 'dash' },
+  { per: 55, cor: '#8b5cf6', lw: 0.8, dash: [3, 5], curva: 'step' }
 ];
 
 const curvaFunctions = {
-  linear: drawCurveLinear,
-  smooth: drawCurveSmooth,
-  bezier: drawCurveBezier,
-  step: drawCurveStep,
-  wave: drawCurveWave,
-  angle: drawCurveAngle,
-  circle: drawCurveCircle,
-  dash: drawCurveDash
+  linear: drawCurveLinear, smooth: drawCurveSmooth, bezier: drawCurveBezier,
+  step: drawCurveStep, wave: drawCurveWave, angle: drawCurveAngle,
+  circle: drawCurveCircle, dash: drawCurveDash
 };
 
-// ═══════════════════════════════════════════════════════════════════
-// SINAL DE ENFRAQUECIMENTO (linha azul → vela rosa)
-// ═══════════════════════════════════════════════════════════════════
-let ultimoSinal = 0;
-let razaoSequencia = 0;
+// SINAL DE ENFRAQUECIMENTO
+let ultimoSinal = 0, razaoSequencia = 0;
 
 function detectarEnfraquecimento() {
   if (pts.length < 10) return false;
-  
   const ultimas = pts.slice(-10);
   const valores = ultimas.map(p => p.val);
   const media = valores.reduce((a,b) => a+b,0) / valores.length;
   const ultimo = valores[valores.length-1];
   const penultimo = valores[valores.length-2];
   
-  // Detecta enfraquecimento: última vela menor que média e tendência de queda
   if (ultimo < media && ultimo < penultimo && razaoSequencia < 3) {
     razaoSequencia++;
-    if (razaoSequencia === 2) { // Avisa 1 vela antes da possível virada
+    if (razaoSequencia === 2) {
       const now = Date.now();
-      if (now - ultimoSinal > 60000) { // 1 minuto de cooldown
+      if (now - ultimoSinal > 60000) {
         ultimoSinal = now;
         return true;
       }
@@ -407,23 +347,21 @@ function detectarEnfraquecimento() {
   return false;
 }
 
-// ═══════════════════════════════════════════════════════════════════
 // BUSCAR VELAS
-// ═══════════════════════════════════════════════════════════════════
 function addLog(vela) {
-  const t = new Date(vela.time).toLocaleTimeString('pt-BR', { hour:'2-digit', minute:'2-digit', second:'2-digit' });
+  const t = vela.time.toLocaleTimeString('pt-BR', { hour:'2-digit', minute:'2-digit', second:'2-digit' });
   const v = vela.val;
-  let cor, classe;
-  if (v >= 10) { cor = '#f472b6'; classe = 'rosa'; }
-  else if (v >= 2) { cor = '#a855f7'; classe = 'roxa'; }
-  else { cor = '#06b6d4'; classe = 'ciano'; }
+  let classe;
+  if (v >= 10) classe = 'rosa';
+  else if (v >= 2) classe = 'roxa';
+  else classe = 'ciano';
   
   const area = document.getElementById('logArea');
   const row = document.createElement('div');
   row.className = 'log-row';
-  row.innerHTML = `<div class="ldot" style="background:${cor}"></div>
+  row.innerHTML = `<div class="ldot" style="background:${classe === 'rosa' ? '#f472b6' : classe === 'roxa' ? '#a855f7' : '#06b6d4'}"></div>
                    <span class="lt">${t}</span>
-                   <span class="lv" style="color:${cor}">${v.toFixed(2)}x</span>
+                   <span class="lv" style="color:${classe === 'rosa' ? '#f472b6' : classe === 'roxa' ? '#a855f7' : '#06b6d4'}">${v.toFixed(2)}x</span>
                    <span class="ltag ${classe}">${classe.toUpperCase()}</span>`;
   area.insertBefore(row, area.firstChild);
   while(area.children.length > 40) area.removeChild(area.lastChild);
@@ -441,7 +379,8 @@ function atualizarUI() {
 function showAlert(msg, color, dur = 3000) {
   const el = document.getElementById('alertBox');
   el.textContent = msg;
-  el.style.cssText = `background:${color}22;border:1px solid ${color};color:${color}`;
+  el.style.border = `1px solid ${color}`;
+  el.style.color = color;
   el.className = 'alert show';
   setTimeout(() => el.className = 'alert', dur);
 }
@@ -469,24 +408,17 @@ async function buscarVelasCompletas() {
           let ts = vela.timestamp ? new Date(vela.timestamp) : new Date();
           if (isNaN(ts.getTime())) ts = new Date();
           pts.push({ val: mult, time: ts, rodada: vela.rodada });
-          if (vela.ts_recebido && vela.ts_recebido > ultimoTimestamp) {
-            ultimoTimestamp = vela.ts_recebido;
-          }
+          if (vela.ts_recebido && vela.ts_recebido > ultimoTimestamp) ultimoTimestamp = vela.ts_recebido;
         }
       }
-      
       pts.sort((a,b) => a.time - b.time);
       atualizarUI();
-      
       document.getElementById('logArea').innerHTML = '';
       pts.slice(-30).reverse().forEach(v => addLog(v));
-      
       draw();
       showAlert(`✅ ${pts.length} velas carregadas`, '#22c55e', 1500);
     }
-  } catch (err) {
-    console.error('Erro:', err);
-  }
+  } catch (err) { console.error(err); }
 }
 
 async function buscarNovasVelas() {
@@ -510,12 +442,9 @@ async function buscarNovasVelas() {
             addLog({ val: mult, time: ts });
             novas++;
           }
-          if (vela.ts_recebido && vela.ts_recebido > ultimoTimestamp) {
-            ultimoTimestamp = vela.ts_recebido;
-          }
+          if (vela.ts_recebido && vela.ts_recebido > ultimoTimestamp) ultimoTimestamp = vela.ts_recebido;
         }
       }
-      
       if (novas > 0) {
         pts.sort((a,b) => a.time - b.time);
         if (pts.length > 2000) pts = pts.slice(-2000);
@@ -523,17 +452,13 @@ async function buscarNovasVelas() {
         draw();
         showAlert(`📈 +${novas} nova(s) vela(s)!`, '#22c55e', 1500);
         triggerFlash();
-        
-        // Verifica sinal de enfraquecimento
         if (detectarEnfraquecimento()) {
-          showAlert('⚠️ ENFRAQUECIMENTO DETECTADO! Próxima vela pode ser ROSA?', '#f472b6', 5000);
+          showAlert('⚠️ ENFRAQUECIMENTO! Próxima vela pode ser ROSA?', '#f472b6', 5000);
           triggerFlash();
         }
       }
     }
-  } catch (err) {
-    console.error('Polling error:', err);
-  }
+  } catch (err) { console.error(err); }
 }
 
 async function syncNow() {
@@ -541,35 +466,23 @@ async function syncNow() {
   await buscarVelasCompletas();
 }
 
-function scheduleDraw() {
-  requestAnimationFrame(() => draw());
-}
-
-// ═══════════════════════════════════════════════════════════════════
-// GRÁFICO DE ALTA QUALIDADE
-// ═══════════════════════════════════════════════════════════════════
-function getVisN() {
-  return Math.max(5, Math.round(CFG.showN / zoomLevel));
-}
-
+// GRÁFICO
+function getVisN() { return Math.max(5, Math.round(CFG.showN / zoomLevel)); }
 function getViewSub() {
   const n = getVisN();
   const end = Math.max(n, pts.length - viewOffset);
   const start = Math.max(0, end - n);
   return pts.slice(start, end);
 }
-
 function getScale(sub, W, H) {
   scaleW = Math.max(44, scaleW);
   const vals = sub.map(p => p.val);
   if (vals.length === 0) return { sx: () => 0, sy: () => 0, minV: 0, maxV: 1 };
   const minV = Math.max(0.85, Math.min(...vals) * 0.95);
   const maxV = Math.max(...vals) * 1.08;
-  const cW = W - 12 - scaleW;
-  const cH = H - 44 - 20;
+  const cW = W - 12 - scaleW, cH = H - 44 - 20;
   const n = sub.length;
-  const logMin = Math.log10(minV);
-  const logMax = Math.log10(maxV);
+  const logMin = Math.log10(minV), logMax = Math.log10(maxV);
   const vsh = (vertOffset / cH) * (logMax - logMin);
   return {
     sx: i => 12 + i * ((cW - 40) / (n - 1 || 1)),
@@ -577,220 +490,132 @@ function getScale(sub, W, H) {
     minV, maxV
   };
 }
-
-function col(v) {
-  return v >= 10 ? '#f472b6' : v >= 2 ? '#a855f7' : '#06b6d4';
-}
+function col(v) { return v >= 10 ? '#f472b6' : v >= 2 ? '#a855f7' : '#06b6d4'; }
 
 function draw() {
   const W = canvas.width, H = canvas.height;
   if (!W || !H) return;
-  
-  // Alta qualidade - antialiasing ativado
-  ctx.imageSmoothingEnabled = true;
-  ctx.imageSmoothingQuality = 'high';
-  
   ctx.clearRect(0, 0, W, H);
-  
   const sub = getViewSub();
   if (sub.length < 2) return;
-  
   const { sx, sy, minV, maxV } = getScale(sub, W, H);
   
-  // Grid refinado
   ctx.font = '8px "JetBrains Mono", monospace';
-  ctx.textAlign = 'left';
   [1, 2, 3, 5, 10, 20, 50, 100].filter(v => v >= minV && v <= maxV * 1.05).forEach(v => {
     const py = sy(v);
     ctx.strokeStyle = v >= 10 ? 'rgba(244,114,182,0.08)' : v >= 2 ? 'rgba(168,85,247,0.06)' : '#0c1b2e';
     ctx.lineWidth = 0.5;
-    ctx.beginPath();
-    ctx.moveTo(12, py);
-    ctx.lineTo(W - scaleW, py);
-    ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(12, py); ctx.lineTo(W - scaleW, py); ctx.stroke();
     ctx.fillStyle = v >= 10 ? '#be185d' : v >= 2 ? '#7e22ce' : '#1e3a58';
     ctx.fillText(v + 'x', W - scaleW + 4, py + 3);
   });
   
-  // Zonas (1x, 2x, 10x)
-  const zonas = [
-    { val: 1.0, cor: 'rgba(6,182,212,0.5)', dash: [6, 3] },
-    { val: 2.0, cor: 'rgba(168,85,247,0.5)', dash: [6, 3] },
-    { val: 10.0, cor: 'rgba(244,114,182,0.5)', dash: [8, 3] }
-  ];
+  const zonas = [{ val: 1.0, cor: 'rgba(6,182,212,0.5)', dash: [6,3] }, { val: 2.0, cor: 'rgba(168,85,247,0.5)', dash: [6,3] }, { val: 10.0, cor: 'rgba(244,114,182,0.5)', dash: [8,3] }];
   zonas.forEach(z => {
     if (z.val >= minV && z.val <= maxV) {
       const py = sy(z.val);
       ctx.strokeStyle = z.cor;
       ctx.lineWidth = 1.5;
       ctx.setLineDash(z.dash);
-      ctx.beginPath();
-      ctx.moveTo(12, py);
-      ctx.lineTo(W - scaleW, py);
-      ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(12, py); ctx.lineTo(W - scaleW, py); ctx.stroke();
     }
   });
   ctx.setLineDash([]);
   
-  // Área com gradiente
   const yBase = sy(minV);
   for (let i = 1; i < sub.length; i++) {
     const p0 = sub[i-1], p1 = sub[i];
-    const x0 = sx(i-1), y0 = sy(p0.val);
-    const x1 = sx(i), y1 = sy(p1.val);
+    const x0 = sx(i-1), y0 = sy(p0.val), x1 = sx(i), y1 = sy(p1.val);
     const vm = Math.max(p0.val, p1.val);
-    
     ctx.beginPath();
-    ctx.moveTo(x0, yBase);
-    ctx.lineTo(x0, y0);
-    const cp1x = x0 + (x1 - x0) * 0.42;
-    const cp2x = x0 + (x1 - x0) * 0.58;
+    ctx.moveTo(x0, yBase); ctx.lineTo(x0, y0);
+    const cp1x = x0 + (x1 - x0) * 0.42, cp2x = x0 + (x1 - x0) * 0.58;
     ctx.bezierCurveTo(cp1x, y0, cp2x, y1, x1, y1);
-    ctx.lineTo(x1, yBase);
-    ctx.closePath();
-    
+    ctx.lineTo(x1, yBase); ctx.closePath();
     const grad = ctx.createLinearGradient(x0, yBase, x0, y0);
-    grad.addColorStop(0, col(vm) + '05');
-    grad.addColorStop(1, col(vm) + '25');
-    ctx.fillStyle = grad;
-    ctx.fill();
-    
-    ctx.beginPath();
-    ctx.moveTo(x0, y0);
-    ctx.bezierCurveTo(cp1x, y0, cp2x, y1, x1, y1);
-    ctx.strokeStyle = col(vm);
-    ctx.lineWidth = 2.2;
-    ctx.stroke();
+    grad.addColorStop(0, col(vm) + '05'); grad.addColorStop(1, col(vm) + '25');
+    ctx.fillStyle = grad; ctx.fill();
+    ctx.beginPath(); ctx.moveTo(x0, y0); ctx.bezierCurveTo(cp1x, y0, cp2x, y1, x1, y1);
+    ctx.strokeStyle = col(vm); ctx.lineWidth = 2.2; ctx.stroke();
   }
   
-  // MÉDIAS MÓVEIS (todas com estilos diferentes)
-  if (CFG.showMA && pts.length >= 2) {
+  if (pts.length >= 2) {
     const valores = pts.map(p => p.val);
     const subStart = Math.max(0, pts.length - viewOffset - sub.length);
-    const subVals = valores.slice(subStart, subStart + sub.length);
-    
-    mmConfigs.forEach((mm, idx) => {
+    mmConfigs.forEach(mm => {
       if (pts.length < mm.per) return;
       const ema = calcularEMA(valores, mm.per);
       const emaSub = ema.slice(subStart, subStart + sub.length + 5);
       if (emaSub.length < 2) return;
-      
-      ctx.strokeStyle = mm.cor;
-      ctx.lineWidth = mm.lw;
-      ctx.setLineDash(mm.dash);
-      
-      const curvaFn = curvaFunctions[mm.curva] || drawCurveLinear;
-      curvaFn(emaSub, sx, sy);
+      ctx.strokeStyle = mm.cor; ctx.lineWidth = mm.lw; ctx.setLineDash(mm.dash);
+      (curvaFunctions[mm.curva] || drawCurveLinear)(emaSub, sx, sy);
     });
     ctx.setLineDash([]);
   }
   
-  // Bolinhas das velas
   sub.forEach((p, i) => {
     const x = sx(i), y = sy(p.val);
     const r = p.val >= 10 ? 6 : p.val >= 2 ? 4.5 : 3;
-    ctx.beginPath();
-    ctx.arc(x, y, r, 0, Math.PI * 2);
-    ctx.fillStyle = col(p.val);
-    ctx.fill();
-    ctx.strokeStyle = '#fff';
-    ctx.lineWidth = 1;
-    ctx.stroke();
+    ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI*2);
+    ctx.fillStyle = col(p.val); ctx.fill();
+    ctx.strokeStyle = '#fff'; ctx.lineWidth = 1; ctx.stroke();
   });
   
-  // DESENHOS DO USUÁRIO (linhas/retas)
   drawings.forEach((d, idx) => {
     const isSelected = (idx === selectedDrawing);
     ctx.strokeStyle = isSelected ? '#22c55e' : d.color;
     ctx.lineWidth = isSelected ? 2.5 : 1.8;
-    ctx.setLineDash(isSelected ? [8, 4] : []);
-    
+    ctx.setLineDash(isSelected ? [8,4] : []);
     if (d.type === 'line') {
-      ctx.beginPath();
-      ctx.moveTo(d.x1, d.y1);
-      ctx.lineTo(d.x2, d.y2);
-      ctx.stroke();
-      
+      ctx.beginPath(); ctx.moveTo(d.x1, d.y1); ctx.lineTo(d.x2, d.y2); ctx.stroke();
       if (isSelected) {
         ctx.fillStyle = '#22c55e';
-        ctx.beginPath();
-        ctx.arc(d.x1, d.y1, 5, 0, Math.PI*2);
-        ctx.fill();
-        ctx.beginPath();
-        ctx.arc(d.x2, d.y2, 5, 0, Math.PI*2);
-        ctx.fill();
+        ctx.beginPath(); ctx.arc(d.x1, d.y1, 5, 0, Math.PI*2); ctx.fill();
+        ctx.beginPath(); ctx.arc(d.x2, d.y2, 5, 0, Math.PI*2); ctx.fill();
       }
     }
   });
   ctx.setLineDash([]);
   
-  // Preview de desenho
   if (isDrawing && currentTool === 'line' && drawStart) {
-    ctx.strokeStyle = '#f59e0b';
-    ctx.lineWidth = 1.5;
-    ctx.setLineDash([5, 5]);
-    ctx.beginPath();
-    ctx.moveTo(drawStart.x, drawStart.y);
-    ctx.lineTo(_mx, _my);
-    ctx.stroke();
+    ctx.strokeStyle = '#f59e0b'; ctx.lineWidth = 1.5; ctx.setLineDash([5,5]);
+    ctx.beginPath(); ctx.moveTo(drawStart.x, drawStart.y); ctx.lineTo(_mx, _my); ctx.stroke();
     ctx.setLineDash([]);
   }
   
-  // Labels do eixo X
   if (sub.length > 0) {
     document.getElementById('xL').textContent = sub[0].time.toLocaleTimeString('pt-BR', { hour:'2-digit', minute:'2-digit', second:'2-digit' });
     document.getElementById('xM').textContent = sub[Math.floor(sub.length/2)].time.toLocaleTimeString('pt-BR', { hour:'2-digit', minute:'2-digit', second:'2-digit' });
     document.getElementById('xR').textContent = sub[sub.length-1].time.toLocaleTimeString('pt-BR', { hour:'2-digit', minute:'2-digit', second:'2-digit' });
   }
-  
   document.getElementById('xZoom').textContent = sub.length + 'v';
   document.getElementById('xslider').value = CFG.showN;
 }
 
-// ═══════════════════════════════════════════════════════════════════
-// EVENTOS DO MOUSE
-// ═══════════════════════════════════════════════════════════════════
-function getPos(e) {
-  const r = cwrap.getBoundingClientRect();
-  return { x: e.clientX - r.left, y: e.clientY - r.top };
-}
+function getPos(e) { const r = cwrap.getBoundingClientRect(); return { x: e.clientX - r.left, y: e.clientY - r.top }; }
 
 cwrap.addEventListener('mousedown', e => {
   const pos = getPos(e);
-  _mx = pos.x;
-  _my = pos.y;
-  
+  _mx = pos.x; _my = pos.y;
   if (currentTool === 'cursor') {
-    isPanning = true;
-    panX0 = pos.x;
-    panOff0 = viewOffset;
+    isPanning = true; panX0 = pos.x; panOff0 = viewOffset;
     document.getElementById('pov').style.display = 'block';
-  } 
-  else if (currentTool === 'line') {
-    isDrawing = true;
-    drawStart = { x: pos.x, y: pos.y };
-  }
-  else if (currentTool === 'move') {
+  } else if (currentTool === 'line') {
+    isDrawing = true; drawStart = { x: pos.x, y: pos.y };
+  } else if (currentTool === 'move') {
     const idx = getDrawingAt(pos.x, pos.y);
     if (idx !== -1) {
-      isMoving = true;
-      movingDrawing = idx;
+      isMoving = true; movingDrawing = idx;
       moveOffsetX = pos.x - drawings[idx].x1;
       moveOffsetY = pos.y - drawings[idx].y1;
-      selectedDrawing = idx;
-      draw();
-    } else {
-      selectedDrawing = null;
-      draw();
-    }
+      selectedDrawing = idx; draw();
+    } else { selectedDrawing = null; draw(); }
   }
 });
 
 cwrap.addEventListener('mousemove', e => {
   const pos = getPos(e);
-  _mx = pos.x;
-  _my = pos.y;
-  
+  _mx = pos.x; _my = pos.y;
   if (isPanning && currentTool === 'cursor') {
     const sub = getViewSub();
     if (sub.length >= 2) {
@@ -800,74 +625,54 @@ cwrap.addEventListener('mousemove', e => {
       document.getElementById('btnBack').classList.toggle('show', viewOffset > 2);
       draw();
     }
-  }
-  else if (isMoving && movingDrawing !== null) {
-    const dx = pos.x - moveOffsetX;
-    const dy = pos.y - moveOffsetY;
-    drawings[movingDrawing].x1 = dx;
-    drawings[movingDrawing].y1 = dy;
-    drawings[movingDrawing].x2 = dx + (drawings[movingDrawing].x2 - drawings[movingDrawing].x1);
-    drawings[movingDrawing].y2 = dy + (drawings[movingDrawing].y2 - drawings[movingDrawing].y1);
+  } else if (isMoving && movingDrawing !== null) {
+    drawings[movingDrawing].x1 = pos.x - moveOffsetX;
+    drawings[movingDrawing].y1 = pos.y - moveOffsetY;
+    drawings[movingDrawing].x2 = drawings[movingDrawing].x1 + (drawings[movingDrawing].x2 - drawings[movingDrawing].x1);
+    drawings[movingDrawing].y2 = drawings[movingDrawing].y1 + (drawings[movingDrawing].y2 - drawings[movingDrawing].y1);
     draw();
-  }
-  else if (isDrawing && currentTool === 'line') {
-    draw();
-  }
-  
-  // Tooltip
-  const sub = getViewSub();
-  if (sub.length >= 2) {
-    const { sx, sy } = getScale(sub, canvas.width, canvas.height);
-    const step = (canvas.width - 12 - scaleW) / (sub.length - 1 || 1);
-    const idx = Math.round((pos.x - 12) / step);
-    const tt = document.getElementById('ttBox');
-    if (idx >= 0 && idx < sub.length && pos.x < canvas.width - scaleW) {
-      const p = sub[idx];
-      document.getElementById('ttV').textContent = p.val.toFixed(2) + 'x';
-      document.getElementById('ttV').style.color = col(p.val);
-      document.getElementById('ttS').textContent = p.time.toLocaleTimeString('pt-BR');
-      tt.style.display = 'block';
-      tt.style.left = Math.min(pos.x + 12, canvas.width - scaleW - 15) + 'px';
-      tt.style.top = Math.max(5, pos.y - 42) + 'px';
-    } else {
-      tt.style.display = 'none';
+  } else if (isDrawing && currentTool === 'line') { draw(); }
+  else {
+    const sub = getViewSub();
+    if (sub.length >= 2) {
+      const { sx, sy } = getScale(sub, canvas.width, canvas.height);
+      const step = (canvas.width - 12 - scaleW) / (sub.length - 1 || 1);
+      const idx = Math.round((pos.x - 12) / step);
+      const tt = document.getElementById('ttBox');
+      if (idx >= 0 && idx < sub.length && pos.x < canvas.width - scaleW) {
+        const p = sub[idx];
+        document.getElementById('ttV').textContent = p.val.toFixed(2) + 'x';
+        document.getElementById('ttV').style.color = col(p.val);
+        document.getElementById('ttS').textContent = p.time.toLocaleTimeString('pt-BR');
+        tt.style.display = 'block';
+        tt.style.left = Math.min(pos.x + 12, canvas.width - scaleW - 15) + 'px';
+        tt.style.top = Math.max(5, pos.y - 42) + 'px';
+      } else { tt.style.display = 'none'; }
     }
   }
 });
 
-cwrap.addEventListener('mouseup', e => {
+cwrap.addEventListener('mouseup', () => {
   if (isDrawing && currentTool === 'line' && drawStart) {
     addLine(drawStart.x, drawStart.y, _mx, _my);
-    isDrawing = false;
-    drawStart = null;
+    isDrawing = false; drawStart = null;
   }
   document.getElementById('pov').style.display = 'none';
-  isPanning = false;
-  isMoving = false;
-  movingDrawing = null;
+  isPanning = false; isMoving = false; movingDrawing = null;
 });
 
 cwrap.addEventListener('wheel', e => {
   e.preventDefault();
-  if (e.shiftKey) {
-    vertOffset += e.deltaY > 0 ? -10 : 10;
-  } else {
-    e.deltaY < 0 ? zoomIn() : zoomOut();
-  }
+  if (e.shiftKey) vertOffset += e.deltaY > 0 ? -10 : 10;
+  else e.deltaY < 0 ? zoomIn() : zoomOut();
   draw();
 }, { passive: false });
 
-// ═══════════════════════════════════════════════════════════════════
-// CONTROLES
-// ═══════════════════════════════════════════════════════════════════
 function zoomIn() { zoomLevel = Math.min(10, zoomLevel * 1.25); draw(); }
 function zoomOut() { zoomLevel = Math.max(0.1, zoomLevel / 1.25); draw(); }
 function resetView() { zoomLevel = 1.0; viewOffset = 0; vertOffset = 0; draw(); }
 function voltarPresente() { viewOffset = 0; document.getElementById('btnBack').classList.remove('show'); draw(); }
 
-// ═══════════════════════════════════════════════════════════════════
-// RESIZE
-// ═══════════════════════════════════════════════════════════════════
 function resize() {
   const dpr = window.devicePixelRatio || 2;
   const w = cwrap.clientWidth, h = cwrap.clientHeight;
@@ -880,19 +685,12 @@ function resize() {
 }
 new ResizeObserver(resize).observe(cwrap);
 
-// ═══════════════════════════════════════════════════════════════════
-// RELÓGIO
-// ═══════════════════════════════════════════════════════════════════
 setInterval(() => {
   document.getElementById('xNow').textContent = new Date().toLocaleTimeString('pt-BR', { hour:'2-digit', minute:'2-digit', second:'2-digit' });
 }, 500);
 
-// ═══════════════════════════════════════════════════════════════════
-// INICIALIZAÇÃO
-// ═══════════════════════════════════════════════════════════════════
 resize();
 setTool('cursor');
-
 setTimeout(async () => {
   await buscarVelasCompletas();
   pollingInterval = setInterval(() => buscarNovasVelas(), 2000);
