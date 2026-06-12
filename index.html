@@ -2,11 +2,11 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-<title>Aviator v7 - Estável</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>Aviator v7 - Detector de Padrões</title>
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
-*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+*{box-sizing:border-box;margin:0;padding:0}
 :root{
   --bg:#05080f;--bg2:#0a0f1a;--bg3:#0e1522;--bg4:#121d2e;
   --brd:#18273d;--brd2:#203555;
@@ -14,105 +14,85 @@
   --up:#a855f7;--dn:#06b6d4;--pk:#f43f5e;--gn:#22c55e;--am:#f59e0b;
   --font:'JetBrains Mono',monospace;
 }
-html,body{height:100%;overflow:hidden;background:var(--bg);font-family:var(--font);font-size:11px;color:var(--txt);}
-.root{display:flex;flex-direction:column;height:100vh}
-.main{display:flex;flex:1;overflow:hidden;min-height:0;flex-direction:column}
+html,body{height:100%;overflow:hidden;background:var(--bg);font-family:var(--font);font-size:clamp(9px, 1.2vw, 14px);color:var(--txt)}
+.root{display:flex;flex-direction:column;height:100vh;width:100vw;overflow:hidden}
+.main{display:flex;flex:1;overflow:hidden;min-height:0;flex-direction:row;flex-wrap:nowrap}
 
-.topbar{height:44px;background:var(--bg2);border-bottom:1px solid var(--brd);display:flex;align-items:center;flex-shrink:0;padding:0 8px;gap:6px;overflow-x:auto}
-.tb-logo{font-size:12px;font-weight:700;color:#fff;display:flex;align-items:center;gap:6px;white-space:nowrap}
-.tb-dot{width:8px;height:8px;border-radius:50%;background:var(--gn);animation:glow 2s infinite}
+.topbar{height:clamp(38px, 5vh, 50px);background:var(--bg2);border-bottom:1px solid var(--brd);display:flex;align-items:center;flex-shrink:0;padding:0 12px;gap:8px;overflow-x:auto}
+.tb-logo{font-size:clamp(12px, 1.5vw, 18px);font-weight:700;color:#fff;display:flex;align-items:center;gap:8px;white-space:nowrap}
+.tb-dot{width:clamp(8px, 1vw, 12px);height:clamp(8px, 1vw, 12px);border-radius:50%;background:var(--gn);animation:glow 2s infinite}
 @keyframes glow{0%,100%{box-shadow:0 0 4px var(--gn)}50%{box-shadow:0 0 14px var(--gn)}}
-.tb-mid{display:flex;align-items:center;gap:4px;flex-shrink:0}
-.tb-right{display:flex;align-items:center;gap:4px;margin-left:auto}
-.btn{padding:4px 10px;border-radius:6px;border:1px solid var(--brd2);background:var(--bg3);color:var(--txt2);font-size:9px;font-family:var(--font);cursor:pointer;white-space:nowrap}
+.tb-mid{display:flex;align-items:center;gap:6px;flex-shrink:0}
+.tb-right{display:flex;align-items:center;gap:8px;margin-left:auto;flex-shrink:0}
+.btn{padding:clamp(4px, 0.8vh, 8px) clamp(8px, 1.5vw, 16px);border-radius:6px;border:1px solid var(--brd2);background:var(--bg3);color:var(--txt2);font-size:clamp(9px, 1.2vw, 13px);font-family:var(--font);cursor:pointer;white-space:nowrap;transition:all .15s}
 .btn:active{transform:scale(0.96)}
 .btn.g{border-color:#166534;background:rgba(34,197,94,.1);color:var(--gn)}
 .btn.b{border-color:#1e3a5f;background:rgba(96,165,250,.08);color:#60a5fa}
-.ws-pill{display:flex;align-items:center;gap:4px;font-size:8px;padding:0 6px}
+.ws-pill{display:flex;align-items:center;gap:6px;font-size:clamp(8px, 1vw, 11px);padding:0 8px}
 .ws-pill.ok{color:var(--gn)}.ws-pill.err{color:var(--pk)}
-.wsd{width:6px;height:6px;border-radius:50%;background:currentColor;animation:blink 1.4s infinite}
+.wsd{width:clamp(6px, 0.8vw, 10px);height:clamp(6px, 0.8vw, 10px);border-radius:50%;background:currentColor;animation:blink 1.4s infinite}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
 
-/* TOOLBOX */
-.toolbox{position:fixed;bottom:20px;right:10px;background:var(--bg2);border:1px solid var(--brd);border-radius:40px;display:flex;flex-direction:row;padding:6px 12px;gap:10px;z-index:100;backdrop-filter:blur(10px)}
-.tool-btn{width:40px;height:40px;border-radius:30px;border:1px solid var(--brd2);background:var(--bg3);color:var(--txt2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:20px}
+.toolbox{position:fixed;bottom:20px;right:20px;background:var(--bg2);border:1px solid var(--brd);border-radius:40px;display:flex;flex-direction:row;padding:8px 16px;gap:12px;z-index:100;backdrop-filter:blur(10px)}
+.tool-btn{width:clamp(36px, 4vh, 48px);height:clamp(36px, 4vh, 48px);border-radius:30px;border:1px solid var(--brd2);background:var(--bg3);color:var(--txt2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:clamp(18px, 2.5vw, 24px);transition:all .15s}
 .tool-btn:active{transform:scale(0.92)}
 .tool-btn.active{border-color:var(--gn);background:rgba(34,197,94,.2);color:var(--gn)}
-.tool-sep{width:1px;height:25px;background:var(--brd);margin:0}
+.tool-sep{width:1px;height:30px;background:var(--brd);margin:0}
 
-.chart-col{flex:1;display:flex;flex-direction:column;overflow:hidden;min-height:200px}
-.canvas-wrap{flex:1;position:relative;overflow:hidden;background:var(--bg);min-height:200px}
+.chart-col{flex:3;display:flex;flex-direction:column;overflow:hidden;min-width:0}
+.canvas-wrap{flex:1;position:relative;overflow:hidden;background:var(--bg);min-height:0}
 #cv{display:block;position:absolute;top:0;left:0;width:100%;height:100%}
-#pov{position:absolute;inset:0;z-index:19;display:none}
+#pov{position:absolute;inset:0;z-index:19;display:none;cursor:grabbing}
 
-.xbar{height:34px;background:var(--bg2);border-top:1px solid var(--brd);display:flex;align-items:center;padding:0 8px;gap:6px;font-size:8px;flex-shrink:0}
-.xslider{flex:1;height:4px;-webkit-appearance:none;background:var(--brd2);border-radius:2px}
-.xslider::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;border-radius:50%;background:var(--gn);cursor:pointer}
+.xbar{height:clamp(28px, 4vh, 38px);background:var(--bg2);border-top:1px solid var(--brd);display:flex;align-items:center;padding:0 12px;gap:12px;font-size:clamp(8px, 1vw, 11px);flex-shrink:0}
+.xslider{flex:1;height:6px;-webkit-appearance:none;background:var(--brd2);border-radius:3px}
+.xslider::-webkit-slider-thumb{-webkit-appearance:none;width:clamp(14px, 2vw, 20px);height:clamp(14px, 2vw, 20px);border-radius:50%;background:var(--gn);cursor:pointer}
 
-.data-sb{background:var(--bg2);border-top:1px solid var(--brd);display:flex;flex-direction:column;max-height:35%;min-height:120px;overflow:hidden;flex-shrink:0}
-.sbh{padding:6px 12px;font-size:8px;color:var(--txt3);border-bottom:1px solid var(--brd)}
-.kv-block{padding:6px 12px;display:flex;gap:16px;border-bottom:1px solid var(--brd)}
-.kv{display:flex;gap:6px}
-.kk{font-size:8px;color:var(--txt2)}.kvv{font-size:10px;font-weight:700}
-.log-area{flex:1;overflow-y:auto;max-height:120px}
-.log-row{display:flex;align-items:center;gap:8px;padding:6px 12px;border-bottom:1px solid #070d15;font-size:9px}
-.ldot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
-.lt{color:var(--txt2);min-width:60px;font-size:8px}
-.lv{font-weight:700;min-width:45px}
-.ltag{font-size:7px;padding:2px 6px;border-radius:4px;margin-left:auto}
+.data-sb{flex:1;min-width:200px;max-width:280px;background:var(--bg2);border-left:1px solid var(--brd);display:flex;flex-direction:column;overflow:hidden;flex-shrink:0}
+.sbh{padding:clamp(6px, 1vh, 10px) 12px;font-size:clamp(7px, 0.9vw, 10px);color:var(--txt3);border-bottom:1px solid var(--brd);text-transform:uppercase}
+.kv-block{padding:clamp(8px, 1.5vh, 12px) 12px;display:flex;gap:20px;border-bottom:1px solid var(--brd);flex-wrap:wrap}
+.kv{display:flex;gap:8px;align-items:baseline}
+.kk{font-size:clamp(8px, 1vw, 11px);color:var(--txt2)}.kvv{font-size:clamp(10px, 1.2vw, 14px);font-weight:700}
+.pattern-area{background:var(--bg3);margin:8px;padding:8px;border-radius:8px;border-left:3px solid var(--am)}
+.pattern-title{font-size:9px;color:var(--am);margin-bottom:4px}
+.pattern-value{font-size:11px;font-weight:700;color:var(--gn)}
+.log-area{flex:1;overflow-y:auto;min-height:100px}
+.log-row{display:flex;align-items:center;gap:10px;padding:clamp(5px, 0.8vh, 8px) 12px;border-bottom:1px solid #070d15;font-size:clamp(9px, 1.1vw, 12px)}
+.log-row:hover{background:var(--bg3)}
+.ldot{width:clamp(8px, 1vw, 12px);height:clamp(8px, 1vw, 12px);border-radius:50%;flex-shrink:0}
+.lt{color:var(--txt2);min-width:70px;font-size:clamp(8px, 1vw, 11px)}
+.lv{font-weight:700;min-width:55px}
+.ltag{font-size:clamp(7px, 0.9vw, 10px);padding:2px 8px;border-radius:4px;margin-left:auto}
 .ltag.rosa{background:rgba(244,114,182,.2);color:#f472b6}
 .ltag.roxa{background:rgba(168,85,247,.2);color:#a855f7}
 .ltag.ciano{background:rgba(6,182,212,.2);color:#06b6d4}
 .ltag.sinal{background:rgba(34,197,94,.3);color:#22c55e}
+.ltag.pattern{background:rgba(245,158,11,.3);color:#f59e0b}
 
-.tooltip{position:absolute;background:#080f1c;border:1px solid var(--brd2);border-radius:8px;padding:8px 12px;display:none;z-index:60;min-width:100px}
-.tt-v{font-size:16px;font-weight:700}.tt-s{font-size:9px;color:var(--txt2)}
-.alert{position:absolute;top:50px;left:10px;right:10px;transform:none;padding:10px;border-radius:12px;font-size:11px;text-align:center;white-space:normal;z-index:50;opacity:0;transition:opacity .3s}
+.tooltip{position:absolute;background:#080f1c;border:1px solid var(--brd2);border-radius:8px;padding:10px 14px;display:none;z-index:60;min-width:120px}
+.tt-v{font-size:clamp(16px, 2vw, 22px);font-weight:700}.tt-s{font-size:clamp(9px, 1.1vw, 12px);color:var(--txt2)}
+.alert{position:absolute;top:60px;left:50%;transform:translateX(-50%);padding:12px 24px;border-radius:12px;font-size:clamp(11px, 1.5vw, 16px);font-weight:700;text-align:center;white-space:nowrap;z-index:50;opacity:0;transition:opacity .3s;background:#000}
 .alert.show{opacity:1}
 .flash{position:absolute;inset:0;border:3px solid var(--gn);opacity:0;pointer-events:none;transition:opacity .12s;z-index:45}
 .flash.on{opacity:1}
-#btnBack{position:absolute;bottom:80px;left:50%;transform:translateX(-50%);background:rgba(34,197,94,.9);border:none;border-radius:30px;padding:10px 20px;font-size:11px;font-weight:700;color:#000;cursor:pointer;display:none;z-index:60}
+#btnBack{position:absolute;bottom:80px;left:50%;transform:translateX(-50%);background:rgba(34,197,94,.9);border:none;border-radius:30px;padding:10px 24px;font-size:clamp(11px, 1.5vw, 14px);font-weight:700;color:#000;cursor:pointer;display:none;z-index:60;white-space:nowrap}
 #btnBack.show{display:block}
-
-/* MODAL CONFIG */
 .modal-bg{position:fixed;inset:0;background:rgba(5,8,13,.95);display:none;align-items:center;justify-content:center;z-index:1000}
 .modal-bg.open{display:flex}
-.modal{background:var(--bg4);border:1px solid var(--brd2);border-radius:12px;padding:20px;width:90%;max-width:380px;max-height:80vh;overflow-y:auto}
-.m-title{font-size:13px;font-weight:700;color:#fff;display:flex;justify-content:space-between;margin-bottom:12px}
-.m-x{cursor:pointer;color:var(--txt2);font-size:16px}
-.m-group{margin-bottom:12px}
-.m-group label{font-size:9px;color:var(--txt2);display:block;margin-bottom:4px}
-.m-group input,.m-group select{width:100%;padding:8px;background:var(--bg3);border:1px solid var(--brd2);border-radius:6px;color:var(--txt);font-family:var(--font);font-size:10px}
-.m-row{display:flex;gap:8px}
-.m-row .m-group{flex:1}
-.m-btns{display:flex;gap:8px;margin-top:16px}
-.mbtn{padding:8px;border-radius:6px;font-size:10px;font-weight:700;cursor:pointer;border:1px solid;flex:1;text-align:center}
-.mb-g{background:rgba(34,197,94,.12);border-color:#166534;color:var(--gn)}
-.mb-b{background:rgba(96,165,250,.08);border-color:#1e3a5f;color:#60a5fa}
-.mb-r{background:rgba(244,63,94,.08);border-color:#9f1239;color:var(--pk)}
-.mb-c{background:var(--bg3);border-color:var(--brd);color:var(--txt3)}
-.mm-item{background:var(--bg3);border:1px solid var(--brd2);border-radius:8px;padding:10px;margin-bottom:10px}
-.mm-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;cursor:pointer}
-.mm-header .mm-nome{font-size:10px;font-weight:700}
-.mm-header .mm-toggle{width:32px;height:16px;border-radius:8px;background:var(--brd2);cursor:pointer;position:relative}
-.mm-header .mm-toggle.on{background:var(--gn)}
-.mm-header .mm-toggle::after{content:'';position:absolute;width:12px;height:12px;border-radius:50%;background:#fff;top:2px;left:2px;transition:left .2s}
-.mm-header .mm-toggle.on::after{left:18px}
-.mm-detalhes{display:none;margin-top:10px;gap:8px;flex-wrap:wrap}
-.mm-detalhes.open{display:flex}
-.mm-detalhes input,.mm-detalhes select{padding:5px;background:var(--bg2);border:1px solid var(--brd);border-radius:4px;color:var(--txt);font-size:9px;flex:1;min-width:60px}
+.modal{background:var(--bg4);border:1px solid var(--brd2);border-radius:16px;padding:24px;width:90%;max-width:500px;max-height:85vh;overflow-y:auto}
+.m-title{font-size:clamp(14px, 1.8vw, 18px);font-weight:700;color:#fff;display:flex;justify-content:space-between;margin-bottom:16px}
+.m-x{cursor:pointer;color:var(--txt2);font-size:20px}
 </style>
 </head>
 <body>
 <div class="root">
 
 <div class="topbar">
-  <div class="tb-logo"><div class="tb-dot"></div>AVIATOR</div>
+  <div class="tb-logo"><div class="tb-dot"></div>AVIATOR PATTERN DETECTOR</div>
   <div class="tb-mid">
     <button class="btn" onclick="zoomIn()">+</button>
     <button class="btn" onclick="zoomOut()">-</button>
     <button class="btn" onclick="resetView()">↺</button>
-    <button class="btn b" onclick="abrirConfigMM()">⚙ MM</button>
   </div>
   <div class="tb-right">
     <button class="btn g" onclick="syncNow()">↻ SINCRONIZAR</button>
@@ -132,8 +112,8 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:var(--fon
   </div>
   <div class="xbar">
     <span id="xL">—</span><span id="xM">—</span><span id="xR">—</span>
-    <input type="range" class="xslider" id="xslider" min="5" max="80" value="30" oninput="CFG.showN=parseInt(this.value);salvarConfig();draw()">
-    <span id="xNow" style="color:var(--gn);font-size:11px">—</span>
+    <input type="range" class="xslider" id="xslider" min="5" max="100" value="40" oninput="CFG.showN=parseInt(this.value);draw()">
+    <span id="xNow" style="color:var(--gn);font-size:clamp(10px, 1.2vw, 14px);font-weight:700">—</span>
   </div>
 </div>
 
@@ -142,6 +122,10 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:var(--fon
     <div class="kv"><span class="kk">Último</span><span class="kvv" id="sCot">—</span></div>
     <div class="kv"><span class="kk">Total</span><span class="kvv" id="sTot">0</span></div>
     <div class="kv"><span class="kk">Painel</span><span class="kvv" id="painelInfo">1</span></div>
+  </div>
+  <div class="pattern-area" id="patternArea">
+    <div class="pattern-title">📊 PADRÃO DETECTADO</div>
+    <div class="pattern-value" id="patternDetected">—</div>
   </div>
   <div class="sbh">ÚLTIMAS VELAS</div>
   <div class="log-area" id="logArea"></div>
@@ -156,20 +140,9 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:var(--fon
   <div class="tool-btn" id="tool-delete" onclick="deleteSelected()" title="Excluir">🗑️</div>
 </div>
 
-<!-- MODAL CONFIG MM -->
-<div class="modal-bg" id="modalMM" onclick="if(event.target===this)fecharModalMM()">
-  <div class="modal">
-    <div class="m-title">Configurar MMs <span class="m-x" onclick="fecharModalMM()">✕</span></div>
-    <div id="mmLista"></div>
-    <div class="m-btns">
-      <button class="mbtn mb-c" onclick="fecharModalMM()">Fechar</button>
-    </div>
-  </div>
-</div>
-
 <script>
 // ═══════════════════════════════════════════════════════════════════
-// CONFIGURAÇÃO INICIAL
+// CONFIGURAÇÃO
 // ═══════════════════════════════════════════════════════════════════
 const SERVIDOR_URL = "https://aviator-trader-quadrado.onrender.com";
 const PAINEL = 1;
@@ -181,22 +154,11 @@ const cwrap = document.getElementById('cwrap');
 let pts = [];
 let pollingInterval = null;
 let ultimoTimestamp = 0;
-let ultimoSinalTimestamp = 0;
-let sequenciaFraca = 0;
+let ultimoAlertaPadrao = 0;
 
-// Configurações padrão
-let CFG = {
-  showN: 30,
-  showMA: true,
-  mm1On: true, mm1Per: 9, mm1Cor: '#f59e0b', mm1Lw: 1.8, mm1Curva: 'smooth',
-  mm2On: true, mm2Per: 21, mm2Cor: '#06b6d4', mm2Lw: 1.5, mm2Curva: 'linear',
-  mm3On: true, mm3Per: 50, mm3Cor: '#22c55e', mm3Lw: 1.3, mm3Curva: 'bezier',
-  mm4On: true, mm4Per: 100, mm4Cor: '#ef4444', mm4Lw: 1.2, mm4Curva: 'wavy',
-  mm5On: false, mm5Per: 200, mm5Cor: '#eab308', mm5Lw: 1.0, mm5Curva: 'arc',
-  mm6On: false, mm6Per: 14, mm6Cor: '#ec4899', mm6Lw: 1.0, mm6Curva: 'spiky'
-};
+let CFG = { showN: 40 };
 
-let viewOffset = 0, zoomLevel = 1.0, vertOffset = 0, scaleW = 50;
+let viewOffset = 0, zoomLevel = 1.0, vertOffset = 0, scaleW = 60;
 let isPanning = false, panX0 = 0, panOff0 = 0;
 let _mx = 0, _my = 0;
 
@@ -206,105 +168,204 @@ let selectedDrawing = null;
 let isDrawing = false, drawStart = null;
 
 // ═══════════════════════════════════════════════════════════════════
-// PERSISTÊNCIA
+// SISTEMA DE DETECÇÃO DE PADRÕES (BASEADO NA SUA ANÁLISE)
 // ═══════════════════════════════════════════════════════════════════
-function salvarConfig() {
-  try {
-    localStorage.setItem('aviator_cfg', JSON.stringify({
-      showN: CFG.showN,
-      mm1On: CFG.mm1On, mm1Per: CFG.mm1Per, mm1Cor: CFG.mm1Cor, mm1Lw: CFG.mm1Lw, mm1Curva: CFG.mm1Curva,
-      mm2On: CFG.mm2On, mm2Per: CFG.mm2Per, mm2Cor: CFG.mm2Cor, mm2Lw: CFG.mm2Lw, mm2Curva: CFG.mm2Curva,
-      mm3On: CFG.mm3On, mm3Per: CFG.mm3Per, mm3Cor: CFG.mm3Cor, mm3Lw: CFG.mm3Lw, mm3Curva: CFG.mm3Curva,
-      mm4On: CFG.mm4On, mm4Per: CFG.mm4Per, mm4Cor: CFG.mm4Cor, mm4Lw: CFG.mm4Lw, mm4Curva: CFG.mm4Curva,
-      mm5On: CFG.mm5On, mm5Per: CFG.mm5Per, mm5Cor: CFG.mm5Cor, mm5Lw: CFG.mm5Lw, mm5Curva: CFG.mm5Curva,
-      mm6On: CFG.mm6On, mm6Per: CFG.mm6Per, mm6Cor: CFG.mm6Cor, mm6Lw: CFG.mm6Lw, mm6Curva: CFG.mm6Curva
-    }));
-  } catch(e) {}
-}
 
-function carregarConfig() {
-  try {
-    const saved = localStorage.getItem('aviator_cfg');
-    if (saved) {
-      const cfg = JSON.parse(saved);
-      Object.assign(CFG, cfg);
-      document.getElementById('xslider').value = CFG.showN;
+// Padrões identificados:
+// 1. Acúmulo de velas azuis (3-5 velas seguidas entre 1.00x e 1.20x)
+// 2. Padrão decrescente progressivo
+// 3. Padrão de repetição de valores
+// 4. Espelhamento (valores simétricos)
+// 5. Minutagem específica (paga em minutos pares/ímpares)
+// 6. Ciclos entre velas altas
+
+let historicoPadroes = [];
+let sequenciaBaixa = [];
+
+function analisarPadroes() {
+  if (pts.length < 15) return null;
+  
+  const ultimas = pts.slice(-15);
+  const valores = ultimas.map(p => p.val);
+  const tempos = ultimas.map(p => p.time);
+  
+  // ========== PADRÃO 1: ACÚMULO DE VELAS AZUIS (ZONA BAIXA) ==========
+  // Detectar 3-5 velas consecutivas entre 1.00x e 1.20x
+  const velasBaixas = valores.filter(v => v >= 1.00 && v <= 1.20);
+  const sequenciaBaixaAtual = [];
+  for (let i = valores.length-1; i >= 0; i--) {
+    if (valores[i] >= 1.00 && valores[i] <= 1.20) {
+      sequenciaBaixaAtual.push(valores[i]);
+    } else {
+      break;
     }
-  } catch(e) {}
-}
-
-// ═══════════════════════════════════════════════════════════════════
-// MODAL CONFIG MM
-// ═══════════════════════════════════════════════════════════════════
-function abrirConfigMM() {
-  const container = document.getElementById('mmLista');
-  const mmLista = [
-    { id: 1, nome: 'MM1 (Rápida)', cor: CFG.mm1Cor, per: CFG.mm1Per, on: CFG.mm1On, lw: CFG.mm1Lw, curva: CFG.mm1Curva },
-    { id: 2, nome: 'MM2 (Média 1)', cor: CFG.mm2Cor, per: CFG.mm2Per, on: CFG.mm2On, lw: CFG.mm2Lw, curva: CFG.mm2Curva },
-    { id: 3, nome: 'MM3 (Média 2)', cor: CFG.mm3Cor, per: CFG.mm3Per, on: CFG.mm3On, lw: CFG.mm3Lw, curva: CFG.mm3Curva },
-    { id: 4, nome: 'MM4 (Lenta)', cor: CFG.mm4Cor, per: CFG.mm4Per, on: CFG.mm4On, lw: CFG.mm4Lw, curva: CFG.mm4Curva },
-    { id: 5, nome: 'MM5 (Extra 1)', cor: CFG.mm5Cor, per: CFG.mm5Per, on: CFG.mm5On, lw: CFG.mm5Lw, curva: CFG.mm5Curva },
-    { id: 6, nome: 'MM6 (Extra 2)', cor: CFG.mm6Cor, per: CFG.mm6Per, on: CFG.mm6On, lw: CFG.mm6Lw, curva: CFG.mm6Curva }
-  ];
+  }
   
-  container.innerHTML = mmLista.map(mm => `
-    <div class="mm-item" data-id="${mm.id}">
-      <div class="mm-header" onclick="toggleMMDetalhes(${mm.id})">
-        <span class="mm-nome" style="color:${mm.cor}">${mm.nome} (EMA ${mm.per})</span>
-        <div class="mm-toggle ${mm.on ? 'on' : ''}" onclick="event.stopPropagation(); toggleMM(${mm.id})"></div>
-      </div>
-      <div class="mm-detalhes" id="mmDetalhes${mm.id}">
-        <input type="number" id="mmPer${mm.id}" value="${mm.per}" min="2" max="500" placeholder="Período">
-        <input type="color" id="mmCor${mm.id}" value="${mm.cor}">
-        <input type="number" id="mmLw${mm.id}" value="${mm.lw}" step="0.1" min="0.5" max="3" placeholder="Espessura">
-        <select id="mmCurva${mm.id}">
-          <option value="linear" ${mm.curva === 'linear' ? 'selected' : ''}>Linear</option>
-          <option value="smooth" ${mm.curva === 'smooth' ? 'selected' : ''}>Smooth</option>
-          <option value="bezier" ${mm.curva === 'bezier' ? 'selected' : ''}>Bezier</option>
-          <option value="wavy" ${mm.curva === 'wavy' ? 'selected' : ''}>Wavy</option>
-          <option value="arc" ${mm.curva === 'arc' ? 'selected' : ''}>Arc</option>
-          <option value="spiky" ${mm.curva === 'spiky' ? 'selected' : ''}>Spiky</option>
-        </select>
-        <button class="btn" onclick="aplicarMM(${mm.id})" style="margin-top:4px;width:100%">Aplicar</button>
-      </div>
-    </div>
-  `).join('');
+  const acumuloVelas = sequenciaBaixaAtual.length;
+  if (acumuloVelas >= 3 && acumuloVelas <= 6) {
+    // Verifica se após esse acúmulo geralmente vem uma ROXA ou ROSA
+    const previsao = acumuloVelas >= 4 ? 'ROSA (≥10x)' : 'ROXA (≥2x)';
+    return {
+      tipo: 'ACÚMULO',
+      detalhe: `${acumuloVelas} velas consecutivas na zona baixa (1.00x-1.20x)`,
+      previsao: previsao,
+      forca: Math.min(acumuloVelas * 25, 100)
+    };
+  }
   
-  document.getElementById('modalMM').classList.add('open');
-}
-
-function toggleMMDetalhes(id) {
-  const el = document.getElementById(`mmDetalhes${id}`);
-  if (el) el.classList.toggle('open');
-}
-
-function toggleMM(id) {
-  const on = !CFG[`mm${id}On`];
-  CFG[`mm${id}On`] = on;
-  const toggle = document.querySelector(`.mm-item[data-id="${id}"] .mm-toggle`);
-  if (toggle) toggle.classList.toggle('on', on);
-  salvarConfig();
-  draw();
-}
-
-function aplicarMM(id) {
-  const per = parseInt(document.getElementById(`mmPer${id}`).value);
-  const cor = document.getElementById(`mmCor${id}`).value;
-  const lw = parseFloat(document.getElementById(`mmLw${id}`).value);
-  const curva = document.getElementById(`mmCurva${id}`).value;
+  // ========== PADRÃO 2: PADRÃO DECRESCENTE PROGRESSIVO ==========
+  // Velas diminuindo gradualmente: ex: 1.15 → 1.10 → 1.05 → 1.01
+  let decrescente = true;
+  for (let i = valores.length-4; i < valores.length-1; i++) {
+    if (i >= 0 && valores[i] <= valores[i+1]) {
+      decrescente = false;
+      break;
+    }
+  }
+  if (decrescente && valores.length >= 4) {
+    const ultimoValor = valores[valores.length-1];
+    if (ultimoValor >= 1.00 && ultimoValor <= 1.30) {
+      return {
+        tipo: 'DECRESCENTE',
+        detalhe: `Sequência decrescente: ${valores.slice(-4).map(v=>v.toFixed(2)).join(' → ')}`,
+        previsao: 'ROXA (≥2x) ou ROSA (≥10x)',
+        forca: 85
+      };
+    }
+  }
   
-  if (!isNaN(per)) CFG[`mm${id}Per`] = per;
-  CFG[`mm${id}Cor`] = cor;
-  if (!isNaN(lw)) CFG[`mm${id}Lw`] = lw;
-  CFG[`mm${id}Curva`] = curva;
+  // ========== PADRÃO 3: REPETIÇÃO DE VALORES ==========
+  // Valores que se repetem antes de uma vela alta
+  const frequencias = {};
+  valores.slice(-10).forEach(v => {
+    const key = v.toFixed(2);
+    frequencias[key] = (frequencias[key] || 0) + 1;
+  });
   
-  salvarConfig();
-  draw();
-  showAlert(`MM${id} configurada!`, '#22c55e', 1000);
+  for (const [valor, count] of Object.entries(frequencias)) {
+    if (count >= 3 && parseFloat(valor) >= 1.00 && parseFloat(valor) <= 1.50) {
+      return {
+        tipo: 'REPETIÇÃO',
+        detalhe: `Valor ${valor} repetido ${count}x nas últimas velas`,
+        previsao: 'ROXA (≥2x)',
+        forca: 70
+      };
+    }
+  }
+  
+  // ========== PADRÃO 4: ESPELHAMENTO ==========
+  // Valores simétricos: ex: 1.15 e 1.51, 1.08 e 1.80
+  for (let i = valores.length-6; i < valores.length-2; i++) {
+    if (i >= 0) {
+      const v1 = valores[i];
+      const v2 = valores[i+3];
+      const espelhado = Math.abs(v1 - (v2 / 10)) < 0.1 || Math.abs((v1 * 10) - v2) < 0.5;
+      if (espelhado && v1 >= 1.00 && v1 <= 2.00 && v2 >= 1.00 && v2 <= 20) {
+        return {
+          tipo: 'ESPELHAMENTO',
+          detalhe: `Espelhamento detectado: ${v1.toFixed(2)} → ${v2.toFixed(2)}`,
+          previsao: v2 >= 10 ? 'ROSA (≥10x)' : 'ROXA (≥2x)',
+          forca: 80
+        };
+      }
+    }
+  }
+  
+  // ========== PADRÃO 5: MINUTAGEM (paga em minutos pares/ímpares) ==========
+  if (tempos.length >= 2) {
+    const ultimoMinuto = tempos[tempos.length-1].getMinutes();
+    const penultimoMinuto = tempos[tempos.length-2].getMinutes();
+    const diffMinutos = Math.abs(ultimoMinuto - penultimoMinuto);
+    
+    // Padrão de minutos: 3, 5, 7, 10 minutos entre velas altas
+    if (diffMinutos === 3 || diffMinutos === 5 || diffMinutos === 7 || diffMinutos === 10) {
+      const ultimoValor = valores[valores.length-1];
+      if (ultimoValor >= 1.00 && ultimoValor <= 1.30) {
+        return {
+          tipo: 'MINUTAGEM',
+          detalhe: `${diffMinutos} minutos desde última vela - padrão de pagamento`,
+          previsao: 'ROSA (≥10x)',
+          forca: 90
+        };
+      }
+    }
+  }
+  
+  // ========== PADRÃO 6: CICLO ENTRE VELAS ALTAS ==========
+  // Encontrar última vela alta (≥10x) e contar velas até agora
+  let ultimoIndiceAlto = -1;
+  for (let i = pts.length-15; i < pts.length; i++) {
+    if (i >= 0 && pts[i] && pts[i].val >= 10) {
+      ultimoIndiceAlto = i;
+    }
+  }
+  
+  if (ultimoIndiceAlto !== -1) {
+    const velasDesdeAlta = pts.length - ultimoIndiceAlto - 1;
+    // Ciclos comuns: 10, 15, 20, 25, 30 velas entre altas
+    if (velasDesdeAlta === 10 || velasDesdeAlta === 15 || velasDesdeAlta === 20 || velasDesdeAlta === 25 || velasDesdeAlta === 30) {
+      return {
+        tipo: 'CICLO',
+        detalhe: `${velasDesdeAlta} velas desde última ROSA - ciclo detectado`,
+        previsao: 'ROSA (≥10x)',
+        forca: 85
+      };
+    }
+  }
+  
+  // ========== PADRÃO 7: PAR/ÍMPAR ==========
+  const ultimoValorInt = Math.floor(valores[valores.length-1] * 100);
+  const parImpar = ultimoValorInt % 2 === 0 ? 'PAR' : 'ÍMPAR';
+  const penultimoParImpar = Math.floor(valores[valores.length-2] * 100) % 2 === 0 ? 'PAR' : 'ÍMPAR';
+  
+  if (parImpar !== penultimoParImpar && valores[valores.length-1] <= 1.20) {
+    return {
+      tipo: 'PAR/ÍMPAR',
+      detalhe: `Mudou de ${penultimoParImpar} para ${parImpar} - padrão de alternância`,
+      previsao: 'ROXA (≥2x)',
+      forca: 65
+    };
+  }
+  
+  return null;
 }
 
-function fecharModalMM() {
-  document.getElementById('modalMM').classList.remove('open');
+function verificarSinalAntecipado() {
+  if (pts.length < 10) return false;
+  
+  const padrao = analisarPadroes();
+  if (!padrao) return false;
+  
+  const agora = Date.now();
+  if (agora - ultimoAlertaPadrao < 60000) return false; // 1 min de cooldown
+  
+  // Verifica se estamos na zona baixa (última vela)
+  const ultimaVela = pts[pts.length-1];
+  if (ultimaVela.val >= 1.00 && ultimaVela.val <= 1.30) {
+    ultimoAlertaPadrao = agora;
+    
+    // Marca a vela anterior como ponto de sinal
+    if (pts.length >= 2 && !pts[pts.length-2].sinal) {
+      pts[pts.length-2].sinal = true;
+      pts[pts.length-2].padrao = padrao;
+    }
+    
+    // Mostra alerta
+    const alertMsg = `🔔 PADRÃO DETECTADO: ${padrao.tipo}\n📊 ${padrao.detalhe}\n🎯 PREVISÃO: ${padrao.previsao} (força ${padrao.forca}%)`;
+    showAlert(alertMsg, '#f59e0b', 8000);
+    
+    // Atualiza área de padrão
+    document.getElementById('patternDetected').innerHTML = `
+      <span style="color:#f59e0b">${padrao.tipo}</span><br>
+      <small style="color:#4a6e94">${padrao.detalhe}</small><br>
+      <strong style="color:#22c55e">→ ${padrao.previsao}</strong> (${padrao.forca}%)
+    `;
+    
+    triggerFlash();
+    return true;
+  }
+  
+  return false;
 }
 
 // ═══════════════════════════════════════════════════════════════════
@@ -324,7 +385,7 @@ function deleteSelected() {
     draw();
     showAlert('✓ Linha removida', '#22c55e', 1000);
   } else {
-    showAlert('Toque numa linha para selecionar', '#f59e0b', 1000);
+    showAlert('Clique numa linha para selecionar', '#f59e0b', 1000);
   }
 }
 
@@ -349,79 +410,9 @@ function getDrawingAt(x, y) {
 }
 
 // ═══════════════════════════════════════════════════════════════════
-// MÉDIAS MÓVEIS
-// ═══════════════════════════════════════════════════════════════════
-function calcularEMA(dados, periodo, extendFuturo = 10) {
-  const k = 2 / (periodo + 1);
-  let ema = dados[0];
-  const resultado = [ema];
-  for (let i = 1; i < dados.length; i++) {
-    ema = dados[i] * k + ema * (1 - k);
-    resultado.push(ema);
-  }
-  let ultimo = ema;
-  for (let i = 0; i < extendFuturo; i++) {
-    ultimo = ultimo * (1 - k);
-    resultado.push(ultimo);
-  }
-  return resultado;
-}
-
-const curvaFn = {
-  linear: (p,sx,sy) => { if(p.length<2)return; ctx.beginPath();ctx.moveTo(sx(0),sy(p[0]));for(let i=1;i<p.length;i++)ctx.lineTo(sx(i),sy(p[i]));ctx.stroke(); },
-  smooth: (p,sx,sy) => { if(p.length<2)return; ctx.beginPath();ctx.moveTo(sx(0),sy(p[0]));for(let i=0;i<p.length-1;i++){const x1=sx(i),y1=sy(p[i]),x2=sx(i+1),y2=sy(p[i+1]);ctx.bezierCurveTo(x1+(x2-x1)*0.33,y1,x1+(x2-x1)*0.66,y2,x2,y2);}ctx.stroke(); },
-  bezier: (p,sx,sy) => { if(p.length<2)return; ctx.beginPath();ctx.moveTo(sx(0),sy(p[0]));for(let i=0;i<p.length-1;i++){const x1=sx(i),y1=sy(p[i]),x2=sx(i+1),y2=sy(p[i+1]);ctx.bezierCurveTo(x1+(x2-x1)*0.25,y1-Math.abs(p[i+1]-p[i])*2,x2-(x2-x1)*0.25,y2+Math.abs(p[i+1]-p[i])*2,x2,y2);}ctx.stroke(); },
-  wavy: (p,sx,sy) => { if(p.length<2)return; ctx.beginPath();ctx.moveTo(sx(0),sy(p[0]));for(let i=0;i<p.length-1;i++){const x1=sx(i),y1=sy(p[i]),x2=sx(i+1),y2=sy(p[i+1]);const mx=(x1+x2)/2,amp=Math.abs(p[i+1]-p[i])*3;ctx.quadraticCurveTo(x1,y1-amp,mx,(y1+y2)/2);ctx.quadraticCurveTo(x2,y2+amp,x2,y2);}ctx.stroke(); },
-  arc: (p,sx,sy) => { if(p.length<2)return; ctx.beginPath();ctx.moveTo(sx(0),sy(p[0]));for(let i=0;i<p.length-1;i++){const x1=sx(i),y1=sy(p[i]),x2=sx(i+1),y2=sy(p[i+1]);ctx.quadraticCurveTo((x1+x2)/2,Math.min(y1,y2)-15,x2,y2);}ctx.stroke(); },
-  spiky: (p,sx,sy) => { if(p.length<2)return; ctx.beginPath();ctx.moveTo(sx(0),sy(p[0]));for(let i=0;i<p.length-1;i++){const x1=sx(i),y1=sy(p[i]),x2=sx(i+1),y2=sy(p[i+1]);const mx=(x1+x2)/2;ctx.lineTo(mx,Math.min(y1,y2)-12);ctx.lineTo(x2,y2);}ctx.stroke(); }
-};
-
-// ═══════════════════════════════════════════════════════════════════
-// SINAL DE ENTRADA (1 vela antes da ROSA)
-// ═══════════════════════════════════════════════════════════════════
-function detectarSinalAntecipado() {
-  if (pts.length < 5) return false;
-  const valores = pts.slice(-5).map(p => p.val);
-  const ultimo = valores[valores.length-1];
-  const penultimo = valores[valores.length-2];
-  const antepenultimo = valores[valores.length-3];
-  
-  const naZonaAzul = ultimo >= 1.0 && ultimo <= 2.2;
-  const enfraquecendo = ultimo < penultimo && penultimo < antepenultimo;
-  const timeout = Date.now() - ultimoSinalTimestamp > 60000;
-  
-  if (naZonaAzul && enfraquecendo && timeout) {
-    sequenciaFraca++;
-    if (sequenciaFraca >= 2) {
-      ultimoSinalTimestamp = Date.now();
-      sequenciaFraca = 0;
-      return true;
-    }
-  } else {
-    sequenciaFraca = 0;
-  }
-  return false;
-}
-
-function marcarSinal() {
-  if (pts.length < 2) return;
-  const idx = pts.length - 2;
-  if (idx >= 0 && !pts[idx].sinal) {
-    pts[idx].sinal = true;
-    const t = pts[idx].time.toLocaleTimeString('pt-BR');
-    const area = document.getElementById('logArea');
-    const row = document.createElement('div');
-    row.className = 'log-row';
-    row.style.background = 'rgba(34,197,94,0.15)';
-    row.innerHTML = `<div class="ldot" style="background:#22c55e"></div><span class="lt">${t}</span><span class="lv" style="color:#22c55e">${pts[idx].val.toFixed(2)}x</span><span class="ltag sinal">⚡ SINAL</span>`;
-    area.insertBefore(row, area.firstChild);
-  }
-}
-
-// ═══════════════════════════════════════════════════════════════════
 // LOG E UI
 // ═══════════════════════════════════════════════════════════════════
-function addLog(vela) {
+function addLog(vela, isSinal = false, padrao = null) {
   const t = vela.time.toLocaleTimeString('pt-BR');
   const v = vela.val;
   let classe, cor;
@@ -432,7 +423,14 @@ function addLog(vela) {
   const area = document.getElementById('logArea');
   const row = document.createElement('div');
   row.className = 'log-row';
-  row.innerHTML = `<div class="ldot" style="background:${cor}"></div><span class="lt">${t}</span><span class="lv" style="color:${cor}">${v.toFixed(2)}x</span><span class="ltag ${classe}">${classe.toUpperCase()}</span>`;
+  if (isSinal) row.style.background = 'rgba(245,158,11,0.15)';
+  let extra = '';
+  if (padrao) extra = `<span class="ltag pattern">${padrao.tipo}</span>`;
+  row.innerHTML = `<div class="ldot" style="background:${cor}"></div>
+                   <span class="lt">${t}</span>
+                   <span class="lv" style="color:${cor}">${v.toFixed(2)}x</span>
+                   <span class="ltag ${classe}">${classe.toUpperCase()}</span>
+                   ${extra}`;
   area.insertBefore(row, area.firstChild);
   while(area.children.length > 30) area.removeChild(area.lastChild);
 }
@@ -445,24 +443,20 @@ function atualizarUI() {
   document.getElementById('sCot').style.color = ult.val>=10?'#f472b6':ult.val>=2?'#a855f7':'#06b6d4';
 }
 
-function showAlert(msg, color, dur=2500) {
+function showAlert(msg, color, dur=4000) {
   const el = document.getElementById('alertBox');
   el.textContent = msg;
-  el.style.cssText = `background:${color}22;border:1px solid ${color};color:${color}`;
+  el.style.cssText = `background:${color}22;border:1px solid ${color};color:${color};white-space:normal;max-width:90%;font-size:11px`;
   el.className = 'alert show';
   setTimeout(() => el.className = 'alert', dur);
 }
 
-function triggerFlash() {
-  const f = document.getElementById('flash');
-  f.className = 'flash on';
-  setTimeout(() => f.className = 'flash', 400);
-}
+function triggerFlash() { const f = document.getElementById('flash'); f.className='flash on'; setTimeout(()=>f.className='flash',400); }
 
 // ═══════════════════════════════════════════════════════════════════
-// BUSCAR VELAS
+// SERVIDOR
 // ═══════════════════════════════════════════════════════════════════
-async function buscarVelasCompletas() {
+async function buscarVelas() {
   try {
     const url = `${SERVIDOR_URL}/api/velas?painel=${PAINEL}&limit=500`;
     const res = await fetch(url);
@@ -507,12 +501,17 @@ async function buscarNovasVelas() {
             let ts = v.timestamp ? new Date(v.timestamp) : new Date();
             if (isNaN(ts.getTime())) ts = new Date();
             pts.push({ val: mult, time: ts, rodada: v.rodada });
-            addLog({ val: mult, time: ts });
             
-            if (detectarSinalAntecipado()) {
-              marcarSinal();
-              showAlert('🔔 SINAL! Próxima vela pode ser ROSA!', '#22c55e', 4000);
-              triggerFlash();
+            // Verifica padrão ANTES de adicionar ao log
+            const padrao = analisarPadroes();
+            addLog({ val: mult, time: ts }, false, padrao);
+            
+            // Verifica sinal antecipado
+            if (verificarSinalAntecipado()) {
+              // Marca a vela anterior no gráfico
+              if (pts.length >= 2) {
+                pts[pts.length-2].sinal = true;
+              }
             }
             novas++;
           }
@@ -523,7 +522,7 @@ async function buscarNovasVelas() {
         pts.sort((a,b)=>a.time-b.time);
         atualizarUI();
         draw();
-        if (novas > 0) showAlert(`📈 +${novas} vela(s)`, '#22c55e', 1000);
+        if (novas > 0) showAlert(`📈 +${novas} vela(s) recebida(s)`, '#22c55e', 1000);
       }
     }
   } catch(e) {}
@@ -531,7 +530,7 @@ async function buscarNovasVelas() {
 
 async function syncNow() {
   showAlert('🔄 Sincronizando...', '#60a5fa', 1000);
-  await buscarVelasCompletas();
+  await buscarVelas();
 }
 
 // ═══════════════════════════════════════════════════════════════════
@@ -545,7 +544,7 @@ function getViewSub() {
   return pts.slice(start, end);
 }
 function getScale(sub, W, H) {
-  scaleW = Math.max(44, scaleW);
+  scaleW = Math.max(50, Math.min(100, scaleW));
   const vals = sub.map(p=>p.val);
   if (!vals.length) return { sx:()=>0, sy:()=>0, minV:0.8, maxV:2 };
   const minV = Math.max(0.85, Math.min(...vals) * 0.92);
@@ -570,7 +569,7 @@ function draw() {
   if (sub.length < 2) return;
   const { sx, sy, minV, maxV } = getScale(sub, W, H);
   
-  ctx.font = '7px monospace';
+  ctx.font = `${Math.max(7, Math.min(11, W/80))}px monospace`;
   [1, 2, 5, 10, 20].filter(v=>v>=minV&&v<=maxV*1.05).forEach(v=>{
     const py = sy(v);
     ctx.strokeStyle = v>=10?'rgba(244,114,182,0.08)':v>=2?'rgba(168,85,247,0.06)':'#0c1b2e';
@@ -595,35 +594,23 @@ function draw() {
     ctx.strokeStyle = col(p1.val); ctx.lineWidth = 2; ctx.stroke();
   }
   
-  // Médias móveis
-  if (CFG.showMA && pts.length >= 2) {
-    const valores = pts.map(p=>p.val);
-    const subStart = Math.max(0, pts.length - viewOffset - sub.length);
-    for (let i=1; i<=6; i++) {
-      if (!CFG[`mm${i}On`] || pts.length < CFG[`mm${i}Per`]) continue;
-      const ema = calcularEMA(valores, CFG[`mm${i}Per`], 10);
-      const slice = ema.slice(subStart, subStart + sub.length + 15);
-      if (slice.length < 2) continue;
-      ctx.strokeStyle = CFG[`mm${i}Cor`];
-      ctx.lineWidth = CFG[`mm${i}Lw`];
-      ctx.setLineDash(i>=3?[5,3]:[]);
-      (curvaFn[CFG[`mm${i}Curva`]] || curvaFn.linear)(slice, sx, sy);
-    }
-    ctx.setLineDash([]);
-  }
-  
-  // Bolinhas e sinal
+  // Bolinhas e marcadores de sinal
   sub.forEach((p,i)=>{
     const x=sx(i), y=sy(p.val), r = p.val>=10?6:p.val>=2?4.5:3;
     ctx.beginPath(); ctx.arc(x,y,r,0,Math.PI*2);
     ctx.fillStyle = col(p.val); ctx.fill();
     ctx.strokeStyle = '#fff'; ctx.lineWidth=1; ctx.stroke();
     
+    // Marcador de SINAL (antes da vela rosa/roxa)
     if(p.sinal){
-      ctx.beginPath(); ctx.arc(x, y-12, 8, 0, Math.PI*2);
-      ctx.fillStyle = '#22c55e'; ctx.fill();
-      ctx.fillStyle = '#fff'; ctx.font='bold 7px monospace'; ctx.textAlign='center';
-      ctx.fillText('⚡', x, y-11);
+      ctx.beginPath(); ctx.arc(x, y-14, 10, 0, Math.PI*2);
+      ctx.fillStyle = '#f59e0b'; ctx.fill();
+      ctx.fillStyle = '#000'; ctx.font='bold 8px monospace'; ctx.textAlign='center';
+      ctx.fillText('⚠️', x, y-12);
+    }
+    if(p.padrao){
+      ctx.fillStyle = '#f59e0b'; ctx.font='bold 7px monospace'; ctx.textAlign='center';
+      ctx.fillText(p.padrao.tipo.substring(0,3), x, y-22);
     }
   });
   
@@ -716,10 +703,10 @@ function resetView() { zoomLevel = 1.0; viewOffset = 0; vertOffset = 0; draw(); 
 function voltarPresente() { viewOffset = 0; document.getElementById('btnBack').classList.remove('show'); draw(); }
 
 function resize() {
-  const dpr = window.devicePixelRatio || 2;
+  const dpr = window.devicePixelRatio || 1;
   const w = cwrap.clientWidth, h = cwrap.clientHeight;
-  canvas.width = Math.max(100, Math.round(w * dpr));
-  canvas.height = Math.max(100, Math.round(h * dpr));
+  canvas.width = Math.max(200, Math.round(w * dpr));
+  canvas.height = Math.max(150, Math.round(h * dpr));
   canvas.style.width = w + 'px';
   canvas.style.height = h + 'px';
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
@@ -732,13 +719,12 @@ setInterval(() => {
 }, 1000);
 
 // INICIALIZAÇÃO
-carregarConfig();
 resize();
 setTool('cursor');
 setTimeout(async () => {
-  await buscarVelasCompletas();
+  await buscarVelas();
   pollingInterval = setInterval(() => buscarNovasVelas(), 2000);
-  showAlert('🟢 Painel estável! Clique em ⚙ MM para configurar', '#22c55e', 4000);
+  showAlert('🔍 DETECTOR DE PADRÕES ATIVO! Aguardando padrões...', '#f59e0b', 5000);
 }, 500);
 </script>
 </body>
