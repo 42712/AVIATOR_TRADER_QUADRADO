@@ -97,7 +97,6 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:var(--fon
 .mm-color{width:30px;height:24px;border:none;border-radius:4px}
 .mm-op{width:45px;padding:4px;background:var(--bg3);border:1px solid var(--brd2);border-radius:4px;color:var(--txt);font-size:9px}
 .mm-sel{padding:4px;background:var(--bg3);border:1px solid var(--brd2);border-radius:4px;color:var(--txt);font-size:9px}
-.mm-sel option{background:var(--bg3);color:var(--txt)}
 .mm-toggle{width:36px;height:18px;border-radius:9px;background:var(--brd2);cursor:pointer;position:relative}
 .mm-toggle.on{background:var(--verde)}
 .mm-toggle::after{content:'';position:absolute;width:14px;height:14px;border-radius:50%;background:#fff;top:2px;left:2px;transition:left .2s}
@@ -656,17 +655,11 @@ function getScale(sub, W, H) {
   };
 }
 
-// Função para converter dash string para array
-function dashFromStr(s) {
-  if (s === 'solid') return [];
-  if (s === 'dot') return [2, 4];
-  return [4, 5]; // dash padrão
-}
-
 // ═══════════════════════════════════════════════════════════════════
-// DRAW COM ALTA DEFINIÇÃO
+// DRAW COM ALTA DEFINIÇÃO E CORREÇÃO PARA TV
 // ═══════════════════════════════════════════════════════════════════
 function draw() {
+  // Alta qualidade de imagem
   ctx.imageSmoothingEnabled = true;
   ctx.imageSmoothingQuality = 'high';
   
@@ -723,7 +716,7 @@ function draw() {
     ctx.strokeStyle = col(p1.val); ctx.lineWidth = 2; ctx.stroke();
   }
   
-  // MÉDIAS MÓVEIS - TODAS AS 8
+  // MÉDIAS MÓVEIS - TODAS AS 8 COM DASH CONFIGURÁVEL
   if (CFG.showMA && pts.length >= 2) {
     const valores = pts.map(p=>p.val);
     const subStart = Math.max(0, pts.length - viewOffset - sub.length);
@@ -741,7 +734,7 @@ function draw() {
       ctx.strokeStyle = CFG[`mm${i}Cor`];
       ctx.lineWidth = CFG[`mm${i}Lw`];
       
-      // Aplica o dash pattern configurado
+      // Usa o dash configurado (pode ser sólido, tracejado ou pontilhado)
       const dash = CFG[`mm${i}Dash`];
       if (dash && dash.length > 0) {
         ctx.setLineDash(dash);
@@ -1057,7 +1050,7 @@ function resetCfgMM() {
 }
 
 // ═══════════════════════════════════════════════════════════════════
-// RESIZE CORRIGIDO PARA TV
+// RESIZE CORRIGIDO PARA TV (NUNCA CORTA)
 // ═══════════════════════════════════════════════════════════════════
 function resize() {
   const w = cwrap.clientWidth;
@@ -1086,7 +1079,7 @@ setTimeout(() => {
   buscarVelas();
   if (pollingInterval) clearInterval(pollingInterval);
   pollingInterval = setInterval(() => buscarNovasVelas(), 2000);
-  showAlert('✅ Conectado! Configuração de MMs com opção SÓLIDA disponível!', '#22c55e', 4000);
+  showAlert('✅ Conectado! Modo TV - Sem cortes!', '#22c55e', 4000);
 }, 500);
 </script>
 
