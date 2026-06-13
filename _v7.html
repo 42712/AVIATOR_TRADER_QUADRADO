@@ -707,18 +707,48 @@ function draw() {
     ctx.strokeStyle = col(p1.val); ctx.lineWidth = 2; ctx.stroke();
   }
   
+  // ═══════════════════════════════════════════════════════════════════
+  // MÉDIAS MÓVEIS CORRIGIDAS - TODAS AS 8 APARECEM
+  // ═══════════════════════════════════════════════════════════════════
   if (CFG.showMA && pts.length >= 2) {
     const valores = pts.map(p=>p.val);
     const subStart = Math.max(0, pts.length - viewOffset - sub.length);
-    for (let i=1; i<=8; i++) {
-      if (!CFG[`mm${i}On`] || pts.length < CFG[`mm${i}Per`]) continue;
+    
+    // Lista de todas as 8 MMs
+    const mmLista = [1, 2, 3, 4, 5, 6, 7, 8];
+    
+    for (let i of mmLista) {
+      if (!CFG[`mm${i}On`]) continue;
+      if (pts.length < CFG[`mm${i}Per`]) continue;
+      
       const ema = calcularEMA(valores, CFG[`mm${i}Per`], 10);
       const slice = ema.slice(subStart, subStart + sub.length + 15);
       if (slice.length < 2) continue;
+      
+      ctx.save();
       ctx.strokeStyle = CFG[`mm${i}Cor`];
       ctx.lineWidth = CFG[`mm${i}Lw`];
-      ctx.setLineDash(i>=3?[5,3]:[]);
-      (curvaFn[CFG[`mm${i}Curva`]] || curvaFn.linear)(slice, sx, sy);
+      
+      // Dash pattern diferente para cada MM
+      if (i === 1) ctx.setLineDash([4, 5]);
+      else if (i === 2) ctx.setLineDash([4, 5]);
+      else if (i === 3) ctx.setLineDash([2, 4]);
+      else if (i === 4) ctx.setLineDash([6, 3]);
+      else if (i === 5) ctx.setLineDash([8, 4]);
+      else if (i === 6) ctx.setLineDash([4, 5]);
+      else if (i === 7) ctx.setLineDash([2, 4]);
+      else if (i === 8) ctx.setLineDash([4, 5]);
+      else ctx.setLineDash([]);
+      
+      // Usa a curva configurada
+      const curva = CFG[`mm${i}Curva`] || 'linear';
+      if (curvaFn[curva]) {
+        curvaFn[curva](slice, sx, sy);
+      } else {
+        curvaFn.linear(slice, sx, sy);
+      }
+      
+      ctx.restore();
     }
     ctx.setLineDash([]);
   }
@@ -1024,7 +1054,7 @@ setTimeout(async () => {
   await buscarVelas();
   if (pollingInterval) clearInterval(pollingInterval);
   pollingInterval = setInterval(() => buscarNovasVelas(), 2000);
-  showAlert('✅ Conectado! Sistema IA ativo', '#22c55e', 3000);
+  showAlert('✅ Conectado! Sistema IA ativo - 8 MMs funcionando', '#22c55e', 3000);
 }, 500);
 </script>
 
