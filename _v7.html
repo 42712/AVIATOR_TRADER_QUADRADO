@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-<title>Aviator v7 - IA Completa</title>
+<title>Aviator v7 - Alta Definição</title>
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
@@ -16,7 +16,7 @@
 }
 html,body{height:100%;overflow:hidden;background:var(--bg);font-family:var(--font);font-size:11px;color:var(--txt)}
 .root{display:flex;flex-direction:column;height:100vh;width:100vw}
-.main{display:flex;flex:1;overflow:hidden;min-height:0}
+.main{display:flex;flex:1;overflow:hidden;min-height:0;min-width:0}
 
 .topbar{height:38px;background:var(--bg2);border-bottom:1px solid var(--brd);display:flex;align-items:center;flex-shrink:0;padding:0 12px;gap:8px}
 .tb-logo{font-size:13px;font-weight:700;color:#fff;display:flex;align-items:center;gap:6px;white-space:nowrap}
@@ -32,9 +32,9 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:var(--fon
 .wsd{width:5px;height:5px;border-radius:50%;background:currentColor;animation:blink 1.4s infinite}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
 
-.chart-col{flex:1;display:flex;flex-direction:column;overflow:hidden}
-.canvas-wrap{flex:1;position:relative;overflow:hidden;background:var(--bg);min-height:0}
-#cv{display:block;position:absolute;top:0;left:0;width:100%;height:100%}
+.chart-col{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0}
+.canvas-wrap{flex:1;position:relative;overflow:hidden;background:var(--bg);min-height:0;width:100%}
+#cv{display:block;position:absolute;top:0;left:0;width:100%;height:100%;object-fit:contain}
 #pov{position:absolute;inset:0;z-index:19;display:none;cursor:grabbing}
 
 .xbar{height:26px;background:var(--bg2);border-top:1px solid var(--brd);display:flex;align-items:center;padding:0 8px;gap:8px;font-size:8px;flex-shrink:0}
@@ -651,13 +651,22 @@ function getScale(sub, W, H) {
   return {
     sx: i => 12 + i * ((cW - 30) / (n-1||1)),
     sy: v => 45 + cH * (1 - (Math.log10(Math.max(v,minV)) - logMin + vsh) / (logMax - logMin||1)),
-    minV, maxV, cW, cH, logMin, logMax
+    minV, maxV
   };
 }
 
+// ═══════════════════════════════════════════════════════════════════
+// DRAW COM ALTA DEFINIÇÃO E CORREÇÃO PARA TV
+// ═══════════════════════════════════════════════════════════════════
 function draw() {
-  const W = canvas.width, H = canvas.height;
+  // Alta qualidade de imagem
+  ctx.imageSmoothingEnabled = true;
+  ctx.imageSmoothingQuality = 'high';
+  
+  const W = canvas.width;
+  const H = canvas.height;
   if (!W || !H) return;
+  
   ctx.clearRect(0, 0, W, H);
   
   let bordaCor = currentBorderColor;
@@ -673,7 +682,7 @@ function draw() {
   if (sub.length < 2) return;
   const { sx, sy, minV, maxV } = getScale(sub, W, H);
   
-  ctx.font = '7px monospace';
+  ctx.font = `${Math.max(7, Math.min(11, W/80))}px monospace`;
   [1, 2, 5, 10, 20, 50, 100].filter(v=>v>=minV&&v<=maxV*1.05).forEach(v=>{
     const py = sy(v);
     ctx.strokeStyle = v>=10?`${COR.ROSA}20`:v>=2?`${COR.ROXO}15`:'#0c1b2e';
@@ -690,8 +699,8 @@ function draw() {
       ctx.setLineDash([8,4]); 
       ctx.beginPath(); ctx.moveTo(10,py); ctx.lineTo(W-scaleW,py); ctx.stroke();
       ctx.fillStyle = c;
-      ctx.font = 'bold 9px monospace';
-      ctx.fillText(z===1?'1.00x ZONA AZUL':z===2?'2.00x ZONA ROXA':'10.00x ZONA ROSA', 15, py-5);
+      ctx.font = `bold ${Math.max(8, Math.min(10, W/90))}px monospace`;
+      ctx.fillText(z===1?'1.00x':z===2?'2.00x':'10.00x', 15, py-5);
     }
   });
   ctx.setLineDash([]);
@@ -707,14 +716,10 @@ function draw() {
     ctx.strokeStyle = col(p1.val); ctx.lineWidth = 2; ctx.stroke();
   }
   
-  // ═══════════════════════════════════════════════════════════════════
-  // MÉDIAS MÓVEIS CORRIGIDAS - TODAS AS 8 APARECEM
-  // ═══════════════════════════════════════════════════════════════════
+  // MÉDIAS MÓVEIS - TODAS AS 8
   if (CFG.showMA && pts.length >= 2) {
     const valores = pts.map(p=>p.val);
     const subStart = Math.max(0, pts.length - viewOffset - sub.length);
-    
-    // Lista de todas as 8 MMs
     const mmLista = [1, 2, 3, 4, 5, 6, 7, 8];
     
     for (let i of mmLista) {
@@ -729,7 +734,6 @@ function draw() {
       ctx.strokeStyle = CFG[`mm${i}Cor`];
       ctx.lineWidth = CFG[`mm${i}Lw`];
       
-      // Dash pattern diferente para cada MM
       if (i === 1) ctx.setLineDash([4, 5]);
       else if (i === 2) ctx.setLineDash([4, 5]);
       else if (i === 3) ctx.setLineDash([2, 4]);
@@ -740,13 +744,9 @@ function draw() {
       else if (i === 8) ctx.setLineDash([4, 5]);
       else ctx.setLineDash([]);
       
-      // Usa a curva configurada
       const curva = CFG[`mm${i}Curva`] || 'linear';
-      if (curvaFn[curva]) {
-        curvaFn[curva](slice, sx, sy);
-      } else {
-        curvaFn.linear(slice, sx, sy);
-      }
+      if (curvaFn[curva]) curvaFn[curva](slice, sx, sy);
+      else curvaFn.linear(slice, sx, sy);
       
       ctx.restore();
     }
@@ -820,7 +820,7 @@ function draw() {
     ctx.fillStyle = col(ultimaVela.val);
     ctx.beginPath(); ctx.arc(bx, posY, 8, 0, Math.PI*2); ctx.fill();
     ctx.fillStyle = '#fff';
-    ctx.font = 'bold 10px monospace';
+    ctx.font = `bold ${Math.max(8, Math.min(10, H/50))}px monospace`;
     ctx.textAlign = 'center';
     ctx.fillText(ultimaVela.val.toFixed(2) + 'x', bx, posY + 3);
   }
@@ -1034,27 +1034,37 @@ function resetCfgMM() {
   openCfgMM(); draw(); showAlert('Resetado!', '#22c55e', 1500);
 }
 
+// ═══════════════════════════════════════════════════════════════════
+// RESIZE CORRIGIDO PARA TV (NUNCA CORTA)
+// ═══════════════════════════════════════════════════════════════════
 function resize() {
-  const dpr = window.devicePixelRatio || 2;
-  const w = cwrap.clientWidth, h = cwrap.clientHeight;
-  canvas.width = Math.max(400, Math.round(w * dpr));
-  canvas.height = Math.max(300, Math.round(h * dpr));
-  canvas.style.width = w + 'px';
-  canvas.style.height = h + 'px';
-  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-  draw();
+  const w = cwrap.clientWidth;
+  const h = cwrap.clientHeight;
+  
+  if (w > 0 && h > 0) {
+    canvas.width = w;
+    canvas.height = h;
+    canvas.style.width = w + 'px';
+    canvas.style.height = h + 'px';
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    draw();
+  }
 }
-new ResizeObserver(resize).observe(cwrap);
+
+const resizeObserver = new ResizeObserver(() => { resize(); });
+resizeObserver.observe(cwrap);
+window.addEventListener('resize', () => { setTimeout(resize, 50); });
+
 setInterval(() => { document.getElementById('xNow').textContent = new Date().toLocaleTimeString('pt-BR'); }, 1000);
 
-resize();
-setTool('select');
-
-setTimeout(async () => {
-  await buscarVelas();
+// Inicialização
+setTimeout(() => {
+  resize();
+  setTool('select');
+  buscarVelas();
   if (pollingInterval) clearInterval(pollingInterval);
   pollingInterval = setInterval(() => buscarNovasVelas(), 2000);
-  showAlert('✅ Conectado! Sistema IA ativo - 8 MMs funcionando', '#22c55e', 3000);
+  showAlert('✅ Conectado! Modo TV - Sem cortes!', '#22c55e', 4000);
 }, 500);
 </script>
 
