@@ -97,6 +97,7 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:var(--fon
 .mm-color{width:30px;height:24px;border:none;border-radius:4px}
 .mm-op{width:45px;padding:4px;background:var(--bg3);border:1px solid var(--brd2);border-radius:4px;color:var(--txt);font-size:9px}
 .mm-sel{padding:4px;background:var(--bg3);border:1px solid var(--brd2);border-radius:4px;color:var(--txt);font-size:9px}
+.mm-sel option{background:var(--bg3);color:var(--txt)}
 .mm-toggle{width:36px;height:18px;border-radius:9px;background:var(--brd2);cursor:pointer;position:relative}
 .mm-toggle.on{background:var(--verde)}
 .mm-toggle::after{content:'';position:absolute;width:14px;height:14px;border-radius:50%;background:#fff;top:2px;left:2px;transition:left .2s}
@@ -198,14 +199,14 @@ const COR = { ROSA: '#f472b6', ROXO: '#a855f7', AZUL: '#06b6d4' };
 let CFG = {
   showN: 40,
   showMA: true,
-  mm1On: true, mm1Per: 9, mm1Cor: '#f59e0b', mm1Lw: 1.5, mm1Curva: 'smooth',
-  mm2On: true, mm2Per: 21, mm2Cor: '#06b6d4', mm2Lw: 1.2, mm2Curva: 'linear',
-  mm3On: true, mm3Per: 50, mm3Cor: '#22c55e', mm3Lw: 1.0, mm3Curva: 'bezier',
-  mm4On: true, mm4Per: 100, mm4Cor: '#ef4444', mm4Lw: 1.0, mm4Curva: 'smooth',
-  mm5On: true, mm5Per: 200, mm5Cor: '#eab308', mm5Lw: 0.9, mm5Curva: 'linear',
-  mm6On: false, mm6Per: 7, mm6Cor: '#ffffff', mm6Lw: 0.8, mm6Curva: 'step',
-  mm7On: false, mm7Per: 14, mm7Cor: '#ec4899', mm7Lw: 0.8, mm7Curva: 'monoton',
-  mm8On: false, mm8Per: 30, mm8Cor: '#3b82f6', mm8Lw: 0.8, mm8Curva: 'cardinal'
+  mm1On: true, mm1Per: 9, mm1Cor: '#f59e0b', mm1Lw: 1.5, mm1Dash: [4,5], mm1Curva: 'smooth',
+  mm2On: true, mm2Per: 21, mm2Cor: '#06b6d4', mm2Lw: 1.2, mm2Dash: [4,5], mm2Curva: 'linear',
+  mm3On: true, mm3Per: 50, mm3Cor: '#22c55e', mm3Lw: 1.0, mm3Dash: [2,4], mm3Curva: 'bezier',
+  mm4On: true, mm4Per: 100, mm4Cor: '#ef4444', mm4Lw: 1.0, mm4Dash: [6,3], mm4Curva: 'smooth',
+  mm5On: true, mm5Per: 200, mm5Cor: '#eab308', mm5Lw: 0.9, mm5Dash: [8,4], mm5Curva: 'linear',
+  mm6On: false, mm6Per: 7, mm6Cor: '#ffffff', mm6Lw: 0.8, mm6Dash: [4,5], mm6Curva: 'step',
+  mm7On: false, mm7Per: 14, mm7Cor: '#ec4899', mm7Lw: 0.8, mm7Dash: [2,4], mm7Curva: 'monoton',
+  mm8On: false, mm8Per: 30, mm8Cor: '#3b82f6', mm8Lw: 0.8, mm8Dash: [4,5], mm8Curva: 'cardinal'
 };
 
 let viewOffset = 0, zoomLevel = 1.0, vertOffset = 0, scaleW = 60;
@@ -655,11 +656,17 @@ function getScale(sub, W, H) {
   };
 }
 
+// Função para converter dash string para array
+function dashFromStr(s) {
+  if (s === 'solid') return [];
+  if (s === 'dot') return [2, 4];
+  return [4, 5]; // dash padrão
+}
+
 // ═══════════════════════════════════════════════════════════════════
-// DRAW COM ALTA DEFINIÇÃO E CORREÇÃO PARA TV
+// DRAW COM ALTA DEFINIÇÃO
 // ═══════════════════════════════════════════════════════════════════
 function draw() {
-  // Alta qualidade de imagem
   ctx.imageSmoothingEnabled = true;
   ctx.imageSmoothingQuality = 'high';
   
@@ -734,15 +741,13 @@ function draw() {
       ctx.strokeStyle = CFG[`mm${i}Cor`];
       ctx.lineWidth = CFG[`mm${i}Lw`];
       
-      if (i === 1) ctx.setLineDash([4, 5]);
-      else if (i === 2) ctx.setLineDash([4, 5]);
-      else if (i === 3) ctx.setLineDash([2, 4]);
-      else if (i === 4) ctx.setLineDash([6, 3]);
-      else if (i === 5) ctx.setLineDash([8, 4]);
-      else if (i === 6) ctx.setLineDash([4, 5]);
-      else if (i === 7) ctx.setLineDash([2, 4]);
-      else if (i === 8) ctx.setLineDash([4, 5]);
-      else ctx.setLineDash([]);
+      // Aplica o dash pattern configurado
+      const dash = CFG[`mm${i}Dash`];
+      if (dash && dash.length > 0) {
+        ctx.setLineDash(dash);
+      } else {
+        ctx.setLineDash([]);
+      }
       
       const curva = CFG[`mm${i}Curva`] || 'linear';
       if (curvaFn[curva]) curvaFn[curva](slice, sx, sy);
@@ -978,15 +983,22 @@ function toggleMA() { CFG.showMA = !CFG.showMA; document.getElementById('maBtn')
 function openCfgMM() {
   const lista = document.getElementById('mmConfigLista');
   const mms = [
-    { id:1, nome:'MM1 (9)', cor:CFG.mm1Cor, per:CFG.mm1Per, on:CFG.mm1On, lw:CFG.mm1Lw, curva:CFG.mm1Curva },
-    { id:2, nome:'MM2 (21)', cor:CFG.mm2Cor, per:CFG.mm2Per, on:CFG.mm2On, lw:CFG.mm2Lw, curva:CFG.mm2Curva },
-    { id:3, nome:'MM3 (50)', cor:CFG.mm3Cor, per:CFG.mm3Per, on:CFG.mm3On, lw:CFG.mm3Lw, curva:CFG.mm3Curva },
-    { id:4, nome:'MM4 (100)', cor:CFG.mm4Cor, per:CFG.mm4Per, on:CFG.mm4On, lw:CFG.mm4Lw, curva:CFG.mm4Curva },
-    { id:5, nome:'MM5 (200)', cor:CFG.mm5Cor, per:CFG.mm5Per, on:CFG.mm5On, lw:CFG.mm5Lw, curva:CFG.mm5Curva },
-    { id:6, nome:'MM6 (7)', cor:CFG.mm6Cor, per:CFG.mm6Per, on:CFG.mm6On, lw:CFG.mm6Lw, curva:CFG.mm6Curva },
-    { id:7, nome:'MM7 (14)', cor:CFG.mm7Cor, per:CFG.mm7Per, on:CFG.mm7On, lw:CFG.mm7Lw, curva:CFG.mm7Curva },
-    { id:8, nome:'MM8 (30)', cor:CFG.mm8Cor, per:CFG.mm8Per, on:CFG.mm8On, lw:CFG.mm8Lw, curva:CFG.mm8Curva }
+    { id:1, nome:'MM1 (9)', cor:CFG.mm1Cor, per:CFG.mm1Per, on:CFG.mm1On, lw:CFG.mm1Lw, dash:CFG.mm1Dash, curva:CFG.mm1Curva },
+    { id:2, nome:'MM2 (21)', cor:CFG.mm2Cor, per:CFG.mm2Per, on:CFG.mm2On, lw:CFG.mm2Lw, dash:CFG.mm2Dash, curva:CFG.mm2Curva },
+    { id:3, nome:'MM3 (50)', cor:CFG.mm3Cor, per:CFG.mm3Per, on:CFG.mm3On, lw:CFG.mm3Lw, dash:CFG.mm3Dash, curva:CFG.mm3Curva },
+    { id:4, nome:'MM4 (100)', cor:CFG.mm4Cor, per:CFG.mm4Per, on:CFG.mm4On, lw:CFG.mm4Lw, dash:CFG.mm4Dash, curva:CFG.mm4Curva },
+    { id:5, nome:'MM5 (200)', cor:CFG.mm5Cor, per:CFG.mm5Per, on:CFG.mm5On, lw:CFG.mm5Lw, dash:CFG.mm5Dash, curva:CFG.mm5Curva },
+    { id:6, nome:'MM6 (7)', cor:CFG.mm6Cor, per:CFG.mm6Per, on:CFG.mm6On, lw:CFG.mm6Lw, dash:CFG.mm6Dash, curva:CFG.mm6Curva },
+    { id:7, nome:'MM7 (14)', cor:CFG.mm7Cor, per:CFG.mm7Per, on:CFG.mm7On, lw:CFG.mm7Lw, dash:CFG.mm7Dash, curva:CFG.mm7Curva },
+    { id:8, nome:'MM8 (30)', cor:CFG.mm8Cor, per:CFG.mm8Per, on:CFG.mm8On, lw:CFG.mm8Lw, dash:CFG.mm8Dash, curva:CFG.mm8Curva }
   ];
+  
+  function dashValue(arr) {
+    if (!arr || arr.length === 0) return 'solid';
+    if (arr[0] === 2 && arr[1] === 4) return 'dot';
+    return 'dash';
+  }
+  
   lista.innerHTML = mms.map(mm => `
     <div class="mm-row">
       <span class="mm-label" style="color:${mm.cor}">${mm.nome}</span>
@@ -994,6 +1006,11 @@ function openCfgMM() {
       <input type="number" class="mm-num" id="mmPer${mm.id}" value="${mm.per}" min="2" max="500">
       <input type="color" class="mm-color" id="mmCor${mm.id}" value="${mm.cor}">
       <input type="number" class="mm-op" id="mmLw${mm.id}" value="${mm.lw}" step="0.1" min="0.5" max="3">
+      <select class="mm-sel" id="mmDash${mm.id}">
+        <option value="solid" ${dashValue(mm.dash) === 'solid' ? 'selected' : ''}>Sólida</option>
+        <option value="dash" ${dashValue(mm.dash) === 'dash' ? 'selected' : ''}>Tracejada</option>
+        <option value="dot" ${dashValue(mm.dash) === 'dot' ? 'selected' : ''}>Pontilhada</option>
+      </select>
       <select class="mm-sel" id="mmCurva${mm.id}">
         <option value="linear" ${mm.curva==='linear'?'selected':''}>Linear</option>
         <option value="smooth" ${mm.curva==='smooth'?'selected':''}>Smooth</option>
@@ -1018,24 +1035,29 @@ function aplicarCfgMM() {
     CFG[`mm${i}Cor`] = document.getElementById(`mmCor${i}`).value;
     CFG[`mm${i}Lw`] = parseFloat(document.getElementById(`mmLw${i}`).value) || CFG[`mm${i}Lw`];
     CFG[`mm${i}Curva`] = document.getElementById(`mmCurva${i}`).value;
+    
+    const dashType = document.getElementById(`mmDash${i}`).value;
+    if (dashType === 'solid') CFG[`mm${i}Dash`] = [];
+    else if (dashType === 'dot') CFG[`mm${i}Dash`] = [2, 4];
+    else CFG[`mm${i}Dash`] = [4, 5];
   }
   closeCfgMM(); draw(); showAlert('Configurações salvas!', '#22c55e', 1500);
 }
 
 function resetCfgMM() {
-  CFG.mm1On=true; CFG.mm1Per=9; CFG.mm1Cor='#f59e0b'; CFG.mm1Lw=1.5; CFG.mm1Curva='smooth';
-  CFG.mm2On=true; CFG.mm2Per=21; CFG.mm2Cor='#06b6d4'; CFG.mm2Lw=1.2; CFG.mm2Curva='linear';
-  CFG.mm3On=true; CFG.mm3Per=50; CFG.mm3Cor='#22c55e'; CFG.mm3Lw=1.0; CFG.mm3Curva='bezier';
-  CFG.mm4On=true; CFG.mm4Per=100; CFG.mm4Cor='#ef4444'; CFG.mm4Lw=1.0; CFG.mm4Curva='smooth';
-  CFG.mm5On=true; CFG.mm5Per=200; CFG.mm5Cor='#eab308'; CFG.mm5Lw=0.9; CFG.mm5Curva='linear';
-  CFG.mm6On=false; CFG.mm6Per=7; CFG.mm6Cor='#ffffff'; CFG.mm6Lw=0.8; CFG.mm6Curva='step';
-  CFG.mm7On=false; CFG.mm7Per=14; CFG.mm7Cor='#ec4899'; CFG.mm7Lw=0.8; CFG.mm7Curva='monoton';
-  CFG.mm8On=false; CFG.mm8Per=30; CFG.mm8Cor='#3b82f6'; CFG.mm8Lw=0.8; CFG.mm8Curva='cardinal';
+  CFG.mm1On=true; CFG.mm1Per=9; CFG.mm1Cor='#f59e0b'; CFG.mm1Lw=1.5; CFG.mm1Dash=[4,5]; CFG.mm1Curva='smooth';
+  CFG.mm2On=true; CFG.mm2Per=21; CFG.mm2Cor='#06b6d4'; CFG.mm2Lw=1.2; CFG.mm2Dash=[4,5]; CFG.mm2Curva='linear';
+  CFG.mm3On=true; CFG.mm3Per=50; CFG.mm3Cor='#22c55e'; CFG.mm3Lw=1.0; CFG.mm3Dash=[2,4]; CFG.mm3Curva='bezier';
+  CFG.mm4On=true; CFG.mm4Per=100; CFG.mm4Cor='#ef4444'; CFG.mm4Lw=1.0; CFG.mm4Dash=[6,3]; CFG.mm4Curva='smooth';
+  CFG.mm5On=true; CFG.mm5Per=200; CFG.mm5Cor='#eab308'; CFG.mm5Lw=0.9; CFG.mm5Dash=[8,4]; CFG.mm5Curva='linear';
+  CFG.mm6On=false; CFG.mm6Per=7; CFG.mm6Cor='#ffffff'; CFG.mm6Lw=0.8; CFG.mm6Dash=[4,5]; CFG.mm6Curva='step';
+  CFG.mm7On=false; CFG.mm7Per=14; CFG.mm7Cor='#ec4899'; CFG.mm7Lw=0.8; CFG.mm7Dash=[2,4]; CFG.mm7Curva='monoton';
+  CFG.mm8On=false; CFG.mm8Per=30; CFG.mm8Cor='#3b82f6'; CFG.mm8Lw=0.8; CFG.mm8Dash=[4,5]; CFG.mm8Curva='cardinal';
   openCfgMM(); draw(); showAlert('Resetado!', '#22c55e', 1500);
 }
 
 // ═══════════════════════════════════════════════════════════════════
-// RESIZE CORRIGIDO PARA TV (NUNCA CORTA)
+// RESIZE CORRIGIDO PARA TV
 // ═══════════════════════════════════════════════════════════════════
 function resize() {
   const w = cwrap.clientWidth;
@@ -1064,7 +1086,7 @@ setTimeout(() => {
   buscarVelas();
   if (pollingInterval) clearInterval(pollingInterval);
   pollingInterval = setInterval(() => buscarNovasVelas(), 2000);
-  showAlert('✅ Conectado! Modo TV - Sem cortes!', '#22c55e', 4000);
+  showAlert('✅ Conectado! Configuração de MMs com opção SÓLIDA disponível!', '#22c55e', 4000);
 }, 500);
 </script>
 
