@@ -121,10 +121,10 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:var(--fon
     <button class="btn b" onclick="openCfgMM()">⚙ MM</button>
   </div>
   <div class="tb-right">
-    <button class="btn" onclick="setTool('select')" title="Selecionar objeto" style="font-size:13px">🖱️</button>
-    <button class="btn" onclick="setTool('line')" title="Desenhar linha" style="font-size:13px">📏</button>
-    <button class="btn" onclick="setTool('move')" title="Mover objeto/pontos" style="font-size:13px">✋</button>
-    <button class="btn r" onclick="deleteSelected()" title="Excluir" style="font-size:13px">🗑️</button>
+    <button class="btn" onclick="setTool('select')" style="font-size:13px">🖱️</button>
+    <button class="btn" onclick="setTool('line')" style="font-size:13px">📏</button>
+    <button class="btn" onclick="setTool('move')" style="font-size:13px">✋</button>
+    <button class="btn r" onclick="deleteSelected()" style="font-size:13px">🗑️</button>
     <div class="ws-pill" id="wsStatus"><span class="wsd"></span><span id="wsLabel">ONLINE</span></div>
   </div>
 </div>
@@ -152,18 +152,14 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:var(--fon
     <div class="kv"><span class="kk">Total</span><span class="kvv" id="sTot">0</span></div>
     <div class="kv"><span class="kk">Status</span><span class="kvv" id="statusCon">🟢 Online</span></div>
   </div>
-  
-  <!-- STATUS DAS BORDAS DO GRÁFICO -->
   <div class="border-status" id="borderStatus">
     <span id="borderText">🔮 ANALISANDO PADRÃO...</span>
   </div>
-  
   <div class="highlight-block" id="rosaBlock">
     <div class="highlight-title">🌹 MAIOR VELA ROSA (ÚLTIMA HORA)</div>
     <div class="highlight-value" id="maiorRosaValor">—</div>
     <div class="highlight-time" id="maiorRosaTime">—</div>
   </div>
-  
   <div class="pattern-area" id="patternArea">
     <div class="pattern-title">📊 PADRÃO</div>
     <div class="pattern-value" id="patternDetected">—</div>
@@ -225,24 +221,15 @@ let movingLine = null;
 let movingPoint = null;
 let moveOffsetX = 0, moveOffsetY = 0;
 
-// ═══════════════════════════════════════════════════════════════════
-// FUNÇÃO PARA PISCAR O ELEMENTO
-// ═══════════════════════════════════════════════════════════════════
 function piscarElemento(elementId, cor, mensagem) {
   const el = document.getElementById(elementId);
   if (!el) return;
-  
   el.classList.remove('border-azul', 'border-roxo', 'border-rosa');
   el.classList.add(`border-${cor}`);
   document.getElementById('borderText').innerHTML = mensagem;
-  
   el.classList.add('pisca');
-  setTimeout(() => {
-    el.classList.remove('pisca');
-  }, 1500);
-  
+  setTimeout(() => el.classList.remove('pisca'), 1500);
   playBeep();
-  
   if (minutagemTimer) clearTimeout(minutagemTimer);
   minutagemTimer = setTimeout(() => {
     minutagemAtiva = false;
@@ -250,158 +237,106 @@ function piscarElemento(elementId, cor, mensagem) {
   }, 5000);
 }
 
-// ═══════════════════════════════════════════════════════════════════
-// DETECTOR DE MINUTAGEM (prioridade sobre sequência de rosas)
-// ═══════════════════════════════════════════════════════════════════
 function verificarMinutagem() {
   if (pts.length < 2) return false;
-  
   const ultimaVela = pts[pts.length-1];
   const penultimaVela = pts[pts.length-2];
-  
   let diffMinutos = ultimaVela.time.getMinutes() - penultimaVela.time.getMinutes();
   if (diffMinutos < 0) diffMinutos += 60;
-  
-  // Verifica se é ROXA (≥2x e <10x) ou ROSA (≥10x)
   const isRoxa = ultimaVela.val >= 2 && ultimaVela.val < 10;
   const isRosa = ultimaVela.val >= 10;
-  
-  // MINUTAGEM PARA ROSA: 3, 5, 7, 10 minutos
   const minutagemRosa = (diffMinutos === 3 || diffMinutos === 5 || diffMinutos === 7 || diffMinutos === 10);
-  
-  // MINUTAGEM PARA ROXA: 2, 4, 6, 8 minutos (pagando roxo)
   const minutagemRoxa = (diffMinutos === 2 || diffMinutos === 4 || diffMinutos === 6 || diffMinutos === 8);
   
-  // PRIORIDADE: MINUTAGEM SEMPRE PREVALECE sobre sequência de rosas
   if (minutagemRosa && isRosa) {
     minutagemAtiva = true;
-    piscarElemento('borderStatus', 'rosa', `🌹 MINUTAGEM! ${diffMinutos} min desde última ROSA - BORDAS ROSA`);
-    showAlert(`🌹 ALERTA DE MINUTAGEM! ${diffMinutos} minutos desde a última ROSA!`, '#f472b6', 4000);
+    piscarElemento('borderStatus', 'rosa', `🌹 MINUTAGEM! ${diffMinutos} min`);
+    showAlert(`🌹 MINUTAGEM! ${diffMinutos} minutos!`, '#f472b6', 4000);
     return true;
   }
-  
   if (minutagemRoxa && isRoxa) {
     minutagemAtiva = true;
-    piscarElemento('borderStatus', 'roxo', `🟣 PAGANDO ROXO! ${diffMinutos} min - BORDAS ROXA`);
-    showAlert(`🟣 PAGANDO ROXO! ${diffMinutos} minutos desde a última ROXA!`, '#a855f7', 4000);
+    piscarElemento('borderStatus', 'roxo', `🟣 PAGANDO ROXO! ${diffMinutos} min`);
+    showAlert(`🟣 PAGANDO ROXO! ${diffMinutos} minutos!`, '#a855f7', 4000);
     return true;
   }
-  
   return false;
 }
 
-// ═══════════════════════════════════════════════════════════════════
-// SISTEMA INTELIGENTE DE COR DAS BORDAS
-// ═══════════════════════════════════════════════════════════════════
 function atualizarCorBorda() {
   if (minutagemAtiva) return;
-  
   if (pts.length < 10) {
     document.getElementById('borderText').innerHTML = '🔮 AGUARDANDO DADOS...';
     document.getElementById('borderStatus').className = 'border-status border-azul';
-    currentBorderColor = 'azul';
     return;
   }
-  
   const ultimas20 = pts.slice(-20);
   const valores = ultimas20.map(p => p.val);
-  
   let azuis = 0, roxas = 0, rosas = 0;
   for (const v of valores) {
     if (v >= 10) rosas++;
     else if (v >= 2) roxas++;
     else azuis++;
   }
-  
-  // ATUALIZA SEQUÊNCIA DE ROSAS
   let sequenciaAtual = 0;
   for (let i = valores.length-1; i >= 0; i--) {
     if (valores[i] >= 10) sequenciaAtual++;
     else break;
   }
   sequenciaRosa = sequenciaAtual;
-  
   const proporcaoRoxoAzul = roxas / (azuis + 1);
-  
-  // LÓGICA DE COR DAS BORDAS
   let novaCor = 'azul';
   let mensagem = '';
   
-  // PRIORIDADE 1: Sequência de ROSAS (2 ou 3) - mas minutagem tem prioridade
   if (sequenciaRosa >= 2) {
     novaCor = 'rosa';
-    mensagem = `🌹 ${sequenciaRosa} ROSAS SEGUIDAS! - BORDAS ROSA`;
-  }
-  // PRIORIDADE 2: PAGANDO ROXO (poucas correções, muito roxo)
-  else if (proporcaoRoxoAzul > 1.2 && azuis <= 3) {
+    mensagem = `🌹 ${sequenciaRosa} ROSAS SEGUIDAS!`;
+  } else if (proporcaoRoxoAzul > 1.2 && azuis <= 3) {
     novaCor = 'roxo';
-    mensagem = `🟣 PAGANDO ROXO! Poucas correções (${azuis} azuis) - BORDAS ROXA`;
-  }
-  // PRIORIDADE 3: FALSO PAGUE AMARELO (muitas correções, muito azul)
-  else if (azuis >= 5 || (azuis >= 4 && proporcaoRoxoAzul < 0.6)) {
+    mensagem = `🟣 PAGANDO ROXO!`;
+  } else if (azuis >= 5) {
     novaCor = 'azul';
-    mensagem = `🔵 FALSO PAGUE AMARELO! Muitas correções (${azuis} azuis) - BORDAS AZUL`;
-  }
-  // PRIORIDADE 4: Baseado na última vela
-  else {
+    mensagem = `🔵 FALSO PAGUE AMARELO!`;
+  } else {
     const ultimaVela = valores[valores.length-1];
-    if (ultimaVela >= 10) {
-      novaCor = 'rosa';
-      mensagem = '🌹 ÚLTIMA VELA É ROSA! - BORDAS ROSA';
-    } else if (ultimaVela >= 2) {
-      novaCor = 'roxo';
-      mensagem = '🟣 ÚLTIMA VELA É ROXA - BORDAS ROXA';
-    } else {
-      novaCor = 'azul';
-      mensagem = '🔵 CORREÇÃO EM ANDAMENTO - BORDAS AZUL';
-    }
+    if (ultimaVela >= 10) { novaCor = 'rosa'; mensagem = '🌹 ÚLTIMA ROSA!'; }
+    else if (ultimaVela >= 2) { novaCor = 'roxo'; mensagem = '🟣 ÚLTIMA ROXA'; }
+    else { novaCor = 'azul'; mensagem = '🔵 CORREÇÃO'; }
   }
-  
   currentBorderColor = novaCor;
   const borderDiv = document.getElementById('borderStatus');
   borderDiv.className = `border-status border-${novaCor}`;
   document.getElementById('borderText').innerHTML = mensagem;
 }
 
-// ═══════════════════════════════════════════════════════════════════
-// FUNÇÃO PARA ATUALIZAR A MAIOR VELA ROSA
-// ═══════════════════════════════════════════════════════════════════
 function atualizarMaiorRosa() {
   if (pts.length === 0) {
     document.getElementById('maiorRosaValor').innerHTML = '—';
     document.getElementById('maiorRosaTime').innerHTML = '—';
     return;
   }
-  
   const agora = new Date();
   const umaHoraAtras = new Date(agora.getTime() - 60 * 60 * 1000);
   const rosasUltimaHora = pts.filter(p => p.val >= 10 && p.time > umaHoraAtras);
-  
   if (rosasUltimaHora.length === 0) {
     document.getElementById('maiorRosaValor').innerHTML = 'Nenhuma';
     document.getElementById('maiorRosaTime').innerHTML = 'na última hora';
     return;
   }
-  
   let maior = rosasUltimaHora[0];
   for (let i = 1; i < rosasUltimaHora.length; i++) {
     if (rosasUltimaHora[i].val > maior.val) maior = rosasUltimaHora[i];
   }
-  
   document.getElementById('maiorRosaValor').innerHTML = maior.val.toFixed(2) + 'x';
-  document.getElementById('maiorRosaTime').innerHTML = 'às ' + maior.time.toLocaleTimeString('pt-BR', { hour:'2-digit', minute:'2-digit', second:'2-digit' });
+  document.getElementById('maiorRosaTime').innerHTML = 'às ' + maior.time.toLocaleTimeString('pt-BR');
 }
 
-// ═══════════════════════════════════════════════════════════════════
-// FUNÇÃO PARA SELECIONAR VELA
-// ═══════════════════════════════════════════════════════════════════
 function selecionarVela(index) {
   selectedVelaIndex = index;
   document.querySelectorAll('.log-row').forEach((row, i) => {
     if (i === (pts.length - 1 - index)) row.classList.add('selecionado');
     else row.classList.remove('selecionado');
   });
-  
   const n = getVisN();
   const totalPts = pts.length;
   if (index >= 0 && index < totalPts) {
@@ -414,9 +349,6 @@ function selecionarVela(index) {
   }
 }
 
-// ═══════════════════════════════════════════════════════════════════
-// ÁUDIO
-// ═══════════════════════════════════════════════════════════════════
 function getAC() {
   if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
   return audioCtx;
@@ -443,9 +375,6 @@ function col(v) {
   return COR.AZUL;
 }
 
-// ═══════════════════════════════════════════════════════════════════
-// MÉDIAS MÓVEIS
-// ═══════════════════════════════════════════════════════════════════
 function calcularEMA(dados, periodo, extendFuturo = 10) {
   const k = 2 / (periodo + 1);
   let ema = dados[0];
@@ -473,9 +402,6 @@ const curvaFn = {
   basis: (p,sx,sy) => { if(p.length<2)return; ctx.beginPath();ctx.moveTo(sx(0),sy(p[0]));for(let i=1;i<p.length-1;i++){const x0=sx(i-1),y0=sy(p[i-1]);const x1=sx(i),y1=sy(p[i]);const x2=sx(i+1),y2=sy(p[i+1]);const cp1x=x1+(x2-x0)/6,cp1y=y1+(y2-y0)/6;const cp2x=x2-(x2-x0)/6,cp2y=y2-(y2-y0)/6;ctx.bezierCurveTo(cp1x,cp1y,cp2x,cp2y,x2,y2);}ctx.stroke(); }
 };
 
-// ═══════════════════════════════════════════════════════════════════
-// SINAL DE REVERSÃO
-// ═══════════════════════════════════════════════════════════════════
 let fundoDetectado = false;
 let reversaoCooldown = 0;
 
@@ -504,32 +430,19 @@ function checkReversao(emaArr) {
   }
 }
 
-// ═══════════════════════════════════════════════════════════════════
-// DETECTOR DE PADRÕES
-// ═══════════════════════════════════════════════════════════════════
 function analisarPadroes() {
   if (pts.length < 10) return null;
   const ultimas = pts.slice(-12);
   const valores = ultimas.map(p => p.val);
-  
   let sequenciaBaixa = 0;
   for (let i = valores.length-1; i >= 0; i--) {
     if (valores[i] >= 1.00 && valores[i] <= 1.20) sequenciaBaixa++;
     else break;
   }
   if (sequenciaBaixa >= 3 && sequenciaBaixa <= 6) {
-    const previsao = sequenciaBaixa >= 4 ? 'ROSA (≥10x)' : 'ROXA (≥2x)';
+    const previsao = sequenciaBaixa >= 4 ? 'ROSA' : 'ROXA';
     return { tipo: '📊 ACÚMULO', detalhe: `${sequenciaBaixa} velas na zona baixa`, previsao: previsao };
   }
-  
-  let decrescente = true;
-  for (let i = valores.length-4; i < valores.length-1; i++) {
-    if (i >= 0 && valores[i] <= valores[i+1]) decrescente = false;
-  }
-  if (decrescente && valores.length >= 4 && valores[valores.length-1] <= 1.30) {
-    return { tipo: '📉 DECRESCENTE', detalhe: `${valores.slice(-4).map(v=>v.toFixed(2)).join(' → ')}`, previsao: 'ROXA/ROSA' };
-  }
-  
   return null;
 }
 
@@ -543,16 +456,13 @@ function verificarPadrao() {
   if (ultimaVela.val >= 1.00 && ultimaVela.val <= 1.30) {
     ultimoAlertaPadrao = agora;
     if (pts.length >= 2) pts[pts.length-2].sinalPadrao = true;
-    document.getElementById('patternDetected').innerHTML = `${padrao.tipo}<br><small>${padrao.detalhe}</small><br>→ ${padrao.previsao}`;
-    showAlert(`🔔 ${padrao.tipo}\n${padrao.detalhe}\nPREVISÃO: ${padrao.previsao}`, '#f59e0b', 5000);
+    document.getElementById('patternDetected').innerHTML = `${padrao.tipo}<br>${padrao.detalhe}<br>→ ${padrao.previsao}`;
+    showAlert(`🔔 ${padrao.tipo}\n${padrao.detalhe}`, '#f59e0b', 5000);
     return true;
   }
   return false;
 }
 
-// ═══════════════════════════════════════════════════════════════════
-// LOG E UI
-// ═══════════════════════════════════════════════════════════════════
 function addLog(vela, index, isSinal = false) {
   const t = vela.time.toLocaleTimeString('pt-BR');
   const v = vela.val;
@@ -587,21 +497,16 @@ function showAlert(msg, color, dur=4000) {
 
 function triggerFlash() { const f = document.getElementById('flash'); f.className='flash on'; setTimeout(()=>f.className='flash',400); }
 
-// ═══════════════════════════════════════════════════════════════════
-// CONEXÃO COM SERVIDOR
-// ═══════════════════════════════════════════════════════════════════
 function setStatus(online) {
   const statusEl = document.getElementById('statusCon');
   const wsStatus = document.getElementById('wsStatus');
   const wsLabel = document.getElementById('wsLabel');
   if (online) {
     statusEl.innerHTML = '🟢 Online';
-    statusEl.style.color = '#22c55e';
     wsStatus.className = 'ws-pill ok';
     wsLabel.textContent = 'ONLINE';
   } else {
     statusEl.innerHTML = '🟡 Reconectando...';
-    statusEl.style.color = '#f59e0b';
     wsStatus.className = 'ws-pill err';
     wsLabel.textContent = 'OFFLINE';
   }
@@ -635,7 +540,7 @@ async function buscarVelas() {
       atualizarCorBorda();
       draw();
       setStatus(true);
-    } else { setStatus(false); }
+    }
   } catch(e) { setStatus(false); }
 }
 
@@ -657,6 +562,7 @@ async function buscarNovasVelas() {
             let ts = v.timestamp ? new Date(v.timestamp) : new Date();
             if (isNaN(ts.getTime())) ts = new Date();
             pts.push({ val: mult, time: ts, rodada: v.rodada });
+            addLog(pts[pts.length-1], pts.length-1);
             novas++;
           }
           if (v.ts_recebido > ultimoTimestamp) ultimoTimestamp = v.ts_recebido;
@@ -670,12 +576,8 @@ async function buscarNovasVelas() {
         for (let i = pts.length-1; i >= Math.max(0, pts.length-30); i--) addLog(pts[i], i);
         atualizarMaiorRosa();
         
-        // MINUTAGEM TEM PRIORIDADE MÁXIMA
         const minutagemDetectada = verificarMinutagem();
-        
-        if (!minutagemDetectada) {
-          atualizarCorBorda();
-        }
+        if (!minutagemDetectada) atualizarCorBorda();
         
         if (verificarPadrao() && pts.length >= 2) pts[pts.length-2].sinalPadrao = true;
         draw();
@@ -685,9 +587,6 @@ async function buscarNovasVelas() {
   } catch(e) {}
 }
 
-// ═══════════════════════════════════════════════════════════════════
-// FERRAMENTAS
-// ═══════════════════════════════════════════════════════════════════
 function setTool(tool) {
   currentTool = tool;
   if (tool !== 'move' && tool !== 'select') selectedDrawing = null;
@@ -701,7 +600,7 @@ function deleteSelected() {
     draw();
     showAlert('✓ Linha removida', '#22c55e', 1000);
   } else {
-    showAlert('Selecione uma linha primeiro (botão 🖱️ ou ✋)', '#f59e0b', 1500);
+    showAlert('Selecione uma linha primeiro', '#f59e0b', 1500);
   }
 }
 
@@ -731,9 +630,6 @@ function getPointAt(x, y, line) {
   return null;
 }
 
-// ═══════════════════════════════════════════════════════════════════
-// GRÁFICO
-// ═══════════════════════════════════════════════════════════════════
 function getVisN() { return Math.max(5, Math.round(CFG.showN / zoomLevel)); }
 function getViewSub() {
   const n = getVisN();
@@ -886,18 +782,13 @@ function draw() {
   const bx = W - scaleW;
   ctx.strokeStyle = 'rgba(32,53,85,0.5)';
   ctx.lineWidth = 1.5;
-  ctx.beginPath();
-  ctx.moveTo(bx, 30);
-  ctx.lineTo(bx, H - 30);
-  ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(bx, 30); ctx.lineTo(bx, H - 30); ctx.stroke();
   
   const ultimaVela = pts[pts.length-1];
   if (ultimaVela) {
     const posY = sy(ultimaVela.val);
     ctx.fillStyle = col(ultimaVela.val);
-    ctx.beginPath();
-    ctx.arc(bx, posY, 8, 0, Math.PI * 2);
-    ctx.fill();
+    ctx.beginPath(); ctx.arc(bx, posY, 8, 0, Math.PI*2); ctx.fill();
     ctx.fillStyle = '#fff';
     ctx.font = 'bold 10px monospace';
     ctx.textAlign = 'center';
@@ -917,9 +808,6 @@ function draw() {
   document.getElementById('xslider').value = CFG.showN;
 }
 
-// ═══════════════════════════════════════════════════════════════════
-// EVENTOS DO MOUSE
-// ═══════════════════════════════════════════════════════════════════
 function getPos(e) {
   const rect = cwrap.getBoundingClientRect();
   const clientX = e.touches ? e.touches[0].clientX : e.clientX;
@@ -1057,17 +945,7 @@ function resetView() { zoomLevel = 1.0; viewOffset = 0; vertOffset = 0; draw(); 
 function voltarPresente() { viewOffset = 0; document.getElementById('btnBack').classList.remove('show'); draw(); selectedVelaIndex = -1; }
 function toggleMA() { CFG.showMA = !CFG.showMA; document.getElementById('maBtn').classList.toggle('on', CFG.showMA); draw(); }
 
-// ═══════════════════════════════════════════════════════════════════
-// MODAL CONFIG MM
-// ═══════════════════════════════════════════════════════════════════
 function openCfgMM() {
-  const container = document.getElementById('mmConfigLista');
-  if (!container) {
-    const modal = document.querySelector('#mmModal .modal');
-    const div = document.createElement('div'); div.id = 'mmConfigLista';
-    const btns = document.querySelector('#mmModal .m-btns');
-    modal.insertBefore(div, btns);
-  }
   const lista = document.getElementById('mmConfigLista');
   const mms = [
     { id:1, nome:'MM1 (9)', cor:CFG.mm1Cor, per:CFG.mm1Per, on:CFG.mm1On, lw:CFG.mm1Lw, curva:CFG.mm1Curva },
@@ -1146,14 +1024,13 @@ setTimeout(async () => {
   await buscarVelas();
   if (pollingInterval) clearInterval(pollingInterval);
   pollingInterval = setInterval(() => buscarNovasVelas(), 2000);
-  showAlert('✅ Conectado! Sistema IA ativo: Pagando Roxo | Falso Pague Amarelo | Minutagem Prioritária', '#22c55e', 5000);
+  showAlert('✅ Conectado! Sistema IA ativo', '#22c55e', 3000);
 }, 500);
 </script>
 
-<!-- MODAL CONFIG MM -->
 <div class="modal-bg" id="mmModal" onclick="if(event.target===this)closeCfgMM()">
   <div class="modal">
-    <div class="m-title">Configurar Médias Móveis <span class="m-x" onclick="closeCfgMM()">✕</span></div>
+    <div class="m-title">Configurar MMs <span class="m-x" onclick="closeCfgMM()">✕</span></div>
     <div id="mmConfigLista"></div>
     <div class="m-btns">
       <button class="mbtn mb-g" onclick="aplicarCfgMM()">Aplicar</button>
