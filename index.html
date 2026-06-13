@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-<title>Aviator v7 - Detector de Padrões</title>
+<title>Aviator v7 - IA Completa</title>
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
@@ -11,92 +11,121 @@
   --bg:#05080f;--bg2:#0a0f1a;--bg3:#0e1522;--bg4:#121d2e;
   --brd:#18273d;--brd2:#203555;
   --txt:#b8d0ec;--txt2:#4a6e94;--txt3:#1e3a58;
-  --up:#a855f7;--dn:#06b6d4;--pk:#f43f5e;--gn:#22c55e;--am:#f59e0b;
+  --roxo:#a855f7;--azul:#06b6d4;--rosa:#f472b6;--verde:#22c55e;--amarelo:#f59e0b;
   --font:'JetBrains Mono',monospace;
 }
-html,body{height:100%;overflow:hidden;background:var(--bg);font-family:var(--font);font-size:clamp(9px, 1.2vw, 14px);color:var(--txt)}
-.root{display:flex;flex-direction:column;height:100vh;width:100vw;overflow:hidden}
-.main{display:flex;flex:1;overflow:hidden;min-height:0;flex-direction:row;flex-wrap:nowrap}
+html,body{height:100%;overflow:hidden;background:var(--bg);font-family:var(--font);font-size:11px;color:var(--txt)}
+.root{display:flex;flex-direction:column;height:100vh;width:100vw}
+.main{display:flex;flex:1;overflow:hidden;min-height:0}
 
-.topbar{height:clamp(38px, 5vh, 50px);background:var(--bg2);border-bottom:1px solid var(--brd);display:flex;align-items:center;flex-shrink:0;padding:0 12px;gap:8px;overflow-x:auto}
-.tb-logo{font-size:clamp(12px, 1.5vw, 18px);font-weight:700;color:#fff;display:flex;align-items:center;gap:8px;white-space:nowrap}
-.tb-dot{width:clamp(8px, 1vw, 12px);height:clamp(8px, 1vw, 12px);border-radius:50%;background:var(--gn);animation:glow 2s infinite}
-@keyframes glow{0%,100%{box-shadow:0 0 4px var(--gn)}50%{box-shadow:0 0 14px var(--gn)}}
-.tb-mid{display:flex;align-items:center;gap:6px;flex-shrink:0}
-.tb-right{display:flex;align-items:center;gap:8px;margin-left:auto;flex-shrink:0}
-.btn{padding:clamp(4px, 0.8vh, 8px) clamp(8px, 1.5vw, 16px);border-radius:6px;border:1px solid var(--brd2);background:var(--bg3);color:var(--txt2);font-size:clamp(9px, 1.2vw, 13px);font-family:var(--font);cursor:pointer;white-space:nowrap;transition:all .15s}
-.btn:active{transform:scale(0.96)}
-.btn.g{border-color:#166534;background:rgba(34,197,94,.1);color:var(--gn)}
+.topbar{height:38px;background:var(--bg2);border-bottom:1px solid var(--brd);display:flex;align-items:center;flex-shrink:0;padding:0 12px;gap:8px}
+.tb-logo{font-size:13px;font-weight:700;color:#fff;display:flex;align-items:center;gap:6px;white-space:nowrap}
+.tb-mid{display:flex;align-items:center;gap:4px;flex:1}
+.tb-right{display:flex;align-items:center;gap:6px;margin-left:auto}
+.btn{padding:3px 10px;border-radius:5px;border:1px solid var(--brd2);background:var(--bg3);color:var(--txt2);font-size:9px;font-family:var(--font);cursor:pointer;transition:all .15s}
+.btn:hover{border-color:var(--txt2);color:var(--txt)}
+.btn.g{border-color:#166534;background:rgba(34,197,94,.1);color:var(--verde)}
 .btn.b{border-color:#1e3a5f;background:rgba(96,165,250,.08);color:#60a5fa}
-.ws-pill{display:flex;align-items:center;gap:6px;font-size:clamp(8px, 1vw, 11px);padding:0 8px}
-.ws-pill.ok{color:var(--gn)}.ws-pill.err{color:var(--pk)}
-.wsd{width:clamp(6px, 0.8vw, 10px);height:clamp(6px, 0.8vw, 10px);border-radius:50%;background:currentColor;animation:blink 1.4s infinite}
+.btn.r{border-color:#9f1239;background:rgba(244,63,94,.08);color:var(--rosa)}
+.ws-pill{display:flex;align-items:center;gap:4px;font-size:9px;padding:0 6px}
+.ws-pill.ok{color:var(--verde)}.ws-pill.err{color:var(--rosa)}
+.wsd{width:5px;height:5px;border-radius:50%;background:currentColor;animation:blink 1.4s infinite}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
 
-.toolbox{position:fixed;bottom:20px;right:20px;background:var(--bg2);border:1px solid var(--brd);border-radius:40px;display:flex;flex-direction:row;padding:8px 16px;gap:12px;z-index:100;backdrop-filter:blur(10px)}
-.tool-btn{width:clamp(36px, 4vh, 48px);height:clamp(36px, 4vh, 48px);border-radius:30px;border:1px solid var(--brd2);background:var(--bg3);color:var(--txt2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:clamp(18px, 2.5vw, 24px);transition:all .15s}
-.tool-btn:active{transform:scale(0.92)}
-.tool-btn.active{border-color:var(--gn);background:rgba(34,197,94,.2);color:var(--gn)}
-.tool-sep{width:1px;height:30px;background:var(--brd);margin:0}
-
-.chart-col{flex:3;display:flex;flex-direction:column;overflow:hidden;min-width:0}
+.chart-col{flex:1;display:flex;flex-direction:column;overflow:hidden}
 .canvas-wrap{flex:1;position:relative;overflow:hidden;background:var(--bg);min-height:0}
 #cv{display:block;position:absolute;top:0;left:0;width:100%;height:100%}
 #pov{position:absolute;inset:0;z-index:19;display:none;cursor:grabbing}
 
-.xbar{height:clamp(28px, 4vh, 38px);background:var(--bg2);border-top:1px solid var(--brd);display:flex;align-items:center;padding:0 12px;gap:12px;font-size:clamp(8px, 1vw, 11px);flex-shrink:0}
-.xslider{flex:1;height:6px;-webkit-appearance:none;background:var(--brd2);border-radius:3px}
-.xslider::-webkit-slider-thumb{-webkit-appearance:none;width:clamp(14px, 2vw, 20px);height:clamp(14px, 2vw, 20px);border-radius:50%;background:var(--gn);cursor:pointer}
+.xbar{height:26px;background:var(--bg2);border-top:1px solid var(--brd);display:flex;align-items:center;padding:0 8px;gap:8px;font-size:8px;flex-shrink:0}
+.xslider{flex:1;height:4px;-webkit-appearance:none;background:var(--brd2);border-radius:2px}
+.xslider::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;border-radius:50%;background:var(--verde);cursor:pointer}
 
-.data-sb{flex:1;min-width:200px;max-width:280px;background:var(--bg2);border-left:1px solid var(--brd);display:flex;flex-direction:column;overflow:hidden;flex-shrink:0}
-.sbh{padding:clamp(6px, 1vh, 10px) 12px;font-size:clamp(7px, 0.9vw, 10px);color:var(--txt3);border-bottom:1px solid var(--brd);text-transform:uppercase}
-.kv-block{padding:clamp(8px, 1.5vh, 12px) 12px;display:flex;gap:20px;border-bottom:1px solid var(--brd);flex-wrap:wrap}
-.kv{display:flex;gap:8px;align-items:baseline}
-.kk{font-size:clamp(8px, 1vw, 11px);color:var(--txt2)}.kvv{font-size:clamp(10px, 1.2vw, 14px);font-weight:700}
-.pattern-area{background:var(--bg3);margin:8px;padding:8px;border-radius:8px;border-left:3px solid var(--am)}
-.pattern-title{font-size:9px;color:var(--am);margin-bottom:4px}
-.pattern-value{font-size:11px;font-weight:700;color:var(--gn)}
-.log-area{flex:1;overflow-y:auto;min-height:100px}
-.log-row{display:flex;align-items:center;gap:10px;padding:clamp(5px, 0.8vh, 8px) 12px;border-bottom:1px solid #070d15;font-size:clamp(9px, 1.1vw, 12px)}
+.data-sb{width:170px;background:var(--bg2);border-left:1px solid var(--brd);display:flex;flex-direction:column;overflow:hidden;flex-shrink:0}
+.sbh{padding:4px 10px;font-size:7px;color:var(--txt3);border-bottom:1px solid var(--brd);text-transform:uppercase}
+.kv-block{padding:4px 10px 6px;border-bottom:1px solid var(--brd)}
+.kv{display:flex;justify-content:space-between;padding:2px 0}
+.kk{font-size:8px;color:var(--txt2)}.kvv{font-size:9px;font-weight:500;color:var(--txt)}
+.border-status{background:var(--bg3);margin:8px;padding:8px;border-radius:6px;text-align:center;transition:all 0.3s}
+.border-status span{font-size:10px;font-weight:700}
+.border-roxo{background:rgba(168,85,247,0.2);border-left:3px solid var(--roxo);color:var(--roxo)}
+.border-rosa{background:rgba(244,114,182,0.2);border-left:3px solid var(--rosa);color:var(--rosa)}
+.border-azul{background:rgba(6,182,212,0.2);border-left:3px solid var(--azul);color:var(--azul)}
+.pisca{animation: piscaAnim 0.5s ease-in-out 3}
+@keyframes piscaAnim{
+  0%{opacity:1;transform:scale(1)}
+  50%{opacity:0.5;transform:scale(1.02)}
+  100%{opacity:1;transform:scale(1)}
+}
+.highlight-block{background:rgba(244,114,182,0.1);border-left:2px solid var(--rosa);margin:5px 8px;padding:6px 8px;border-radius:4px}
+.highlight-title{font-size:7px;color:var(--txt3);text-transform:uppercase;letter-spacing:0.5px}
+.highlight-value{font-size:11px;font-weight:700;color:var(--rosa)}
+.highlight-time{font-size:7px;color:var(--txt2);margin-top:2px}
+.pattern-area{background:var(--bg3);margin:8px;padding:8px;border-radius:6px;border-left:2px solid var(--amarelo)}
+.pattern-title{font-size:8px;color:var(--amarelo)}
+.pattern-value{font-size:9px;font-weight:700;color:var(--verde)}
+.log-area{flex:1;overflow-y:auto}
+.log-row{display:flex;align-items:center;gap:5px;padding:3px 8px;border-bottom:1px solid #070d15;font-size:9px;cursor:pointer}
 .log-row:hover{background:var(--bg3)}
-.ldot{width:clamp(8px, 1vw, 12px);height:clamp(8px, 1vw, 12px);border-radius:50%;flex-shrink:0}
-.lt{color:var(--txt2);min-width:70px;font-size:clamp(8px, 1vw, 11px)}
-.lv{font-weight:700;min-width:55px}
-.ltag{font-size:clamp(7px, 0.9vw, 10px);padding:2px 8px;border-radius:4px;margin-left:auto}
+.log-row.selecionado{background:rgba(34,197,94,0.2);border-left:3px solid var(--verde)}
+.ldot{width:5px;height:5px;border-radius:50%;flex-shrink:0}
+.lt{color:var(--txt2);min-width:55px;font-size:8px}
+.lv{font-weight:700;min-width:45px}
+.ltag{font-size:7px;padding:2px 6px;border-radius:3px;margin-left:auto}
 .ltag.rosa{background:rgba(244,114,182,.2);color:#f472b6}
 .ltag.roxa{background:rgba(168,85,247,.2);color:#a855f7}
-.ltag.ciano{background:rgba(6,182,212,.2);color:#06b6d4}
+.ltag.azul{background:rgba(6,182,212,.2);color:#06b6d4}
 .ltag.sinal{background:rgba(34,197,94,.3);color:#22c55e}
-.ltag.pattern{background:rgba(245,158,11,.3);color:#f59e0b}
 
-.tooltip{position:absolute;background:#080f1c;border:1px solid var(--brd2);border-radius:8px;padding:10px 14px;display:none;z-index:60;min-width:120px}
-.tt-v{font-size:clamp(16px, 2vw, 22px);font-weight:700}.tt-s{font-size:clamp(9px, 1.1vw, 12px);color:var(--txt2)}
-.alert{position:absolute;top:60px;left:50%;transform:translateX(-50%);padding:12px 24px;border-radius:12px;font-size:clamp(11px, 1.5vw, 16px);font-weight:700;text-align:center;white-space:nowrap;z-index:50;opacity:0;transition:opacity .3s;background:#000}
+.tooltip{position:absolute;background:#080f1c;border:1px solid var(--brd2);border-radius:6px;padding:8px 12px;display:none;z-index:60;min-width:100px}
+.tt-v{font-size:14px;font-weight:700}.tt-s{font-size:8px;color:var(--txt2)}
+.alert{position:absolute;top:50px;left:50%;transform:translateX(-50%);padding:8px 20px;border-radius:20px;font-size:11px;font-weight:700;white-space:nowrap;z-index:50;opacity:0;transition:opacity .3s;background:#000}
 .alert.show{opacity:1}
-.flash{position:absolute;inset:0;border:3px solid var(--gn);opacity:0;pointer-events:none;transition:opacity .12s;z-index:45}
+.flash{position:absolute;inset:0;border:2px solid var(--verde);opacity:0;pointer-events:none;transition:opacity .12s;z-index:45}
 .flash.on{opacity:1}
-#btnBack{position:absolute;bottom:80px;left:50%;transform:translateX(-50%);background:rgba(34,197,94,.9);border:none;border-radius:30px;padding:10px 24px;font-size:clamp(11px, 1.5vw, 14px);font-weight:700;color:#000;cursor:pointer;display:none;z-index:60;white-space:nowrap}
+#btnBack{position:absolute;bottom:36px;left:50%;transform:translateX(-50%);background:rgba(34,197,94,.9);border:none;border-radius:30px;padding:8px 20px;font-size:11px;font-weight:700;color:#000;cursor:pointer;display:none;z-index:60}
 #btnBack.show{display:block}
+
 .modal-bg{position:fixed;inset:0;background:rgba(5,8,13,.95);display:none;align-items:center;justify-content:center;z-index:1000}
 .modal-bg.open{display:flex}
-.modal{background:var(--bg4);border:1px solid var(--brd2);border-radius:16px;padding:24px;width:90%;max-width:500px;max-height:85vh;overflow-y:auto}
-.m-title{font-size:clamp(14px, 1.8vw, 18px);font-weight:700;color:#fff;display:flex;justify-content:space-between;margin-bottom:16px}
-.m-x{cursor:pointer;color:var(--txt2);font-size:20px}
+.modal{background:var(--bg4);border:1px solid var(--brd2);border-radius:12px;padding:20px;width:90%;max-width:500px;max-height:80vh;overflow-y:auto}
+.m-title{font-size:13px;font-weight:700;color:#fff;display:flex;justify-content:space-between;margin-bottom:12px}
+.m-x{cursor:pointer;color:var(--txt2)}
+.mm-row{display:flex;align-items:center;gap:6px;padding:6px 0;border-bottom:1px solid var(--brd);flex-wrap:wrap}
+.mm-label{font-size:9px;color:var(--txt2);width:60px}
+.mm-num{width:50px;padding:4px;background:var(--bg3);border:1px solid var(--brd2);border-radius:4px;color:var(--txt);font-size:9px}
+.mm-color{width:30px;height:24px;border:none;border-radius:4px}
+.mm-op{width:45px;padding:4px;background:var(--bg3);border:1px solid var(--brd2);border-radius:4px;color:var(--txt);font-size:9px}
+.mm-sel{padding:4px;background:var(--bg3);border:1px solid var(--brd2);border-radius:4px;color:var(--txt);font-size:9px}
+.mm-toggle{width:36px;height:18px;border-radius:9px;background:var(--brd2);cursor:pointer;position:relative}
+.mm-toggle.on{background:var(--verde)}
+.mm-toggle::after{content:'';position:absolute;width:14px;height:14px;border-radius:50%;background:#fff;top:2px;left:2px;transition:left .2s}
+.mm-toggle.on::after{left:20px}
+.m-btns{display:flex;gap:8px;margin-top:12px}
+.mbtn{padding:6px;border-radius:6px;font-size:10px;font-weight:700;cursor:pointer;border:1px solid;flex:1;text-align:center}
+.mb-g{background:rgba(34,197,94,.12);border-color:#166534;color:var(--verde)}
+.mb-r{background:rgba(244,63,94,.08);border-color:#9f1239;color:var(--rosa)}
+.mb-c{background:var(--bg3);border-color:var(--brd);color:var(--txt3)}
 </style>
 </head>
 <body>
 <div class="root">
 
 <div class="topbar">
-  <div class="tb-logo"><div class="tb-dot"></div>AVIATOR PATTERN DETECTOR</div>
+  <div class="tb-logo"><span style="font-size:16px">✈️</span> AVIATOR</div>
   <div class="tb-mid">
     <button class="btn" onclick="zoomIn()">+</button>
     <button class="btn" onclick="zoomOut()">-</button>
     <button class="btn" onclick="resetView()">↺</button>
+    <button class="btn" id="maBtn" onclick="toggleMA()">MM</button>
+    <button class="btn b" onclick="openCfgMM()">⚙ MM</button>
   </div>
   <div class="tb-right">
-    <button class="btn g" onclick="syncNow()">↻ SINCRONIZAR</button>
-    <div class="ws-pill ok" id="wsStatus"><span class="wsd"></span><span id="wsLabel">ON</span></div>
+    <button class="btn" onclick="setTool('select')" title="Selecionar objeto" style="font-size:13px">🖱️</button>
+    <button class="btn" onclick="setTool('line')" title="Desenhar linha" style="font-size:13px">📏</button>
+    <button class="btn" onclick="setTool('move')" title="Mover objeto/pontos" style="font-size:13px">✋</button>
+    <button class="btn r" onclick="deleteSelected()" title="Excluir" style="font-size:13px">🗑️</button>
+    <div class="ws-pill" id="wsStatus"><span class="wsd"></span><span id="wsLabel">ONLINE</span></div>
   </div>
 </div>
 
@@ -113,7 +142,7 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:var(--fon
   <div class="xbar">
     <span id="xL">—</span><span id="xM">—</span><span id="xR">—</span>
     <input type="range" class="xslider" id="xslider" min="5" max="100" value="40" oninput="CFG.showN=parseInt(this.value);draw()">
-    <span id="xNow" style="color:var(--gn);font-size:clamp(10px, 1.2vw, 14px);font-weight:700">—</span>
+    <span id="xNow" style="color:var(--verde);font-size:12px">—</span>
   </div>
 </div>
 
@@ -121,23 +150,28 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:var(--fon
   <div class="kv-block">
     <div class="kv"><span class="kk">Último</span><span class="kvv" id="sCot">—</span></div>
     <div class="kv"><span class="kk">Total</span><span class="kvv" id="sTot">0</span></div>
-    <div class="kv"><span class="kk">Painel</span><span class="kvv" id="painelInfo">1</span></div>
+    <div class="kv"><span class="kk">Status</span><span class="kvv" id="statusCon">🟢 Online</span></div>
   </div>
+  
+  <!-- STATUS DAS BORDAS DO GRÁFICO -->
+  <div class="border-status" id="borderStatus">
+    <span id="borderText">🔮 ANALISANDO PADRÃO...</span>
+  </div>
+  
+  <div class="highlight-block" id="rosaBlock">
+    <div class="highlight-title">🌹 MAIOR VELA ROSA (ÚLTIMA HORA)</div>
+    <div class="highlight-value" id="maiorRosaValor">—</div>
+    <div class="highlight-time" id="maiorRosaTime">—</div>
+  </div>
+  
   <div class="pattern-area" id="patternArea">
-    <div class="pattern-title">📊 PADRÃO DETECTADO</div>
+    <div class="pattern-title">📊 PADRÃO</div>
     <div class="pattern-value" id="patternDetected">—</div>
   </div>
-  <div class="sbh">ÚLTIMAS VELAS</div>
+  <div class="sbh">LOG (clique na vela)</div>
   <div class="log-area" id="logArea"></div>
 </div>
 </div>
-</div>
-
-<div class="toolbox">
-  <div class="tool-btn" id="tool-cursor" onclick="setTool('cursor')" title="Mover">✋</div>
-  <div class="tool-btn" id="tool-line" onclick="setTool('line')" title="Linha">📏</div>
-  <div class="tool-sep"></div>
-  <div class="tool-btn" id="tool-delete" onclick="deleteSelected()" title="Excluir">🗑️</div>
 </div>
 
 <script>
@@ -155,213 +189,101 @@ let pts = [];
 let pollingInterval = null;
 let ultimoTimestamp = 0;
 let ultimoAlertaPadrao = 0;
+let audioCtx = null;
 
-let CFG = { showN: 40 };
+let selectedVelaIndex = -1;
+let currentBorderColor = 'azul';
+let minutagemAtiva = false;
+let minutagemTimer = null;
+let sequenciaRosa = 0;
+
+const COR = { ROSA: '#f472b6', ROXO: '#a855f7', AZUL: '#06b6d4' };
+
+let CFG = {
+  showN: 40,
+  showMA: true,
+  mm1On: true, mm1Per: 9, mm1Cor: '#f59e0b', mm1Lw: 1.5, mm1Curva: 'smooth',
+  mm2On: true, mm2Per: 21, mm2Cor: '#06b6d4', mm2Lw: 1.2, mm2Curva: 'linear',
+  mm3On: true, mm3Per: 50, mm3Cor: '#22c55e', mm3Lw: 1.0, mm3Curva: 'bezier',
+  mm4On: true, mm4Per: 100, mm4Cor: '#ef4444', mm4Lw: 1.0, mm4Curva: 'smooth',
+  mm5On: true, mm5Per: 200, mm5Cor: '#eab308', mm5Lw: 0.9, mm5Curva: 'linear',
+  mm6On: false, mm6Per: 7, mm6Cor: '#ffffff', mm6Lw: 0.8, mm6Curva: 'step',
+  mm7On: false, mm7Per: 14, mm7Cor: '#ec4899', mm7Lw: 0.8, mm7Curva: 'monoton',
+  mm8On: false, mm8Per: 30, mm8Cor: '#3b82f6', mm8Lw: 0.8, mm8Curva: 'cardinal'
+};
 
 let viewOffset = 0, zoomLevel = 1.0, vertOffset = 0, scaleW = 60;
 let isPanning = false, panX0 = 0, panOff0 = 0;
 let _mx = 0, _my = 0;
 
-let currentTool = 'cursor';
+let currentTool = 'select';
 let drawings = [];
 let selectedDrawing = null;
 let isDrawing = false, drawStart = null;
+let isMoving = false;
+let movingLine = null;
+let movingPoint = null;
+let moveOffsetX = 0, moveOffsetY = 0;
 
 // ═══════════════════════════════════════════════════════════════════
-// SISTEMA DE DETECÇÃO DE PADRÕES (BASEADO NA SUA ANÁLISE)
+// FUNÇÃO PARA PISCAR O ELEMENTO
 // ═══════════════════════════════════════════════════════════════════
-
-// Padrões identificados:
-// 1. Acúmulo de velas azuis (3-5 velas seguidas entre 1.00x e 1.20x)
-// 2. Padrão decrescente progressivo
-// 3. Padrão de repetição de valores
-// 4. Espelhamento (valores simétricos)
-// 5. Minutagem específica (paga em minutos pares/ímpares)
-// 6. Ciclos entre velas altas
-
-let historicoPadroes = [];
-let sequenciaBaixa = [];
-
-function analisarPadroes() {
-  if (pts.length < 15) return null;
+function piscarElemento(elementId, cor, mensagem) {
+  const el = document.getElementById(elementId);
+  if (!el) return;
   
-  const ultimas = pts.slice(-15);
-  const valores = ultimas.map(p => p.val);
-  const tempos = ultimas.map(p => p.time);
+  el.classList.remove('border-azul', 'border-roxo', 'border-rosa');
+  el.classList.add(`border-${cor}`);
+  document.getElementById('borderText').innerHTML = mensagem;
   
-  // ========== PADRÃO 1: ACÚMULO DE VELAS AZUIS (ZONA BAIXA) ==========
-  // Detectar 3-5 velas consecutivas entre 1.00x e 1.20x
-  const velasBaixas = valores.filter(v => v >= 1.00 && v <= 1.20);
-  const sequenciaBaixaAtual = [];
-  for (let i = valores.length-1; i >= 0; i--) {
-    if (valores[i] >= 1.00 && valores[i] <= 1.20) {
-      sequenciaBaixaAtual.push(valores[i]);
-    } else {
-      break;
-    }
-  }
+  el.classList.add('pisca');
+  setTimeout(() => {
+    el.classList.remove('pisca');
+  }, 1500);
   
-  const acumuloVelas = sequenciaBaixaAtual.length;
-  if (acumuloVelas >= 3 && acumuloVelas <= 6) {
-    // Verifica se após esse acúmulo geralmente vem uma ROXA ou ROSA
-    const previsao = acumuloVelas >= 4 ? 'ROSA (≥10x)' : 'ROXA (≥2x)';
-    return {
-      tipo: 'ACÚMULO',
-      detalhe: `${acumuloVelas} velas consecutivas na zona baixa (1.00x-1.20x)`,
-      previsao: previsao,
-      forca: Math.min(acumuloVelas * 25, 100)
-    };
-  }
+  playBeep();
   
-  // ========== PADRÃO 2: PADRÃO DECRESCENTE PROGRESSIVO ==========
-  // Velas diminuindo gradualmente: ex: 1.15 → 1.10 → 1.05 → 1.01
-  let decrescente = true;
-  for (let i = valores.length-4; i < valores.length-1; i++) {
-    if (i >= 0 && valores[i] <= valores[i+1]) {
-      decrescente = false;
-      break;
-    }
-  }
-  if (decrescente && valores.length >= 4) {
-    const ultimoValor = valores[valores.length-1];
-    if (ultimoValor >= 1.00 && ultimoValor <= 1.30) {
-      return {
-        tipo: 'DECRESCENTE',
-        detalhe: `Sequência decrescente: ${valores.slice(-4).map(v=>v.toFixed(2)).join(' → ')}`,
-        previsao: 'ROXA (≥2x) ou ROSA (≥10x)',
-        forca: 85
-      };
-    }
-  }
-  
-  // ========== PADRÃO 3: REPETIÇÃO DE VALORES ==========
-  // Valores que se repetem antes de uma vela alta
-  const frequencias = {};
-  valores.slice(-10).forEach(v => {
-    const key = v.toFixed(2);
-    frequencias[key] = (frequencias[key] || 0) + 1;
-  });
-  
-  for (const [valor, count] of Object.entries(frequencias)) {
-    if (count >= 3 && parseFloat(valor) >= 1.00 && parseFloat(valor) <= 1.50) {
-      return {
-        tipo: 'REPETIÇÃO',
-        detalhe: `Valor ${valor} repetido ${count}x nas últimas velas`,
-        previsao: 'ROXA (≥2x)',
-        forca: 70
-      };
-    }
-  }
-  
-  // ========== PADRÃO 4: ESPELHAMENTO ==========
-  // Valores simétricos: ex: 1.15 e 1.51, 1.08 e 1.80
-  for (let i = valores.length-6; i < valores.length-2; i++) {
-    if (i >= 0) {
-      const v1 = valores[i];
-      const v2 = valores[i+3];
-      const espelhado = Math.abs(v1 - (v2 / 10)) < 0.1 || Math.abs((v1 * 10) - v2) < 0.5;
-      if (espelhado && v1 >= 1.00 && v1 <= 2.00 && v2 >= 1.00 && v2 <= 20) {
-        return {
-          tipo: 'ESPELHAMENTO',
-          detalhe: `Espelhamento detectado: ${v1.toFixed(2)} → ${v2.toFixed(2)}`,
-          previsao: v2 >= 10 ? 'ROSA (≥10x)' : 'ROXA (≥2x)',
-          forca: 80
-        };
-      }
-    }
-  }
-  
-  // ========== PADRÃO 5: MINUTAGEM (paga em minutos pares/ímpares) ==========
-  if (tempos.length >= 2) {
-    const ultimoMinuto = tempos[tempos.length-1].getMinutes();
-    const penultimoMinuto = tempos[tempos.length-2].getMinutes();
-    const diffMinutos = Math.abs(ultimoMinuto - penultimoMinuto);
-    
-    // Padrão de minutos: 3, 5, 7, 10 minutos entre velas altas
-    if (diffMinutos === 3 || diffMinutos === 5 || diffMinutos === 7 || diffMinutos === 10) {
-      const ultimoValor = valores[valores.length-1];
-      if (ultimoValor >= 1.00 && ultimoValor <= 1.30) {
-        return {
-          tipo: 'MINUTAGEM',
-          detalhe: `${diffMinutos} minutos desde última vela - padrão de pagamento`,
-          previsao: 'ROSA (≥10x)',
-          forca: 90
-        };
-      }
-    }
-  }
-  
-  // ========== PADRÃO 6: CICLO ENTRE VELAS ALTAS ==========
-  // Encontrar última vela alta (≥10x) e contar velas até agora
-  let ultimoIndiceAlto = -1;
-  for (let i = pts.length-15; i < pts.length; i++) {
-    if (i >= 0 && pts[i] && pts[i].val >= 10) {
-      ultimoIndiceAlto = i;
-    }
-  }
-  
-  if (ultimoIndiceAlto !== -1) {
-    const velasDesdeAlta = pts.length - ultimoIndiceAlto - 1;
-    // Ciclos comuns: 10, 15, 20, 25, 30 velas entre altas
-    if (velasDesdeAlta === 10 || velasDesdeAlta === 15 || velasDesdeAlta === 20 || velasDesdeAlta === 25 || velasDesdeAlta === 30) {
-      return {
-        tipo: 'CICLO',
-        detalhe: `${velasDesdeAlta} velas desde última ROSA - ciclo detectado`,
-        previsao: 'ROSA (≥10x)',
-        forca: 85
-      };
-    }
-  }
-  
-  // ========== PADRÃO 7: PAR/ÍMPAR ==========
-  const ultimoValorInt = Math.floor(valores[valores.length-1] * 100);
-  const parImpar = ultimoValorInt % 2 === 0 ? 'PAR' : 'ÍMPAR';
-  const penultimoParImpar = Math.floor(valores[valores.length-2] * 100) % 2 === 0 ? 'PAR' : 'ÍMPAR';
-  
-  if (parImpar !== penultimoParImpar && valores[valores.length-1] <= 1.20) {
-    return {
-      tipo: 'PAR/ÍMPAR',
-      detalhe: `Mudou de ${penultimoParImpar} para ${parImpar} - padrão de alternância`,
-      previsao: 'ROXA (≥2x)',
-      forca: 65
-    };
-  }
-  
-  return null;
+  if (minutagemTimer) clearTimeout(minutagemTimer);
+  minutagemTimer = setTimeout(() => {
+    minutagemAtiva = false;
+    atualizarCorBorda();
+  }, 5000);
 }
 
-function verificarSinalAntecipado() {
-  if (pts.length < 10) return false;
+// ═══════════════════════════════════════════════════════════════════
+// DETECTOR DE MINUTAGEM (prioridade sobre sequência de rosas)
+// ═══════════════════════════════════════════════════════════════════
+function verificarMinutagem() {
+  if (pts.length < 2) return false;
   
-  const padrao = analisarPadroes();
-  if (!padrao) return false;
-  
-  const agora = Date.now();
-  if (agora - ultimoAlertaPadrao < 60000) return false; // 1 min de cooldown
-  
-  // Verifica se estamos na zona baixa (última vela)
   const ultimaVela = pts[pts.length-1];
-  if (ultimaVela.val >= 1.00 && ultimaVela.val <= 1.30) {
-    ultimoAlertaPadrao = agora;
-    
-    // Marca a vela anterior como ponto de sinal
-    if (pts.length >= 2 && !pts[pts.length-2].sinal) {
-      pts[pts.length-2].sinal = true;
-      pts[pts.length-2].padrao = padrao;
-    }
-    
-    // Mostra alerta
-    const alertMsg = `🔔 PADRÃO DETECTADO: ${padrao.tipo}\n📊 ${padrao.detalhe}\n🎯 PREVISÃO: ${padrao.previsao} (força ${padrao.forca}%)`;
-    showAlert(alertMsg, '#f59e0b', 8000);
-    
-    // Atualiza área de padrão
-    document.getElementById('patternDetected').innerHTML = `
-      <span style="color:#f59e0b">${padrao.tipo}</span><br>
-      <small style="color:#4a6e94">${padrao.detalhe}</small><br>
-      <strong style="color:#22c55e">→ ${padrao.previsao}</strong> (${padrao.forca}%)
-    `;
-    
-    triggerFlash();
+  const penultimaVela = pts[pts.length-2];
+  
+  let diffMinutos = ultimaVela.time.getMinutes() - penultimaVela.time.getMinutes();
+  if (diffMinutos < 0) diffMinutos += 60;
+  
+  // Verifica se é ROXA (≥2x e <10x) ou ROSA (≥10x)
+  const isRoxa = ultimaVela.val >= 2 && ultimaVela.val < 10;
+  const isRosa = ultimaVela.val >= 10;
+  
+  // MINUTAGEM PARA ROSA: 3, 5, 7, 10 minutos
+  const minutagemRosa = (diffMinutos === 3 || diffMinutos === 5 || diffMinutos === 7 || diffMinutos === 10);
+  
+  // MINUTAGEM PARA ROXA: 2, 4, 6, 8 minutos (pagando roxo)
+  const minutagemRoxa = (diffMinutos === 2 || diffMinutos === 4 || diffMinutos === 6 || diffMinutos === 8);
+  
+  // PRIORIDADE: MINUTAGEM SEMPRE PREVALECE sobre sequência de rosas
+  if (minutagemRosa && isRosa) {
+    minutagemAtiva = true;
+    piscarElemento('borderStatus', 'rosa', `🌹 MINUTAGEM! ${diffMinutos} min desde última ROSA - BORDAS ROSA`);
+    showAlert(`🌹 ALERTA DE MINUTAGEM! ${diffMinutos} minutos desde a última ROSA!`, '#f472b6', 4000);
+    return true;
+  }
+  
+  if (minutagemRoxa && isRoxa) {
+    minutagemAtiva = true;
+    piscarElemento('borderStatus', 'roxo', `🟣 PAGANDO ROXO! ${diffMinutos} min - BORDAS ROXA`);
+    showAlert(`🟣 PAGANDO ROXO! ${diffMinutos} minutos desde a última ROXA!`, '#a855f7', 4000);
     return true;
   }
   
@@ -369,84 +291,296 @@ function verificarSinalAntecipado() {
 }
 
 // ═══════════════════════════════════════════════════════════════════
-// FERRAMENTAS
+// SISTEMA INTELIGENTE DE COR DAS BORDAS
 // ═══════════════════════════════════════════════════════════════════
-function setTool(tool) {
-  currentTool = tool;
-  document.querySelectorAll('.tool-btn').forEach(btn => btn.classList.remove('active'));
-  document.getElementById(`tool-${tool}`).classList.add('active');
-  if (tool !== 'move') { selectedDrawing = null; draw(); }
-}
-
-function deleteSelected() {
-  if (selectedDrawing !== null) {
-    drawings.splice(selectedDrawing, 1);
-    selectedDrawing = null;
-    draw();
-    showAlert('✓ Linha removida', '#22c55e', 1000);
-  } else {
-    showAlert('Clique numa linha para selecionar', '#f59e0b', 1000);
+function atualizarCorBorda() {
+  if (minutagemAtiva) return;
+  
+  if (pts.length < 10) {
+    document.getElementById('borderText').innerHTML = '🔮 AGUARDANDO DADOS...';
+    document.getElementById('borderStatus').className = 'border-status border-azul';
+    currentBorderColor = 'azul';
+    return;
   }
-}
-
-function addLine(x1, y1, x2, y2) {
-  drawings.push({ type: 'line', x1, y1, x2, y2, color: '#f59e0b' });
-  draw();
-}
-
-function getDrawingAt(x, y) {
-  for (let i = drawings.length-1; i >= 0; i--) {
-    const d = drawings[i];
-    if (d.type === 'line') {
-      const dx = d.x2 - d.x1, dy = d.y2 - d.y1;
-      const len = Math.hypot(dx, dy);
-      if (len === 0) continue;
-      const t = Math.max(0, Math.min(1, ((x - d.x1) * dx + (y - d.y1) * dy) / (len * len)));
-      const projX = d.x1 + t * dx, projY = d.y1 + t * dy;
-      if (Math.hypot(x - projX, y - projY) < 15) return i;
+  
+  const ultimas20 = pts.slice(-20);
+  const valores = ultimas20.map(p => p.val);
+  
+  let azuis = 0, roxas = 0, rosas = 0;
+  for (const v of valores) {
+    if (v >= 10) rosas++;
+    else if (v >= 2) roxas++;
+    else azuis++;
+  }
+  
+  // ATUALIZA SEQUÊNCIA DE ROSAS
+  let sequenciaAtual = 0;
+  for (let i = valores.length-1; i >= 0; i--) {
+    if (valores[i] >= 10) sequenciaAtual++;
+    else break;
+  }
+  sequenciaRosa = sequenciaAtual;
+  
+  const proporcaoRoxoAzul = roxas / (azuis + 1);
+  
+  // LÓGICA DE COR DAS BORDAS
+  let novaCor = 'azul';
+  let mensagem = '';
+  
+  // PRIORIDADE 1: Sequência de ROSAS (2 ou 3) - mas minutagem tem prioridade
+  if (sequenciaRosa >= 2) {
+    novaCor = 'rosa';
+    mensagem = `🌹 ${sequenciaRosa} ROSAS SEGUIDAS! - BORDAS ROSA`;
+  }
+  // PRIORIDADE 2: PAGANDO ROXO (poucas correções, muito roxo)
+  else if (proporcaoRoxoAzul > 1.2 && azuis <= 3) {
+    novaCor = 'roxo';
+    mensagem = `🟣 PAGANDO ROXO! Poucas correções (${azuis} azuis) - BORDAS ROXA`;
+  }
+  // PRIORIDADE 3: FALSO PAGUE AMARELO (muitas correções, muito azul)
+  else if (azuis >= 5 || (azuis >= 4 && proporcaoRoxoAzul < 0.6)) {
+    novaCor = 'azul';
+    mensagem = `🔵 FALSO PAGUE AMARELO! Muitas correções (${azuis} azuis) - BORDAS AZUL`;
+  }
+  // PRIORIDADE 4: Baseado na última vela
+  else {
+    const ultimaVela = valores[valores.length-1];
+    if (ultimaVela >= 10) {
+      novaCor = 'rosa';
+      mensagem = '🌹 ÚLTIMA VELA É ROSA! - BORDAS ROSA';
+    } else if (ultimaVela >= 2) {
+      novaCor = 'roxo';
+      mensagem = '🟣 ÚLTIMA VELA É ROXA - BORDAS ROXA';
+    } else {
+      novaCor = 'azul';
+      mensagem = '🔵 CORREÇÃO EM ANDAMENTO - BORDAS AZUL';
     }
   }
-  return -1;
+  
+  currentBorderColor = novaCor;
+  const borderDiv = document.getElementById('borderStatus');
+  borderDiv.className = `border-status border-${novaCor}`;
+  document.getElementById('borderText').innerHTML = mensagem;
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// FUNÇÃO PARA ATUALIZAR A MAIOR VELA ROSA
+// ═══════════════════════════════════════════════════════════════════
+function atualizarMaiorRosa() {
+  if (pts.length === 0) {
+    document.getElementById('maiorRosaValor').innerHTML = '—';
+    document.getElementById('maiorRosaTime').innerHTML = '—';
+    return;
+  }
+  
+  const agora = new Date();
+  const umaHoraAtras = new Date(agora.getTime() - 60 * 60 * 1000);
+  const rosasUltimaHora = pts.filter(p => p.val >= 10 && p.time > umaHoraAtras);
+  
+  if (rosasUltimaHora.length === 0) {
+    document.getElementById('maiorRosaValor').innerHTML = 'Nenhuma';
+    document.getElementById('maiorRosaTime').innerHTML = 'na última hora';
+    return;
+  }
+  
+  let maior = rosasUltimaHora[0];
+  for (let i = 1; i < rosasUltimaHora.length; i++) {
+    if (rosasUltimaHora[i].val > maior.val) maior = rosasUltimaHora[i];
+  }
+  
+  document.getElementById('maiorRosaValor').innerHTML = maior.val.toFixed(2) + 'x';
+  document.getElementById('maiorRosaTime').innerHTML = 'às ' + maior.time.toLocaleTimeString('pt-BR', { hour:'2-digit', minute:'2-digit', second:'2-digit' });
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// FUNÇÃO PARA SELECIONAR VELA
+// ═══════════════════════════════════════════════════════════════════
+function selecionarVela(index) {
+  selectedVelaIndex = index;
+  document.querySelectorAll('.log-row').forEach((row, i) => {
+    if (i === (pts.length - 1 - index)) row.classList.add('selecionado');
+    else row.classList.remove('selecionado');
+  });
+  
+  const n = getVisN();
+  const totalPts = pts.length;
+  if (index >= 0 && index < totalPts) {
+    let newOffset = totalPts - index - Math.floor(n / 2);
+    newOffset = Math.max(0, Math.min(totalPts - n, newOffset));
+    viewOffset = newOffset;
+    document.getElementById('btnBack').classList.toggle('show', viewOffset > 2);
+    draw();
+    showAlert(`📍 Vela #${index + 1}: ${pts[index].val.toFixed(2)}x`, '#60a5fa', 1500);
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// ÁUDIO
+// ═══════════════════════════════════════════════════════════════════
+function getAC() {
+  if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  return audioCtx;
+}
+
+function playBeep() {
+  try {
+    const ac = getAC();
+    const osc = ac.createOscillator();
+    const gain = ac.createGain();
+    osc.connect(gain);
+    gain.connect(ac.destination);
+    osc.frequency.value = 880;
+    gain.gain.value = 0.3;
+    osc.start();
+    gain.gain.exponentialRampToValueAtTime(0.00001, ac.currentTime + 0.5);
+    osc.stop(ac.currentTime + 0.5);
+  } catch(e) {}
+}
+
+function col(v) {
+  if (v >= 10) return COR.ROSA;
+  if (v >= 2) return COR.ROXO;
+  return COR.AZUL;
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// MÉDIAS MÓVEIS
+// ═══════════════════════════════════════════════════════════════════
+function calcularEMA(dados, periodo, extendFuturo = 10) {
+  const k = 2 / (periodo + 1);
+  let ema = dados[0];
+  const resultado = [ema];
+  for (let i = 1; i < dados.length; i++) {
+    ema = dados[i] * k + ema * (1 - k);
+    resultado.push(ema);
+  }
+  let ultimo = ema;
+  for (let i = 0; i < extendFuturo; i++) {
+    ultimo = ultimo * (1 - k);
+    resultado.push(ultimo);
+  }
+  return resultado;
+}
+
+const curvaFn = {
+  linear: (p,sx,sy) => { if(p.length<2)return; ctx.beginPath();ctx.moveTo(sx(0),sy(p[0]));for(let i=1;i<p.length;i++)ctx.lineTo(sx(i),sy(p[i]));ctx.stroke(); },
+  smooth: (p,sx,sy) => { if(p.length<2)return; ctx.beginPath();ctx.moveTo(sx(0),sy(p[0]));for(let i=0;i<p.length-1;i++){const x1=sx(i),y1=sy(p[i]),x2=sx(i+1),y2=sy(p[i+1]);ctx.bezierCurveTo(x1+(x2-x1)*0.33,y1,x1+(x2-x1)*0.66,y2,x2,y2);}ctx.stroke(); },
+  bezier: (p,sx,sy) => { if(p.length<2)return; ctx.beginPath();ctx.moveTo(sx(0),sy(p[0]));for(let i=0;i<p.length-1;i++){const x1=sx(i),y1=sy(p[i]),x2=sx(i+1),y2=sy(p[i+1]);ctx.bezierCurveTo(x1+(x2-x1)*0.25,y1-Math.abs(p[i+1]-p[i])*2,x2-(x2-x1)*0.25,y2+Math.abs(p[i+1]-p[i])*2,x2,y2);}ctx.stroke(); },
+  step: (p,sx,sy) => { if(p.length<2)return; ctx.beginPath();ctx.moveTo(sx(0),sy(p[0]));for(let i=1;i<p.length;i++){ctx.lineTo(sx(i),sy(p[i-1]));ctx.lineTo(sx(i),sy(p[i]));}ctx.stroke(); },
+  monoton: (p,sx,sy) => { if(p.length<2)return; ctx.beginPath();ctx.moveTo(sx(0),sy(p[0]));for(let i=1;i<p.length;i++){const mx=(sx(i-1)+sx(i))/2;ctx.quadraticCurveTo(sx(i-1),sy(p[i-1]),mx,(sy(p[i-1])+sy(p[i]))/2);ctx.quadraticCurveTo(sx(i),sy(p[i]),sx(i),sy(p[i]));}ctx.stroke(); },
+  cardinal: (p,sx,sy) => { if(p.length<2)return; ctx.beginPath();ctx.moveTo(sx(0),sy(p[0]));const tension=0.5;for(let i=0;i<p.length-1;i++){const x0=sx(Math.max(0,i-1)),y0=sy(p[Math.max(0,i-1)]);const x1=sx(i),y1=sy(p[i]);const x2=sx(i+1),y2=sy(p[i+1]);const x3=sx(Math.min(p.length-1,i+2)),y3=sy(p[Math.min(p.length-1,i+2)]);const cp1x=x1+(x2-x0)*tension,cp1y=y1+(y2-y0)*tension;const cp2x=x2-(x3-x1)*tension,cp2y=y2-(y3-y1)*tension;ctx.bezierCurveTo(cp1x,cp1y,cp2x,cp2y,x2,y2);}ctx.stroke(); },
+  natural: (p,sx,sy) => { if(p.length<2)return; const n=p.length; const h=[]; for(let i=0;i<n-1;i++)h[i]=sx(i+1)-sx(i); const alpha=[]; const l=[]; const mu=[]; const z=[]; for(let i=1;i<n-1;i++){alpha[i]=3/h[i]*(sy(p[i+1])-sy(p[i]))-3/h[i-1]*(sy(p[i])-sy(p[i-1]));} l[0]=1; mu[0]=0; z[0]=0; for(let i=1;i<n-1;i++){l[i]=2*(sx(i+1)-sx(i-1))-h[i-1]*mu[i-1];mu[i]=h[i]/l[i];z[i]=(alpha[i]-h[i-1]*z[i-1])/l[i];} l[n-1]=1; z[n-1]=0; const b=[]; const c=[]; const d=[]; c[n-1]=0; for(let i=n-2;i>=0;i--){c[i]=z[i]-mu[i]*c[i+1];b[i]=(sy(p[i+1])-sy(p[i]))/h[i]-h[i]*(c[i+1]+2*c[i])/3;d[i]=(c[i+1]-c[i])/(3*h[i]);} ctx.beginPath();ctx.moveTo(sx(0),sy(p[0]));for(let i=0;i<n-1;i++){const step=10;for(let t=0;t<=step;t++){const tNorm=t/step;const x=sx(i)+tNorm*h[i];const y=sy(p[i])+b[i]*tNorm*h[i]+c[i]*Math.pow(tNorm*h[i],2)+d[i]*Math.pow(tNorm*h[i],3);if(t===0)ctx.moveTo(x,y);else ctx.lineTo(x,y);}}ctx.stroke(); },
+  basis: (p,sx,sy) => { if(p.length<2)return; ctx.beginPath();ctx.moveTo(sx(0),sy(p[0]));for(let i=1;i<p.length-1;i++){const x0=sx(i-1),y0=sy(p[i-1]);const x1=sx(i),y1=sy(p[i]);const x2=sx(i+1),y2=sy(p[i+1]);const cp1x=x1+(x2-x0)/6,cp1y=y1+(y2-y0)/6;const cp2x=x2-(x2-x0)/6,cp2y=y2-(y2-y0)/6;ctx.bezierCurveTo(cp1x,cp1y,cp2x,cp2y,x2,y2);}ctx.stroke(); }
+};
+
+// ═══════════════════════════════════════════════════════════════════
+// SINAL DE REVERSÃO
+// ═══════════════════════════════════════════════════════════════════
+let fundoDetectado = false;
+let reversaoCooldown = 0;
+
+function checkReversao(emaArr) {
+  if (emaArr.length < 5) return;
+  const n = emaArr.length;
+  const a0 = emaArr[n-1], a1 = emaArr[n-2], a2 = emaArr[n-3];
+  const acima0 = a0.e1 > a0.e2;
+  const acima1 = a1.e1 > a1.e2;
+  const acima2 = a2.e1 > a2.e2;
+  
+  if (acima2 && acima1 && !acima0) fundoDetectado = true;
+  
+  if (!acima2 && !acima1 && acima0 && fundoDetectado) {
+    fundoDetectado = false;
+    const agora = Date.now();
+    if (agora - reversaoCooldown > 60000) {
+      reversaoCooldown = agora;
+      if (pts.length > 0) {
+        pts[pts.length-1].sinalEntrada = true;
+        showAlert('🚀 REVERSÃO! ENTRADA CONFIRMADA!', '#22c55e', 8000);
+        playBeep();
+        triggerFlash();
+      }
+    }
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// DETECTOR DE PADRÕES
+// ═══════════════════════════════════════════════════════════════════
+function analisarPadroes() {
+  if (pts.length < 10) return null;
+  const ultimas = pts.slice(-12);
+  const valores = ultimas.map(p => p.val);
+  
+  let sequenciaBaixa = 0;
+  for (let i = valores.length-1; i >= 0; i--) {
+    if (valores[i] >= 1.00 && valores[i] <= 1.20) sequenciaBaixa++;
+    else break;
+  }
+  if (sequenciaBaixa >= 3 && sequenciaBaixa <= 6) {
+    const previsao = sequenciaBaixa >= 4 ? 'ROSA (≥10x)' : 'ROXA (≥2x)';
+    return { tipo: '📊 ACÚMULO', detalhe: `${sequenciaBaixa} velas na zona baixa`, previsao: previsao };
+  }
+  
+  let decrescente = true;
+  for (let i = valores.length-4; i < valores.length-1; i++) {
+    if (i >= 0 && valores[i] <= valores[i+1]) decrescente = false;
+  }
+  if (decrescente && valores.length >= 4 && valores[valores.length-1] <= 1.30) {
+    return { tipo: '📉 DECRESCENTE', detalhe: `${valores.slice(-4).map(v=>v.toFixed(2)).join(' → ')}`, previsao: 'ROXA/ROSA' };
+  }
+  
+  return null;
+}
+
+function verificarPadrao() {
+  if (pts.length < 8) return false;
+  const padrao = analisarPadroes();
+  if (!padrao) return false;
+  const agora = Date.now();
+  if (agora - ultimoAlertaPadrao < 60000) return false;
+  const ultimaVela = pts[pts.length-1];
+  if (ultimaVela.val >= 1.00 && ultimaVela.val <= 1.30) {
+    ultimoAlertaPadrao = agora;
+    if (pts.length >= 2) pts[pts.length-2].sinalPadrao = true;
+    document.getElementById('patternDetected').innerHTML = `${padrao.tipo}<br><small>${padrao.detalhe}</small><br>→ ${padrao.previsao}`;
+    showAlert(`🔔 ${padrao.tipo}\n${padrao.detalhe}\nPREVISÃO: ${padrao.previsao}`, '#f59e0b', 5000);
+    return true;
+  }
+  return false;
 }
 
 // ═══════════════════════════════════════════════════════════════════
 // LOG E UI
 // ═══════════════════════════════════════════════════════════════════
-function addLog(vela, isSinal = false, padrao = null) {
+function addLog(vela, index, isSinal = false) {
   const t = vela.time.toLocaleTimeString('pt-BR');
   const v = vela.val;
   let classe, cor;
-  if (v >= 10) { classe = 'rosa'; cor = '#f472b6'; }
-  else if (v >= 2) { classe = 'roxa'; cor = '#a855f7'; }
-  else { classe = 'ciano'; cor = '#06b6d4'; }
+  if (v >= 10) { classe = 'rosa'; cor = COR.ROSA; }
+  else if (v >= 2) { classe = 'roxa'; cor = COR.ROXO; }
+  else { classe = 'azul'; cor = COR.AZUL; }
   
   const area = document.getElementById('logArea');
   const row = document.createElement('div');
   row.className = 'log-row';
-  if (isSinal) row.style.background = 'rgba(245,158,11,0.15)';
-  let extra = '';
-  if (padrao) extra = `<span class="ltag pattern">${padrao.tipo}</span>`;
+  if (selectedVelaIndex === index) row.classList.add('selecionado');
+  if (isSinal) row.style.background = 'rgba(34,197,94,0.15)';
+  row.setAttribute('data-index', index);
+  row.onclick = (function(idx) { return function() { selecionarVela(idx); }; })(index);
   row.innerHTML = `<div class="ldot" style="background:${cor}"></div>
                    <span class="lt">${t}</span>
                    <span class="lv" style="color:${cor}">${v.toFixed(2)}x</span>
                    <span class="ltag ${classe}">${classe.toUpperCase()}</span>
-                   ${extra}`;
+                   ${isSinal ? '<span class="ltag sinal">⚡ SINAL</span>' : ''}`;
   area.insertBefore(row, area.firstChild);
-  while(area.children.length > 30) area.removeChild(area.lastChild);
-}
-
-function atualizarUI() {
-  if (!pts.length) return;
-  const ult = pts[pts.length-1];
-  document.getElementById('sCot').textContent = ult.val.toFixed(2)+'x';
-  document.getElementById('sTot').textContent = pts.length;
-  document.getElementById('sCot').style.color = ult.val>=10?'#f472b6':ult.val>=2?'#a855f7':'#06b6d4';
+  while(area.children.length > 35) area.removeChild(area.lastChild);
 }
 
 function showAlert(msg, color, dur=4000) {
   const el = document.getElementById('alertBox');
   el.textContent = msg;
-  el.style.cssText = `background:${color}22;border:1px solid ${color};color:${color};white-space:normal;max-width:90%;font-size:11px`;
+  el.style.cssText = `background:${color}22;border:1px solid ${color};color:${color};white-space:normal;max-width:90%;font-size:10px`;
   el.className = 'alert show';
   setTimeout(() => el.className = 'alert', dur);
 }
@@ -454,8 +588,25 @@ function showAlert(msg, color, dur=4000) {
 function triggerFlash() { const f = document.getElementById('flash'); f.className='flash on'; setTimeout(()=>f.className='flash',400); }
 
 // ═══════════════════════════════════════════════════════════════════
-// SERVIDOR
+// CONEXÃO COM SERVIDOR
 // ═══════════════════════════════════════════════════════════════════
+function setStatus(online) {
+  const statusEl = document.getElementById('statusCon');
+  const wsStatus = document.getElementById('wsStatus');
+  const wsLabel = document.getElementById('wsLabel');
+  if (online) {
+    statusEl.innerHTML = '🟢 Online';
+    statusEl.style.color = '#22c55e';
+    wsStatus.className = 'ws-pill ok';
+    wsLabel.textContent = 'ONLINE';
+  } else {
+    statusEl.innerHTML = '🟡 Reconectando...';
+    statusEl.style.color = '#f59e0b';
+    wsStatus.className = 'ws-pill err';
+    wsLabel.textContent = 'OFFLINE';
+  }
+}
+
 async function buscarVelas() {
   try {
     const url = `${SERVIDOR_URL}/api/velas?painel=${PAINEL}&limit=500`;
@@ -464,6 +615,7 @@ async function buscarVelas() {
     
     if (data.velas && data.velas.length) {
       pts = [];
+      ultimoTimestamp = 0;
       for (const v of data.velas) {
         if (v.rodada === 'TESTE_CONEXAO') continue;
         const mult = parseFloat(v.multiplicador);
@@ -475,12 +627,16 @@ async function buscarVelas() {
         }
       }
       pts.sort((a,b)=>a.time-b.time);
-      atualizarUI();
+      document.getElementById('sCot').textContent = pts.length ? pts[pts.length-1].val.toFixed(2)+'x' : '—';
+      document.getElementById('sTot').textContent = pts.length;
       document.getElementById('logArea').innerHTML = '';
-      pts.slice(-25).reverse().forEach(v => addLog(v));
+      for (let i = pts.length-1; i >= Math.max(0, pts.length-30); i--) addLog(pts[i], i);
+      atualizarMaiorRosa();
+      atualizarCorBorda();
       draw();
-    }
-  } catch(e) { console.error(e); }
+      setStatus(true);
+    } else { setStatus(false); }
+  } catch(e) { setStatus(false); }
 }
 
 async function buscarNovasVelas() {
@@ -501,18 +657,6 @@ async function buscarNovasVelas() {
             let ts = v.timestamp ? new Date(v.timestamp) : new Date();
             if (isNaN(ts.getTime())) ts = new Date();
             pts.push({ val: mult, time: ts, rodada: v.rodada });
-            
-            // Verifica padrão ANTES de adicionar ao log
-            const padrao = analisarPadroes();
-            addLog({ val: mult, time: ts }, false, padrao);
-            
-            // Verifica sinal antecipado
-            if (verificarSinalAntecipado()) {
-              // Marca a vela anterior no gráfico
-              if (pts.length >= 2) {
-                pts[pts.length-2].sinal = true;
-              }
-            }
             novas++;
           }
           if (v.ts_recebido > ultimoTimestamp) ultimoTimestamp = v.ts_recebido;
@@ -520,17 +664,71 @@ async function buscarNovasVelas() {
       }
       if (novas > 0) {
         pts.sort((a,b)=>a.time-b.time);
-        atualizarUI();
+        document.getElementById('sCot').textContent = pts[pts.length-1].val.toFixed(2)+'x';
+        document.getElementById('sTot').textContent = pts.length;
+        document.getElementById('logArea').innerHTML = '';
+        for (let i = pts.length-1; i >= Math.max(0, pts.length-30); i--) addLog(pts[i], i);
+        atualizarMaiorRosa();
+        
+        // MINUTAGEM TEM PRIORIDADE MÁXIMA
+        const minutagemDetectada = verificarMinutagem();
+        
+        if (!minutagemDetectada) {
+          atualizarCorBorda();
+        }
+        
+        if (verificarPadrao() && pts.length >= 2) pts[pts.length-2].sinalPadrao = true;
         draw();
-        if (novas > 0) showAlert(`📈 +${novas} vela(s) recebida(s)`, '#22c55e', 1000);
+        setStatus(true);
       }
     }
   } catch(e) {}
 }
 
-async function syncNow() {
-  showAlert('🔄 Sincronizando...', '#60a5fa', 1000);
-  await buscarVelas();
+// ═══════════════════════════════════════════════════════════════════
+// FERRAMENTAS
+// ═══════════════════════════════════════════════════════════════════
+function setTool(tool) {
+  currentTool = tool;
+  if (tool !== 'move' && tool !== 'select') selectedDrawing = null;
+  draw();
+}
+
+function deleteSelected() {
+  if (selectedDrawing !== null) {
+    drawings.splice(selectedDrawing, 1);
+    selectedDrawing = null;
+    draw();
+    showAlert('✓ Linha removida', '#22c55e', 1000);
+  } else {
+    showAlert('Selecione uma linha primeiro (botão 🖱️ ou ✋)', '#f59e0b', 1500);
+  }
+}
+
+function addLine(x1, y1, x2, y2) {
+  drawings.push({ type: 'line', x1, y1, x2, y2, color: '#f59e0b' });
+  draw();
+}
+
+function getDrawingAt(x, y) {
+  for (let i = drawings.length-1; i >= 0; i--) {
+    const d = drawings[i];
+    if (d.type === 'line') {
+      const dx = d.x2 - d.x1, dy = d.y2 - d.y1;
+      const len = Math.hypot(dx, dy);
+      if (len === 0) continue;
+      const t = Math.max(0, Math.min(1, ((x - d.x1) * dx + (y - d.y1) * dy) / (len * len)));
+      const projX = d.x1 + t * dx, projY = d.y1 + t * dy;
+      if (Math.hypot(x - projX, y - projY) < 12) return i;
+    }
+  }
+  return -1;
+}
+
+function getPointAt(x, y, line) {
+  if (Math.hypot(x - line.x1, y - line.y1) < 12) return 'start';
+  if (Math.hypot(x - line.x2, y - line.y2) < 12) return 'end';
+  return null;
 }
 
 // ═══════════════════════════════════════════════════════════════════
@@ -543,43 +741,62 @@ function getViewSub() {
   const start = Math.max(0, end - n);
   return pts.slice(start, end);
 }
+
 function getScale(sub, W, H) {
   scaleW = Math.max(50, Math.min(100, scaleW));
   const vals = sub.map(p=>p.val);
   if (!vals.length) return { sx:()=>0, sy:()=>0, minV:0.8, maxV:2 };
   const minV = Math.max(0.85, Math.min(...vals) * 0.92);
   const maxV = Math.max(...vals) * 1.1;
-  const cW = W - 10 - scaleW, cH = H - 50 - 20;
+  const cW = W - 12 - scaleW, cH = H - 50 - 20;
   const n = sub.length;
   const logMin = Math.log10(minV), logMax = Math.log10(maxV);
   const vsh = (vertOffset / cH) * (logMax - logMin);
   return {
-    sx: i => 10 + i * ((cW - 30) / (n-1||1)),
+    sx: i => 12 + i * ((cW - 30) / (n-1||1)),
     sy: v => 45 + cH * (1 - (Math.log10(Math.max(v,minV)) - logMin + vsh) / (logMax - logMin||1)),
-    minV, maxV
+    minV, maxV, cW, cH, logMin, logMax
   };
 }
-function col(v) { return v>=10?'#f472b6':v>=2?'#a855f7':'#06b6d4'; }
 
 function draw() {
   const W = canvas.width, H = canvas.height;
   if (!W || !H) return;
   ctx.clearRect(0, 0, W, H);
+  
+  let bordaCor = currentBorderColor;
+  if (minutagemAtiva) {
+    bordaCor = document.getElementById('borderStatus').classList.contains('border-rosa') ? 'rosa' : 
+               (document.getElementById('borderStatus').classList.contains('border-roxo') ? 'roxo' : 'azul');
+  }
+  ctx.strokeStyle = bordaCor === 'rosa' ? COR.ROSA : (bordaCor === 'roxo' ? COR.ROXO : COR.AZUL);
+  ctx.lineWidth = 3;
+  ctx.strokeRect(5, 5, W - 10, H - 10);
+  
   const sub = getViewSub();
   if (sub.length < 2) return;
   const { sx, sy, minV, maxV } = getScale(sub, W, H);
   
-  ctx.font = `${Math.max(7, Math.min(11, W/80))}px monospace`;
-  [1, 2, 5, 10, 20].filter(v=>v>=minV&&v<=maxV*1.05).forEach(v=>{
+  ctx.font = '7px monospace';
+  [1, 2, 5, 10, 20, 50, 100].filter(v=>v>=minV&&v<=maxV*1.05).forEach(v=>{
     const py = sy(v);
-    ctx.strokeStyle = v>=10?'rgba(244,114,182,0.08)':v>=2?'rgba(168,85,247,0.06)':'#0c1b2e';
-    ctx.beginPath(); ctx.moveTo(8, py); ctx.lineTo(W-scaleW, py); ctx.stroke();
-    ctx.fillStyle = v>=10?'#f472b6':v>=2?'#a855f7':'#1e3a58';
-    ctx.fillText(v+'x', W-scaleW+3, py+2);
+    ctx.strokeStyle = v>=10?`${COR.ROSA}20`:v>=2?`${COR.ROXO}15`:'#0c1b2e';
+    ctx.beginPath(); ctx.moveTo(10, py); ctx.lineTo(W-scaleW, py); ctx.stroke();
+    ctx.fillStyle = v>=10?COR.ROSA:v>=2?COR.ROXO:'#1e3a58';
+    ctx.fillText(v+'x', W-scaleW+4, py+2);
   });
   
-  [[1,'#06b6d4'],[2,'#a855f7'],[10,'#f472b6']].forEach(([z,c])=>{
-    if(z>=minV&&z<=maxV){ const py=sy(z); ctx.strokeStyle=c+'80'; ctx.lineWidth=1; ctx.setLineDash([5,4]); ctx.beginPath(); ctx.moveTo(8,py); ctx.lineTo(W-scaleW,py); ctx.stroke(); }
+  [[1, COR.AZUL], [2, COR.ROXO], [10, COR.ROSA]].forEach(([z,c])=>{
+    if(z>=minV&&z<=maxV){ 
+      const py = sy(z); 
+      ctx.strokeStyle = c; 
+      ctx.lineWidth = 2; 
+      ctx.setLineDash([8,4]); 
+      ctx.beginPath(); ctx.moveTo(10,py); ctx.lineTo(W-scaleW,py); ctx.stroke();
+      ctx.fillStyle = c;
+      ctx.font = 'bold 9px monospace';
+      ctx.fillText(z===1?'1.00x ZONA AZUL':z===2?'2.00x ZONA ROXA':'10.00x ZONA ROSA', 15, py-5);
+    }
   });
   ctx.setLineDash([]);
   
@@ -594,48 +811,105 @@ function draw() {
     ctx.strokeStyle = col(p1.val); ctx.lineWidth = 2; ctx.stroke();
   }
   
-  // Bolinhas e marcadores de sinal
+  if (CFG.showMA && pts.length >= 2) {
+    const valores = pts.map(p=>p.val);
+    const subStart = Math.max(0, pts.length - viewOffset - sub.length);
+    for (let i=1; i<=8; i++) {
+      if (!CFG[`mm${i}On`] || pts.length < CFG[`mm${i}Per`]) continue;
+      const ema = calcularEMA(valores, CFG[`mm${i}Per`], 10);
+      const slice = ema.slice(subStart, subStart + sub.length + 15);
+      if (slice.length < 2) continue;
+      ctx.strokeStyle = CFG[`mm${i}Cor`];
+      ctx.lineWidth = CFG[`mm${i}Lw`];
+      ctx.setLineDash(i>=3?[5,3]:[]);
+      (curvaFn[CFG[`mm${i}Curva`]] || curvaFn.linear)(slice, sx, sy);
+    }
+    ctx.setLineDash([]);
+  }
+  
+  if (CFG.mm1On && CFG.mm2On && pts.length >= CFG.mm2Per) {
+    const valores = pts.map(p=>p.val);
+    const k1 = 2/(CFG.mm1Per+1), k2 = 2/(CFG.mm2Per+1);
+    let e1 = valores[0], e2 = valores[0];
+    const emaCheck = valores.map((v,i)=>{ if(i>0){ e1 = v*k1 + e1*(1-k1); e2 = v*k2 + e2*(1-k2); } return { e1, e2 }; });
+    checkReversao(emaCheck);
+  }
+  
   sub.forEach((p,i)=>{
     const x=sx(i), y=sy(p.val), r = p.val>=10?6:p.val>=2?4.5:3;
     ctx.beginPath(); ctx.arc(x,y,r,0,Math.PI*2);
     ctx.fillStyle = col(p.val); ctx.fill();
     ctx.strokeStyle = '#fff'; ctx.lineWidth=1; ctx.stroke();
     
-    // Marcador de SINAL (antes da vela rosa/roxa)
-    if(p.sinal){
-      ctx.beginPath(); ctx.arc(x, y-14, 10, 0, Math.PI*2);
+    const globalIndex = (pts.length - viewOffset - sub.length) + i;
+    if (globalIndex === selectedVelaIndex) {
+      ctx.beginPath(); ctx.arc(x, y, r+5, 0, Math.PI*2);
+      ctx.strokeStyle = '#60a5fa';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+    }
+    
+    if(p.sinalEntrada){
+      ctx.beginPath(); ctx.arc(x, y-12, 10, 0, Math.PI*2);
+      ctx.fillStyle = '#22c55e'; ctx.fill();
+      ctx.fillStyle = '#000'; ctx.font='bold 8px monospace'; ctx.textAlign='center';
+      ctx.fillText('⚡', x, y-10);
+    }
+    if(p.sinalPadrao){
+      ctx.beginPath(); ctx.arc(x, y-12, 10, 0, Math.PI*2);
       ctx.fillStyle = '#f59e0b'; ctx.fill();
       ctx.fillStyle = '#000'; ctx.font='bold 8px monospace'; ctx.textAlign='center';
-      ctx.fillText('⚠️', x, y-12);
-    }
-    if(p.padrao){
-      ctx.fillStyle = '#f59e0b'; ctx.font='bold 7px monospace'; ctx.textAlign='center';
-      ctx.fillText(p.padrao.tipo.substring(0,3), x, y-22);
+      ctx.fillText('⚠️', x, y-10);
     }
   });
   
-  // Linhas desenhadas
-  drawings.forEach((d,idx)=>{
-    const sel = idx===selectedDrawing;
+  drawings.forEach((d, idx) => {
+    const sel = idx === selectedDrawing;
     ctx.strokeStyle = sel ? '#22c55e' : d.color;
     ctx.lineWidth = sel ? 2.5 : 1.8;
     if (d.type === 'line') {
-      ctx.beginPath(); ctx.moveTo(d.x1,d.y1); ctx.lineTo(d.x2,d.y2); ctx.stroke();
-      if(sel){
-        ctx.fillStyle='#22c55e';
-        ctx.beginPath(); ctx.arc(d.x1,d.y1,6,0,Math.PI*2); ctx.fill();
-        ctx.beginPath(); ctx.arc(d.x2,d.y2,6,0,Math.PI*2); ctx.fill();
+      ctx.beginPath(); ctx.moveTo(d.x1, d.y1); ctx.lineTo(d.x2, d.y2); ctx.stroke();
+      if (sel) {
+        ctx.fillStyle = '#22c55e';
+        ctx.beginPath(); ctx.arc(d.x1, d.y1, 6, 0, Math.PI*2); ctx.fill();
+        ctx.beginPath(); ctx.arc(d.x2, d.y2, 6, 0, Math.PI*2); ctx.fill();
       }
     }
   });
   
   if (isDrawing && currentTool === 'line' && drawStart) {
-    ctx.strokeStyle = '#f59e0b'; ctx.lineWidth=1.5; ctx.setLineDash([5,5]);
-    ctx.beginPath(); ctx.moveTo(drawStart.x,drawStart.y); ctx.lineTo(_mx,_my); ctx.stroke();
+    ctx.strokeStyle = '#f59e0b'; ctx.lineWidth = 1.5; ctx.setLineDash([5,5]);
+    ctx.beginPath(); ctx.moveTo(drawStart.x, drawStart.y); ctx.lineTo(_mx, _my); ctx.stroke();
     ctx.setLineDash([]);
   }
   
-  if(sub.length){
+  const bx = W - scaleW;
+  ctx.strokeStyle = 'rgba(32,53,85,0.5)';
+  ctx.lineWidth = 1.5;
+  ctx.beginPath();
+  ctx.moveTo(bx, 30);
+  ctx.lineTo(bx, H - 30);
+  ctx.stroke();
+  
+  const ultimaVela = pts[pts.length-1];
+  if (ultimaVela) {
+    const posY = sy(ultimaVela.val);
+    ctx.fillStyle = col(ultimaVela.val);
+    ctx.beginPath();
+    ctx.arc(bx, posY, 8, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = '#fff';
+    ctx.font = 'bold 10px monospace';
+    ctx.textAlign = 'center';
+    ctx.fillText(ultimaVela.val.toFixed(2) + 'x', bx, posY + 3);
+  }
+  
+  for (let gy = H/2 - 15; gy <= H/2 + 15; gy += 8) {
+    ctx.fillStyle = 'rgba(74,110,148,0.6)';
+    ctx.fillRect(bx - 3, gy, 6, 3);
+  }
+  
+  if (sub.length) {
     document.getElementById('xL').textContent = sub[0].time.toLocaleTimeString('pt-BR');
     document.getElementById('xM').textContent = sub[Math.floor(sub.length/2)].time.toLocaleTimeString('pt-BR');
     document.getElementById('xR').textContent = sub[sub.length-1].time.toLocaleTimeString('pt-BR');
@@ -644,7 +918,7 @@ function draw() {
 }
 
 // ═══════════════════════════════════════════════════════════════════
-// EVENTOS
+// EVENTOS DO MOUSE
 // ═══════════════════════════════════════════════════════════════════
 function getPos(e) {
   const rect = cwrap.getBoundingClientRect();
@@ -653,22 +927,66 @@ function getPos(e) {
   return { x: clientX - rect.left, y: clientY - rect.top };
 }
 
-function onTouchStart(e) {
+function onScaleBorder(pos) { return Math.abs(pos.x - (canvas.width - scaleW)) < 12; }
+
+let scaleResizing = false, scaleRX = 0, scaleRW = 0;
+
+function onMouseDown(e) {
   e.preventDefault();
   const pos = getPos(e);
-  if (currentTool === 'cursor') {
-    isPanning = true; panX0 = pos.x; panOff0 = viewOffset;
-    document.getElementById('pov').style.display = 'block';
+  
+  if (onScaleBorder(pos)) {
+    scaleResizing = true;
+    scaleRX = pos.x;
+    scaleRW = scaleW;
+    return;
+  }
+  
+  if (currentTool === 'select') {
+    const idx = getDrawingAt(pos.x, pos.y);
+    if (idx !== -1) { selectedDrawing = idx; draw(); }
+    else { selectedDrawing = null; draw(); }
   } else if (currentTool === 'line') {
     isDrawing = true; drawStart = { x: pos.x, y: pos.y };
+  } else if (currentTool === 'move') {
+    const idx = getDrawingAt(pos.x, pos.y);
+    if (idx !== -1) {
+      selectedDrawing = idx;
+      const line = drawings[idx];
+      const ponto = getPointAt(pos.x, pos.y, line);
+      if (ponto) {
+        isMoving = true; movingLine = idx; movingPoint = ponto;
+        moveOffsetX = pos.x - (ponto === 'start' ? line.x1 : line.x2);
+        moveOffsetY = pos.y - (ponto === 'start' ? line.y1 : line.y2);
+      } else {
+        isMoving = true; movingLine = idx; movingPoint = null;
+        moveOffsetX = pos.x - line.x1;
+        moveOffsetY = pos.y - line.y1;
+      }
+      draw();
+    } else {
+      selectedDrawing = null;
+      draw();
+      isPanning = true; panX0 = pos.x; panOff0 = viewOffset;
+      document.getElementById('pov').style.display = 'block';
+    }
+  } else {
+    isPanning = true; panX0 = pos.x; panOff0 = viewOffset;
+    document.getElementById('pov').style.display = 'block';
   }
 }
 
-function onTouchMove(e) {
-  e.preventDefault();
+function onMouseMove(e) {
   const pos = getPos(e);
   _mx = pos.x; _my = pos.y;
-  if (isPanning && currentTool === 'cursor') {
+  
+  if (scaleResizing) {
+    scaleW = Math.max(44, Math.min(160, scaleRW + (scaleRX - pos.x)));
+    draw();
+    return;
+  }
+  
+  if (isPanning) {
     const sub = getViewSub();
     if (sub.length >= 2) {
       const step = (canvas.width - 12 - scaleW) / (sub.length - 1 || 1);
@@ -677,55 +995,172 @@ function onTouchMove(e) {
       document.getElementById('btnBack').classList.toggle('show', viewOffset > 2);
       draw();
     }
+  } else if (isMoving && movingLine !== null) {
+    const line = drawings[movingLine];
+    if (movingPoint === 'start') {
+      drawings[movingLine].x1 = pos.x - moveOffsetX;
+      drawings[movingLine].y1 = pos.y - moveOffsetY;
+    } else if (movingPoint === 'end') {
+      drawings[movingLine].x2 = pos.x - moveOffsetX;
+      drawings[movingLine].y2 = pos.y - moveOffsetY;
+    } else {
+      const dx = pos.x - moveOffsetX - line.x1;
+      const dy = pos.y - moveOffsetY - line.y1;
+      drawings[movingLine].x1 += dx;
+      drawings[movingLine].y1 += dy;
+      drawings[movingLine].x2 += dx;
+      drawings[movingLine].y2 += dy;
+      moveOffsetX = pos.x - drawings[movingLine].x1;
+      moveOffsetY = pos.y - drawings[movingLine].y1;
+    }
+    draw();
   } else if (isDrawing && currentTool === 'line') { draw(); }
+  
+  const sub = getViewSub();
+  if (sub.length >= 2 && !isPanning && !isDrawing && !scaleResizing) {
+    const step = (canvas.width - 12 - scaleW) / (sub.length - 1 || 1);
+    const idx = Math.round((pos.x - 12) / step);
+    const tt = document.getElementById('ttBox');
+    if (idx >= 0 && idx < sub.length && pos.x < canvas.width - scaleW && !onScaleBorder(pos)) {
+      const p = sub[idx];
+      document.getElementById('ttV').textContent = p.val.toFixed(2) + 'x';
+      document.getElementById('ttV').style.color = col(p.val);
+      document.getElementById('ttS').textContent = p.time.toLocaleTimeString('pt-BR');
+      tt.style.display = 'block';
+      tt.style.left = Math.min(pos.x + 12, canvas.width - scaleW - 15) + 'px';
+      tt.style.top = Math.max(5, pos.y - 42) + 'px';
+    } else { tt.style.display = 'none'; }
+  }
 }
 
-function onTouchEnd(e) {
+function onMouseUp(e) {
+  if (scaleResizing) { scaleResizing = false; return; }
   if (isDrawing && currentTool === 'line' && drawStart) {
     addLine(drawStart.x, drawStart.y, _mx, _my);
     isDrawing = false; drawStart = null;
   }
   document.getElementById('pov').style.display = 'none';
   isPanning = false;
+  isMoving = false;
+  movingLine = null;
+  movingPoint = null;
 }
 
-cwrap.addEventListener('touchstart', onTouchStart, { passive: false });
-cwrap.addEventListener('touchmove', onTouchMove, { passive: false });
-cwrap.addEventListener('touchend', onTouchEnd);
-cwrap.addEventListener('mousedown', onTouchStart);
-cwrap.addEventListener('mousemove', onTouchMove);
-cwrap.addEventListener('mouseup', onTouchEnd);
+cwrap.addEventListener('mousedown', onMouseDown);
+cwrap.addEventListener('mousemove', onMouseMove);
+cwrap.addEventListener('mouseup', onMouseUp);
 cwrap.addEventListener('wheel', e => { e.preventDefault(); e.deltaY < 0 ? zoomIn() : zoomOut(); draw(); }, { passive: false });
 
 function zoomIn() { zoomLevel = Math.min(10, zoomLevel * 1.2); draw(); }
 function zoomOut() { zoomLevel = Math.max(0.3, zoomLevel / 1.2); draw(); }
 function resetView() { zoomLevel = 1.0; viewOffset = 0; vertOffset = 0; draw(); }
-function voltarPresente() { viewOffset = 0; document.getElementById('btnBack').classList.remove('show'); draw(); }
+function voltarPresente() { viewOffset = 0; document.getElementById('btnBack').classList.remove('show'); draw(); selectedVelaIndex = -1; }
+function toggleMA() { CFG.showMA = !CFG.showMA; document.getElementById('maBtn').classList.toggle('on', CFG.showMA); draw(); }
+
+// ═══════════════════════════════════════════════════════════════════
+// MODAL CONFIG MM
+// ═══════════════════════════════════════════════════════════════════
+function openCfgMM() {
+  const container = document.getElementById('mmConfigLista');
+  if (!container) {
+    const modal = document.querySelector('#mmModal .modal');
+    const div = document.createElement('div'); div.id = 'mmConfigLista';
+    const btns = document.querySelector('#mmModal .m-btns');
+    modal.insertBefore(div, btns);
+  }
+  const lista = document.getElementById('mmConfigLista');
+  const mms = [
+    { id:1, nome:'MM1 (9)', cor:CFG.mm1Cor, per:CFG.mm1Per, on:CFG.mm1On, lw:CFG.mm1Lw, curva:CFG.mm1Curva },
+    { id:2, nome:'MM2 (21)', cor:CFG.mm2Cor, per:CFG.mm2Per, on:CFG.mm2On, lw:CFG.mm2Lw, curva:CFG.mm2Curva },
+    { id:3, nome:'MM3 (50)', cor:CFG.mm3Cor, per:CFG.mm3Per, on:CFG.mm3On, lw:CFG.mm3Lw, curva:CFG.mm3Curva },
+    { id:4, nome:'MM4 (100)', cor:CFG.mm4Cor, per:CFG.mm4Per, on:CFG.mm4On, lw:CFG.mm4Lw, curva:CFG.mm4Curva },
+    { id:5, nome:'MM5 (200)', cor:CFG.mm5Cor, per:CFG.mm5Per, on:CFG.mm5On, lw:CFG.mm5Lw, curva:CFG.mm5Curva },
+    { id:6, nome:'MM6 (7)', cor:CFG.mm6Cor, per:CFG.mm6Per, on:CFG.mm6On, lw:CFG.mm6Lw, curva:CFG.mm6Curva },
+    { id:7, nome:'MM7 (14)', cor:CFG.mm7Cor, per:CFG.mm7Per, on:CFG.mm7On, lw:CFG.mm7Lw, curva:CFG.mm7Curva },
+    { id:8, nome:'MM8 (30)', cor:CFG.mm8Cor, per:CFG.mm8Per, on:CFG.mm8On, lw:CFG.mm8Lw, curva:CFG.mm8Curva }
+  ];
+  lista.innerHTML = mms.map(mm => `
+    <div class="mm-row">
+      <span class="mm-label" style="color:${mm.cor}">${mm.nome}</span>
+      <div class="mm-toggle ${mm.on ? 'on' : ''}" onclick="toggleMM(${mm.id})"></div>
+      <input type="number" class="mm-num" id="mmPer${mm.id}" value="${mm.per}" min="2" max="500">
+      <input type="color" class="mm-color" id="mmCor${mm.id}" value="${mm.cor}">
+      <input type="number" class="mm-op" id="mmLw${mm.id}" value="${mm.lw}" step="0.1" min="0.5" max="3">
+      <select class="mm-sel" id="mmCurva${mm.id}">
+        <option value="linear" ${mm.curva==='linear'?'selected':''}>Linear</option>
+        <option value="smooth" ${mm.curva==='smooth'?'selected':''}>Smooth</option>
+        <option value="bezier" ${mm.curva==='bezier'?'selected':''}>Bezier</option>
+        <option value="step" ${mm.curva==='step'?'selected':''}>Step</option>
+        <option value="monoton" ${mm.curva==='monoton'?'selected':''}>Monoton</option>
+        <option value="cardinal" ${mm.curva==='cardinal'?'selected':''}>Cardinal</option>
+        <option value="natural" ${mm.curva==='natural'?'selected':''}>Natural Spline</option>
+        <option value="basis" ${mm.curva==='basis'?'selected':''}>Basis</option>
+      </select>
+    </div>
+  `).join('');
+  document.getElementById('mmModal').classList.add('open');
+}
+
+function closeCfgMM() { document.getElementById('mmModal').classList.remove('open'); }
+function toggleMM(id) { CFG[`mm${id}On`] = !CFG[`mm${id}On`]; openCfgMM(); draw(); }
+
+function aplicarCfgMM() {
+  for(let i=1;i<=8;i++){
+    CFG[`mm${i}Per`] = parseInt(document.getElementById(`mmPer${i}`).value) || CFG[`mm${i}Per`];
+    CFG[`mm${i}Cor`] = document.getElementById(`mmCor${i}`).value;
+    CFG[`mm${i}Lw`] = parseFloat(document.getElementById(`mmLw${i}`).value) || CFG[`mm${i}Lw`];
+    CFG[`mm${i}Curva`] = document.getElementById(`mmCurva${i}`).value;
+  }
+  closeCfgMM(); draw(); showAlert('Configurações salvas!', '#22c55e', 1500);
+}
+
+function resetCfgMM() {
+  CFG.mm1On=true; CFG.mm1Per=9; CFG.mm1Cor='#f59e0b'; CFG.mm1Lw=1.5; CFG.mm1Curva='smooth';
+  CFG.mm2On=true; CFG.mm2Per=21; CFG.mm2Cor='#06b6d4'; CFG.mm2Lw=1.2; CFG.mm2Curva='linear';
+  CFG.mm3On=true; CFG.mm3Per=50; CFG.mm3Cor='#22c55e'; CFG.mm3Lw=1.0; CFG.mm3Curva='bezier';
+  CFG.mm4On=true; CFG.mm4Per=100; CFG.mm4Cor='#ef4444'; CFG.mm4Lw=1.0; CFG.mm4Curva='smooth';
+  CFG.mm5On=true; CFG.mm5Per=200; CFG.mm5Cor='#eab308'; CFG.mm5Lw=0.9; CFG.mm5Curva='linear';
+  CFG.mm6On=false; CFG.mm6Per=7; CFG.mm6Cor='#ffffff'; CFG.mm6Lw=0.8; CFG.mm6Curva='step';
+  CFG.mm7On=false; CFG.mm7Per=14; CFG.mm7Cor='#ec4899'; CFG.mm7Lw=0.8; CFG.mm7Curva='monoton';
+  CFG.mm8On=false; CFG.mm8Per=30; CFG.mm8Cor='#3b82f6'; CFG.mm8Lw=0.8; CFG.mm8Curva='cardinal';
+  openCfgMM(); draw(); showAlert('Resetado!', '#22c55e', 1500);
+}
 
 function resize() {
-  const dpr = window.devicePixelRatio || 1;
+  const dpr = window.devicePixelRatio || 2;
   const w = cwrap.clientWidth, h = cwrap.clientHeight;
-  canvas.width = Math.max(200, Math.round(w * dpr));
-  canvas.height = Math.max(150, Math.round(h * dpr));
+  canvas.width = Math.max(400, Math.round(w * dpr));
+  canvas.height = Math.max(300, Math.round(h * dpr));
   canvas.style.width = w + 'px';
   canvas.style.height = h + 'px';
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
   draw();
 }
 new ResizeObserver(resize).observe(cwrap);
+setInterval(() => { document.getElementById('xNow').textContent = new Date().toLocaleTimeString('pt-BR'); }, 1000);
 
-setInterval(() => {
-  document.getElementById('xNow').textContent = new Date().toLocaleTimeString('pt-BR');
-}, 1000);
-
-// INICIALIZAÇÃO
 resize();
-setTool('cursor');
+setTool('select');
+
 setTimeout(async () => {
   await buscarVelas();
+  if (pollingInterval) clearInterval(pollingInterval);
   pollingInterval = setInterval(() => buscarNovasVelas(), 2000);
-  showAlert('🔍 DETECTOR DE PADRÕES ATIVO! Aguardando padrões...', '#f59e0b', 5000);
+  showAlert('✅ Conectado! Sistema IA ativo: Pagando Roxo | Falso Pague Amarelo | Minutagem Prioritária', '#22c55e', 5000);
 }, 500);
 </script>
+
+<!-- MODAL CONFIG MM -->
+<div class="modal-bg" id="mmModal" onclick="if(event.target===this)closeCfgMM()">
+  <div class="modal">
+    <div class="m-title">Configurar Médias Móveis <span class="m-x" onclick="closeCfgMM()">✕</span></div>
+    <div id="mmConfigLista"></div>
+    <div class="m-btns">
+      <button class="mbtn mb-g" onclick="aplicarCfgMM()">Aplicar</button>
+      <button class="mbtn mb-r" onclick="resetCfgMM()">Reset</button>
+      <button class="mbtn mb-c" onclick="closeCfgMM()">Fechar</button>
+    </div>
+  </div>
+</div>
 </body>
 </html>
